@@ -7,7 +7,7 @@
 		component: Card,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 </script>
 
@@ -36,8 +36,8 @@
 	<Card>
 		<h2 class="mb-2 text-xl font-semibold">Card with Long Content</h2>
 		<p class="mb-4 text-gray-600">
-			This card demonstrates how the component handles longer content. The card should wrap
-			the content nicely and maintain proper spacing and visual hierarchy.
+			This card demonstrates how the component handles longer content. The card should wrap the
+			content nicely and maintain proper spacing and visual hierarchy.
 		</p>
 		<p class="text-gray-600">
 			Additional paragraphs will also be properly spaced within the card container.
@@ -66,8 +66,8 @@
 	<Card>
 		<h2 class="mb-2 text-xl font-semibold">Interactive Card</h2>
 		<p class="text-gray-600">
-			This card demonstrates the play function capability. The play function runs after the
-			story renders to simulate interactions or verify behavior.
+			This card demonstrates the play function capability. The play function runs after the story
+			renders to simulate interactions or verify behavior.
 		</p>
 	</Card>
 </Story>

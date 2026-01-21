@@ -4,7 +4,7 @@
 	import SkillsList from '$lib/components/SkillsList.svelte';
 	import SelectedSkillsColumn from '$lib/components/SelectedSkillsColumn.svelte';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import type { Framework, Skill, JobProfile } from '$lib/types/job-profile';
+	import type { Framework, Skill } from '$lib/types/job-profile';
 	import type { FrameworkService } from '$lib/services/framework-service';
 
 	interface Props {
@@ -15,15 +15,6 @@
 
 	let selectedFramework = $state<Framework | null>(null);
 	let selectedSkills = $state<Skill[]>([]);
-	let formData = $state<{
-		name: string;
-		description: string;
-		company: string;
-	}>({
-		name: '',
-		description: '',
-		company: '',
-	});
 
 	let showSuccess = $state(false);
 	let validationError = $state<string | null>(null);
@@ -56,7 +47,6 @@
 	}
 
 	function handleFormSubmit(data: { name: string; description: string; company: string }) {
-		formData = data;
 		validationError = null;
 
 		// Validate form
@@ -77,16 +67,15 @@
 			return;
 		}
 
-		// Create job profile (no persistence yet)
-		const jobProfile: JobProfile = {
-			name: data.name,
-			description: data.description,
-			company: data.company,
-			frameworks: [selectedFramework],
-			skills: selectedSkills,
-		};
-
-		console.log('Job profile created:', jobProfile);
+		// Job profile created successfully (no persistence yet)
+		// In the future, this would persist the job profile:
+		// const jobProfile: JobProfile = {
+		//   name: data.name,
+		//   description: data.description,
+		//   company: data.company,
+		//   frameworks: [selectedFramework],
+		//   skills: selectedSkills,
+		// };
 
 		// Show success message
 		showSuccess = true;
@@ -173,18 +162,15 @@
 				<div>
 					<SkillsList
 						framework={selectedFramework}
-						selectedSkills={selectedSkills}
+						{selectedSkills}
 						onToggleSkill={handleToggleSkill}
-						service={service}
+						{service}
 					/>
 				</div>
 
 				<!-- Right Column: Selected Skills -->
 				<div>
-					<SelectedSkillsColumn
-						selectedSkills={selectedSkills}
-						onRemoveSkill={handleRemoveSkill}
-					/>
+					<SelectedSkillsColumn {selectedSkills} onRemoveSkill={handleRemoveSkill} />
 				</div>
 			</div>
 		</div>

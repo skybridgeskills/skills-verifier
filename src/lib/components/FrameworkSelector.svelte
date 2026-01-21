@@ -22,7 +22,7 @@
 		return frameworks.filter(
 			(framework) =>
 				framework.name.toLowerCase().includes(query) ||
-				framework.organization.toLowerCase().includes(query),
+				framework.organization.toLowerCase().includes(query)
 		);
 	});
 
@@ -48,14 +48,14 @@
 	<!-- Loading State -->
 	{#if loading}
 		<div class="space-y-3">
-			{#each Array(2) as _}
+			{#each Array.from({ length: 2 }, (_, i) => i) as i (i)}
 				<div class="animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-4">
 					<div class="h-5 w-3/4 rounded bg-gray-300"></div>
 					<div class="mt-2 h-4 w-1/2 rounded bg-gray-300"></div>
 				</div>
 			{/each}
 		</div>
-	<!-- Error State -->
+		<!-- Error State -->
 	{:else if error}
 		<div class="rounded-lg border border-red-300 bg-red-50 p-4">
 			<div class="flex items-center">
@@ -76,26 +76,26 @@
 			</div>
 			<p class="mt-1 text-sm text-red-600">{error}</p>
 		</div>
-	<!-- Framework List -->
+		<!-- Framework List -->
 	{:else if filteredFrameworks().length > 0}
 		<div class="space-y-2">
 			{#each filteredFrameworks() as framework (framework.ctid)}
 				<button
 					type="button"
 					onclick={() => handleSelect(framework)}
-					class="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 @md:p-5"
+					class="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none @md:p-5"
 				>
 					<div class="font-medium text-gray-900">{framework.name}</div>
 					<div class="mt-1 text-sm text-gray-600">{framework.organization}</div>
 				</button>
 			{/each}
 		</div>
-	<!-- Empty Search Results -->
+		<!-- Empty Search Results -->
 	{:else if searchQuery.trim()}
 		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
 			<p class="text-sm text-gray-600">No frameworks found matching "{searchQuery}"</p>
 		</div>
-	<!-- No Frameworks -->
+		<!-- No Frameworks -->
 	{:else}
 		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
 			<p class="text-sm text-gray-600">No frameworks available</p>

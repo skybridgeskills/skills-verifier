@@ -9,7 +9,7 @@
 		component: FrameworkSelector,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 
 	function handleSelect(framework: Framework) {

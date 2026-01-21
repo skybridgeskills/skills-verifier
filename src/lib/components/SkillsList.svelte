@@ -47,7 +47,7 @@
 				service.fetchSkill(url).catch((err) => {
 					console.error(`Failed to fetch skill ${url}:`, err);
 					return null; // Return null for failed fetches
-				}),
+				})
 			);
 
 			const skillResponses = await Promise.all(skillPromises);
@@ -87,8 +87,7 @@
 		const query = searchQuery.toLowerCase().trim();
 		return skills.filter(
 			(skill) =>
-				skill.label?.toLowerCase().includes(query) ||
-				skill.text.toLowerCase().includes(query),
+				skill.label?.toLowerCase().includes(query) || skill.text.toLowerCase().includes(query)
 		);
 	});
 
@@ -126,17 +125,17 @@
 	<!-- Loading Framework State -->
 	{#if loadingFramework}
 		<div class="space-y-3">
-			{#each Array(3) as _}
+			{#each Array.from({ length: 3 }, (_, i) => i) as i (i)}
 				<div class="animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-4">
 					<div class="h-5 w-3/4 rounded bg-gray-300"></div>
 					<div class="mt-2 h-4 w-1/2 rounded bg-gray-300"></div>
 				</div>
 			{/each}
 		</div>
-	<!-- Loading Skills State -->
+		<!-- Loading Skills State -->
 	{:else if loadingSkills}
 		<div class="space-y-3">
-			{#each Array(5) as _}
+			{#each Array.from({ length: 5 }, (_, i) => i) as i (i)}
 				<div class="animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-3 @md:p-4">
 					<div class="flex items-start gap-3">
 						<div class="mt-1 h-4 w-4 rounded bg-gray-300"></div>
@@ -148,7 +147,7 @@
 				</div>
 			{/each}
 		</div>
-	<!-- Error State -->
+		<!-- Error State -->
 	{:else if error}
 		<div class="rounded-lg border border-red-300 bg-red-50 p-4">
 			<div class="flex items-center">
@@ -172,34 +171,30 @@
 				<button
 					type="button"
 					onclick={handleRetry}
-					class="mt-3 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+					class="mt-3 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
 				>
 					Retry
 				</button>
 			{/if}
 		</div>
-	<!-- Skills List -->
+		<!-- Skills List -->
 	{:else if framework && filteredSkills().length > 0}
 		<div class="space-y-2">
 			{#each filteredSkills() as skill (skill.url)}
-				<SkillItem
-					skill={skill}
-					selected={isSelected(skill)}
-					onToggle={onToggleSkill}
-				/>
+				<SkillItem {skill} selected={isSelected(skill)} onToggle={onToggleSkill} />
 			{/each}
 		</div>
-	<!-- Empty Search Results -->
+		<!-- Empty Search Results -->
 	{:else if framework && searchQuery.trim() && skills.length > 0}
 		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
 			<p class="text-sm text-gray-600">No skills found matching "{searchQuery}"</p>
 		</div>
-	<!-- No Framework Selected -->
+		<!-- No Framework Selected -->
 	{:else if !framework}
 		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
 			<p class="text-sm text-gray-600">Select a framework to view skills</p>
 		</div>
-	<!-- No Skills -->
+		<!-- No Skills -->
 	{:else}
 		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
 			<p class="text-sm text-gray-600">No skills available in this framework</p>

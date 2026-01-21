@@ -2,32 +2,16 @@
 	import CreateJobPage from './CreateJobPage.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import { FakeFrameworkService } from '$lib/services/framework-service';
-	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import type { Skill } from '$lib/types/job-profile';
 
 	const { Story } = defineMeta({
 		title: 'pages/CreateJobPage',
 		component: CreateJobPage,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 
 	const fakeService = new FakeFrameworkService();
-
-	const mockSkills: Skill[] = [
-		{
-			url: 'https://credentialengineregistry.org/resources/ce-777ff155-e07f-4843-9274-6a78783f6641',
-			text: 'Describe health care organizations from the perspective of key stakeholders.',
-			ctid: 'ce-777ff155-e07f-4843-9274-6a78783f6641',
-		},
-		{
-			url: 'https://credentialengineregistry.org/resources/ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
-			label: 'Health Information Systems',
-			text: 'Understand and use health information systems effectively.',
-			ctid: 'ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
-		},
-	];
 </script>
 
 <Story name="Initial State">
@@ -59,9 +43,7 @@
 <Story name="With Form Filled">
 	<div class="max-w-6xl">
 		<CreateJobPage service={fakeService} />
-		<p class="mb-4 text-sm text-gray-600">
-			Fill out the form fields to see the complete state.
-		</p>
+		<p class="mb-4 text-sm text-gray-600">Fill out the form fields to see the complete state.</p>
 	</div>
 </Story>
 
@@ -94,7 +76,7 @@
 				},
 				async fetchSkill() {
 					throw new Error('Failed to fetch skill');
-				},
+				}
 			}}
 		/>
 	</div>

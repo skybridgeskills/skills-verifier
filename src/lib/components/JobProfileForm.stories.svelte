@@ -7,12 +7,14 @@
 		component: JobProfileForm,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 
 	function handleSubmit(data: { name: string; description: string; company: string }) {
 		console.log('Form submitted:', data);
-		alert(`Form submitted:\nName: ${data.name}\nCompany: ${data.company}\nDescription: ${data.description}`);
+		alert(
+			`Form submitted:\nName: ${data.name}\nCompany: ${data.company}\nDescription: ${data.description}`
+		);
 	}
 </script>
 
@@ -29,7 +31,7 @@
 			initialData={{
 				name: 'Senior Software Engineer',
 				company: 'Acme Corporation',
-				description: 'Lead development of web applications using modern technologies.',
+				description: 'Lead development of web applications using modern technologies.'
 			}}
 		/>
 	</div>

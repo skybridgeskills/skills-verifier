@@ -3,7 +3,7 @@ import type {
 	FrameworkJsonLd,
 	LanguageString,
 	Skill,
-	SkillJsonLd,
+	SkillJsonLd
 } from '$lib/types/job-profile';
 
 /**
@@ -63,9 +63,7 @@ export class HttpFrameworkService implements FrameworkService {
 			const response = await fetch(url);
 
 			if (!response.ok) {
-				throw new Error(
-					`Failed to fetch framework: ${response.status} ${response.statusText}`,
-				);
+				throw new Error(`Failed to fetch framework: ${response.status} ${response.statusText}`);
 			}
 
 			const json: FrameworkJsonLd = await response.json();
@@ -93,12 +91,12 @@ export class HttpFrameworkService implements FrameworkService {
 				name,
 				organization,
 				url: json['@id'],
-				ctid: json['ceterms:ctid'],
+				ctid: json['ceterms:ctid']
 			};
 
 			return {
 				framework,
-				skillUrls: json['ceasn:hasTopChild'],
+				skillUrls: json['ceasn:hasTopChild']
 			};
 		} catch (error) {
 			if (error instanceof TypeError) {
@@ -116,9 +114,7 @@ export class HttpFrameworkService implements FrameworkService {
 			const response = await fetch(url);
 
 			if (!response.ok) {
-				throw new Error(
-					`Failed to fetch skill: ${response.status} ${response.statusText}`,
-				);
+				throw new Error(`Failed to fetch skill: ${response.status} ${response.statusText}`);
 			}
 
 			const json: SkillJsonLd = await response.json();
@@ -140,7 +136,7 @@ export class HttpFrameworkService implements FrameworkService {
 
 			if (!text && !label) {
 				throw new Error(
-					'Invalid skill: missing both ceasn:competencyLabel and ceasn:competencyText',
+					'Invalid skill: missing both ceasn:competencyLabel and ceasn:competencyText'
 				);
 			}
 
@@ -148,7 +144,7 @@ export class HttpFrameworkService implements FrameworkService {
 				url: json['@id'],
 				label,
 				text: text || label || '',
-				ctid: json['ceterms:ctid'],
+				ctid: json['ceterms:ctid']
 			};
 
 			return { skill };
@@ -187,13 +183,13 @@ export class FakeFrameworkService implements FrameworkService {
 			'ceasn:name': { 'en-us': 'Health Information Management' },
 			'ceasn:publisherName': { 'en-us': 'Dyersburg State Community College' },
 			'ceasn:description': {
-				'en-us': 'These are the competencies associated with Health Information Management',
+				'en-us': 'These are the competencies associated with Health Information Management'
 			},
 			'ceasn:hasTopChild': [
 				'https://credentialengineregistry.org/resources/ce-777ff155-e07f-4843-9274-6a78783f6641',
 				'https://credentialengineregistry.org/resources/ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
-				'https://credentialengineregistry.org/resources/ce-659726d0-2b18-4ea1-891e-565f02d94098',
-			],
+				'https://credentialengineregistry.org/resources/ce-659726d0-2b18-4ea1-891e-565f02d94098'
+			]
 		};
 
 		// Mock framework: Business, Management
@@ -206,12 +202,12 @@ export class FakeFrameworkService implements FrameworkService {
 			'ceasn:name': { 'en-us': 'Business, Management' },
 			'ceasn:publisherName': { 'en-us': 'Chattanooga State Community College' },
 			'ceasn:description': {
-				'en-us': 'These are the competencies associated with Business, Management',
+				'en-us': 'These are the competencies associated with Business, Management'
 			},
 			'ceasn:hasTopChild': [
 				'https://credentialengineregistry.org/resources/ce-4ffae58e-900e-43e0-ad2b-58f17858edfc',
-				'https://credentialengineregistry.org/resources/ce-5d7b463c-3e84-43e1-9791-7766c9f5e856',
-			],
+				'https://credentialengineregistry.org/resources/ce-5d7b463c-3e84-43e1-9791-7766c9f5e856'
+			]
 		};
 
 		this.mockFrameworks.set(healthInfoFramework['@id'], healthInfoFramework);
@@ -225,8 +221,8 @@ export class FakeFrameworkService implements FrameworkService {
 			'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 			'ceterms:ctid': 'ce-777ff155-e07f-4843-9274-6a78783f6641',
 			'ceasn:competencyText': {
-				'en-us': 'Describe health care organizations from the perspective of key stakeholders.',
-			},
+				'en-us': 'Describe health care organizations from the perspective of key stakeholders.'
+			}
 		};
 
 		const skill2: SkillJsonLd = {
@@ -237,8 +233,8 @@ export class FakeFrameworkService implements FrameworkService {
 			'ceterms:ctid': 'ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
 			'ceasn:competencyLabel': { 'en-us': 'Health Information Systems' },
 			'ceasn:competencyText': {
-				'en-us': 'Understand and use health information systems effectively.',
-			},
+				'en-us': 'Understand and use health information systems effectively.'
+			}
 		};
 
 		const skill3: SkillJsonLd = {
@@ -248,8 +244,8 @@ export class FakeFrameworkService implements FrameworkService {
 			'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 			'ceterms:ctid': 'ce-659726d0-2b18-4ea1-891e-565f02d94098',
 			'ceasn:competencyText': {
-				'en-us': 'Apply coding and classification systems in health information management.',
-			},
+				'en-us': 'Apply coding and classification systems in health information management.'
+			}
 		};
 
 		// Mock skills for Business, Management
@@ -260,8 +256,8 @@ export class FakeFrameworkService implements FrameworkService {
 			'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 			'ceterms:ctid': 'ce-4ffae58e-900e-43e0-ad2b-58f17858edfc',
 			'ceasn:competencyText': {
-				'en-us': 'Demonstrate understanding of business principles and practices.',
-			},
+				'en-us': 'Demonstrate understanding of business principles and practices.'
+			}
 		};
 
 		const businessSkill2: SkillJsonLd = {
@@ -272,8 +268,8 @@ export class FakeFrameworkService implements FrameworkService {
 			'ceterms:ctid': 'ce-5d7b463c-3e84-43e1-9791-7766c9f5e856',
 			'ceasn:competencyLabel': { 'en-us': 'Management Skills' },
 			'ceasn:competencyText': {
-				'en-us': 'Apply management principles to lead teams and projects effectively.',
-			},
+				'en-us': 'Apply management principles to lead teams and projects effectively.'
+			}
 		};
 
 		this.mockSkills.set(skill1['@id'], skill1);
@@ -296,12 +292,12 @@ export class FakeFrameworkService implements FrameworkService {
 			name,
 			organization,
 			url: mockFramework['@id'],
-			ctid: mockFramework['ceterms:ctid'],
+			ctid: mockFramework['ceterms:ctid']
 		};
 
 		return {
 			framework,
-			skillUrls: mockFramework['ceasn:hasTopChild'],
+			skillUrls: mockFramework['ceasn:hasTopChild']
 		};
 	}
 
@@ -320,7 +316,7 @@ export class FakeFrameworkService implements FrameworkService {
 
 		if (!text && !label) {
 			throw new Error(
-				'Invalid mock skill: missing both ceasn:competencyLabel and ceasn:competencyText',
+				'Invalid mock skill: missing both ceasn:competencyLabel and ceasn:competencyText'
 			);
 		}
 
@@ -328,7 +324,7 @@ export class FakeFrameworkService implements FrameworkService {
 			url: mockSkill['@id'],
 			label,
 			text: text || label || '',
-			ctid: mockSkill['ceterms:ctid'],
+			ctid: mockSkill['ceterms:ctid']
 		};
 
 		return { skill };

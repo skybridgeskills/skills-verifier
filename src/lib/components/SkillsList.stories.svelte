@@ -10,7 +10,7 @@
 		component: SkillsList,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 
 	const fakeService = new FakeFrameworkService();
@@ -19,19 +19,19 @@
 		{
 			url: 'https://credentialengineregistry.org/resources/ce-777ff155-e07f-4843-9274-6a78783f6641',
 			text: 'Describe health care organizations from the perspective of key stakeholders.',
-			ctid: 'ce-777ff155-e07f-4843-9274-6a78783f6641',
+			ctid: 'ce-777ff155-e07f-4843-9274-6a78783f6641'
 		},
 		{
 			url: 'https://credentialengineregistry.org/resources/ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
 			label: 'Health Information Systems',
 			text: 'Understand and use health information systems effectively.',
-			ctid: 'ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f',
+			ctid: 'ce-2d1dbb27-e1d8-4acf-9cb9-501c3dc68d5f'
 		},
 		{
 			url: 'https://credentialengineregistry.org/resources/ce-659726d0-2b18-4ea1-891e-565f02d94098',
 			text: 'Apply coding and classification systems in health information management.',
-			ctid: 'ce-659726d0-2b18-4ea1-891e-565f02d94098',
-		},
+			ctid: 'ce-659726d0-2b18-4ea1-891e-565f02d94098'
+		}
 	];
 
 	function handleToggle(skill: Skill) {
@@ -114,7 +114,7 @@
 				},
 				async fetchSkill() {
 					throw new Error('Failed to fetch skill');
-				},
+				}
 			}}
 		/>
 	</div>

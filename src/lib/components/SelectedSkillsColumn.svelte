@@ -73,7 +73,7 @@
 					<button
 						type="button"
 						onclick={() => onRemoveSkill(skill)}
-						class="ml-2 flex-shrink-0 rounded-md p-1 text-gray-400 opacity-0 transition-opacity hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 group-hover:opacity-100"
+						class="ml-2 flex-shrink-0 rounded-md p-1 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
 						aria-label="Remove skill"
 					>
 						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,9 +105,7 @@
 				/>
 			</svg>
 			<p class="mt-2 text-sm text-gray-600">No skills selected yet</p>
-			<p class="mt-1 text-xs text-gray-500">
-				Select skills from the framework to add them here
-			</p>
+			<p class="mt-1 text-xs text-gray-500">Select skills from the framework to add them here</p>
 		</div>
 	{/if}
 </div>

@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import {
 	HttpFrameworkService,
 	FakeFrameworkService,
-	createFrameworkService,
+	createFrameworkService
 } from './framework-service';
 import type { FrameworkJsonLd, SkillJsonLd } from '$lib/types/job-profile';
 
@@ -25,15 +25,12 @@ describe('HttpFrameworkService', () => {
 				'ceterms:ctid': 'ce-test-123',
 				'ceasn:name': { 'en-us': 'Test Framework' },
 				'ceasn:publisherName': { 'en-us': 'Test Organization' },
-				'ceasn:hasTopChild': [
-					'https://example.com/skill1',
-					'https://example.com/skill2',
-				],
+				'ceasn:hasTopChild': ['https://example.com/skill1', 'https://example.com/skill2']
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockFramework,
+				json: async () => mockFramework
 			});
 
 			const result = await service.fetchFramework('https://example.com/framework');
@@ -44,28 +41,28 @@ describe('HttpFrameworkService', () => {
 			expect(result.framework.ctid).toBe('ce-test-123');
 			expect(result.skillUrls).toEqual([
 				'https://example.com/skill1',
-				'https://example.com/skill2',
+				'https://example.com/skill2'
 			]);
 		});
 
 		it('should handle network errors', async () => {
 			mockFetch.mockRejectedValueOnce(new TypeError('Network error'));
 
-			await expect(
-				service.fetchFramework('https://example.com/framework'),
-			).rejects.toThrow('Network error: Failed to fetch framework');
+			await expect(service.fetchFramework('https://example.com/framework')).rejects.toThrow(
+				'Network error: Failed to fetch framework'
+			);
 		});
 
 		it('should handle HTTP errors', async () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: false,
 				status: 404,
-				statusText: 'Not Found',
+				statusText: 'Not Found'
 			});
 
-			await expect(
-				service.fetchFramework('https://example.com/framework'),
-			).rejects.toThrow('Failed to fetch framework: 404 Not Found');
+			await expect(service.fetchFramework('https://example.com/framework')).rejects.toThrow(
+				'Failed to fetch framework: 404 Not Found'
+			);
 		});
 
 		it('should handle invalid JSON', async () => {
@@ -73,27 +70,27 @@ describe('HttpFrameworkService', () => {
 				ok: true,
 				json: async () => {
 					throw new SyntaxError('Invalid JSON');
-				},
+				}
 			});
 
-			await expect(
-				service.fetchFramework('https://example.com/framework'),
-			).rejects.toThrow('Invalid JSON: Failed to parse framework response');
+			await expect(service.fetchFramework('https://example.com/framework')).rejects.toThrow(
+				'Invalid JSON: Failed to parse framework response'
+			);
 		});
 
 		it('should handle missing required fields', async () => {
 			const invalidFramework = {
-				'@id': 'https://example.com/framework',
+				'@id': 'https://example.com/framework'
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => invalidFramework,
+				json: async () => invalidFramework
 			});
 
-			await expect(
-				service.fetchFramework('https://example.com/framework'),
-			).rejects.toThrow('Invalid framework: missing ceterms:ctid');
+			await expect(service.fetchFramework('https://example.com/framework')).rejects.toThrow(
+				'Invalid framework: missing ceterms:ctid'
+			);
 		});
 
 		it('should extract organization from publisherName', async () => {
@@ -104,12 +101,12 @@ describe('HttpFrameworkService', () => {
 				'ceterms:ctid': 'ce-test-123',
 				'ceasn:name': { 'en-us': 'Test Framework' },
 				'ceasn:publisherName': { 'en-us': 'Test Org' },
-				'ceasn:hasTopChild': [],
+				'ceasn:hasTopChild': []
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockFramework,
+				json: async () => mockFramework
 			});
 
 			const result = await service.fetchFramework('https://example.com/framework');
@@ -123,12 +120,12 @@ describe('HttpFrameworkService', () => {
 				'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 				'ceterms:ctid': 'ce-test-123',
 				'ceasn:name': { 'en-us': 'Test Framework' },
-				'ceasn:hasTopChild': [],
+				'ceasn:hasTopChild': []
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockFramework,
+				json: async () => mockFramework
 			});
 
 			const result = await service.fetchFramework('https://example.com/framework');
@@ -143,12 +140,12 @@ describe('HttpFrameworkService', () => {
 				'@type': 'ceasn:Competency',
 				'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 				'ceterms:ctid': 'ce-skill-123',
-				'ceasn:competencyText': { 'en-us': 'Test skill description' },
+				'ceasn:competencyText': { 'en-us': 'Test skill description' }
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockSkill,
+				json: async () => mockSkill
 			});
 
 			const result = await service.fetchSkill('https://example.com/skill');
@@ -166,12 +163,12 @@ describe('HttpFrameworkService', () => {
 				'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 				'ceterms:ctid': 'ce-skill-123',
 				'ceasn:competencyLabel': { 'en-us': 'Test Label' },
-				'ceasn:competencyText': { 'en-us': 'Test skill description' },
+				'ceasn:competencyText': { 'en-us': 'Test skill description' }
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockSkill,
+				json: async () => mockSkill
 			});
 
 			const result = await service.fetchSkill('https://example.com/skill');
@@ -184,7 +181,7 @@ describe('HttpFrameworkService', () => {
 			mockFetch.mockRejectedValueOnce(new TypeError('Network error'));
 
 			await expect(service.fetchSkill('https://example.com/skill')).rejects.toThrow(
-				'Network error: Failed to fetch skill',
+				'Network error: Failed to fetch skill'
 			);
 		});
 
@@ -192,11 +189,11 @@ describe('HttpFrameworkService', () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: false,
 				status: 404,
-				statusText: 'Not Found',
+				statusText: 'Not Found'
 			});
 
 			await expect(service.fetchSkill('https://example.com/skill')).rejects.toThrow(
-				'Failed to fetch skill: 404 Not Found',
+				'Failed to fetch skill: 404 Not Found'
 			);
 		});
 
@@ -205,16 +202,16 @@ describe('HttpFrameworkService', () => {
 				'@id': 'https://example.com/skill',
 				'@type': 'ceasn:Competency',
 				'@context': 'https://credreg.net/ctdlasn/schema/context/json',
-				'ceterms:ctid': 'ce-skill-123',
+				'ceterms:ctid': 'ce-skill-123'
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => invalidSkill,
+				json: async () => invalidSkill
 			});
 
 			await expect(service.fetchSkill('https://example.com/skill')).rejects.toThrow(
-				'Invalid skill: missing both ceasn:competencyLabel and ceasn:competencyText',
+				'Invalid skill: missing both ceasn:competencyLabel and ceasn:competencyText'
 			);
 		});
 
@@ -224,12 +221,12 @@ describe('HttpFrameworkService', () => {
 				'@type': 'ceasn:Competency',
 				'@context': 'https://credreg.net/ctdlasn/schema/context/json',
 				'ceterms:ctid': 'ce-skill-123',
-				'ceasn:competencyLabel': { 'en-us': 'Test Label' },
+				'ceasn:competencyLabel': { 'en-us': 'Test Label' }
 			};
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockSkill,
+				json: async () => mockSkill
 			});
 
 			const result = await service.fetchSkill('https://example.com/skill');
@@ -258,9 +255,9 @@ describe('FakeFrameworkService', () => {
 		});
 
 		it('should throw error for unknown framework URL', async () => {
-			await expect(
-				service.fetchFramework('https://example.com/unknown'),
-			).rejects.toThrow('Mock framework not found');
+			await expect(service.fetchFramework('https://example.com/unknown')).rejects.toThrow(
+				'Mock framework not found'
+			);
 		});
 	});
 
@@ -286,7 +283,7 @@ describe('FakeFrameworkService', () => {
 
 		it('should throw error for unknown skill URL', async () => {
 			await expect(service.fetchSkill('https://example.com/unknown')).rejects.toThrow(
-				'Mock skill not found',
+				'Mock skill not found'
 			);
 		});
 	});
@@ -307,5 +304,5 @@ describe('createFrameworkService', () => {
 	});
 
 	// Note: Testing with env var set to 'true' requires actual environment setup
-	// This is tested in practice when running Storybook with VITE_USE_FAKE_FRAMEWORK_SERVICE=true
+	// This is tested in practice when running Storybook with PUBLIC_USE_FAKE_FRAMEWORK_SERVICE=true
 });

@@ -8,27 +8,27 @@
 		component: SkillItem,
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {},
+		args: {}
 	});
 
 	const skillWithLabelOnly: Skill = {
 		url: 'https://example.com/skill1',
 		label: 'Health Information Systems',
 		text: '',
-		ctid: 'ce-skill-1',
+		ctid: 'ce-skill-1'
 	};
 
 	const skillWithTextOnly: Skill = {
 		url: 'https://example.com/skill2',
 		text: 'Describe health care organizations from the perspective of key stakeholders.',
-		ctid: 'ce-skill-2',
+		ctid: 'ce-skill-2'
 	};
 
 	const skillWithBoth: Skill = {
 		url: 'https://example.com/skill3',
 		label: 'Health Information Systems',
 		text: 'Understand and use health information systems effectively.',
-		ctid: 'ce-skill-3',
+		ctid: 'ce-skill-3'
 	};
 
 	function handleToggle(skill: Skill) {
