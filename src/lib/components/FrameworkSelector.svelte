@@ -14,6 +14,10 @@
 
 	// Filter frameworks based on search query
 	const filteredFrameworks = $derived(() => {
+		if (!frameworks || frameworks.length === 0) {
+			return [];
+		}
+
 		if (!searchQuery.trim()) {
 			return frameworks;
 		}
