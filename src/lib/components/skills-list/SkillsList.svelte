@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SkillItem from './SkillItem.svelte';
+	import SkillItem from '../skill-item/SkillItem.svelte';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 	import type { FrameworkService } from '$lib/services/framework-service';
 
