@@ -7,7 +7,6 @@
 
 	const { Story } = defineMeta({
 		title: 'components/SkillsList',
-		component: SkillsList,
 		tags: ['autodocs'],
 		argTypes: {},
 		args: {}
@@ -34,8 +33,30 @@
 		}
 	];
 
+	let selectedSkills = $state<string[]>([]);
+	let selectedSkillsWithPreselected = $state<string[]>([
+		mockSkills[0].url,
+		mockSkills[1].url
+	]);
+
 	function handleToggle(skill: Skill) {
-		console.log('Toggle skill:', skill);
+		const skillId = skill.url;
+		if (selectedSkills.includes(skillId)) {
+			selectedSkills = selectedSkills.filter((id) => id !== skillId);
+		} else {
+			selectedSkills = [...selectedSkills, skillId];
+		}
+	}
+
+	function handleToggleWithPreselected(skill: Skill) {
+		const skillId = skill.url;
+		if (selectedSkillsWithPreselected.includes(skillId)) {
+			selectedSkillsWithPreselected = selectedSkillsWithPreselected.filter(
+				(id) => id !== skillId
+			);
+		} else {
+			selectedSkillsWithPreselected = [...selectedSkillsWithPreselected, skillId];
+		}
 	}
 </script>
 
@@ -43,25 +64,10 @@
 	<div class="max-w-2xl">
 		<SkillsList
 			framework={null}
-			selectedSkills={[]}
+			selectedSkills={selectedSkills}
 			onToggleSkill={handleToggle}
 			service={fakeService}
 		/>
-	</div>
-</Story>
-
-<Story name="Loading Framework">
-	<div class="max-w-2xl">
-		<!-- Note: This story shows the loading state. In a real scenario, this would be triggered by selecting a framework -->
-		<SkillsList
-			framework={FRAMEWORKS[0]}
-			selectedSkills={[]}
-			onToggleSkill={handleToggle}
-			service={fakeService}
-		/>
-		<script>
-			// The component will automatically start loading when framework is set
-		</script>
 	</div>
 </Story>
 
@@ -69,44 +75,31 @@
 	<div class="max-w-2xl">
 		<SkillsList
 			framework={FRAMEWORKS[0]}
-			selectedSkills={[]}
+			selectedSkills={selectedSkills}
 			onToggleSkill={handleToggle}
 			service={fakeService}
 		/>
 	</div>
 </Story>
 
-<Story name="With Selected Skills">
+<Story name="Initially Selected Skills">
 	<div class="max-w-2xl">
 		<SkillsList
 			framework={FRAMEWORKS[0]}
-			selectedSkills={[mockSkills[0], mockSkills[1]]}
-			onToggleSkill={handleToggle}
+			selectedSkills={selectedSkillsWithPreselected}
+			onToggleSkill={handleToggleWithPreselected}
 			service={fakeService}
 		/>
 	</div>
 </Story>
 
-<Story name="With Search Filtering">
-	<div class="max-w-2xl">
-		<p class="mb-4 text-sm text-gray-600">
-			Type in the search box to filter skills by label or text.
-		</p>
-		<SkillsList
-			framework={FRAMEWORKS[0]}
-			selectedSkills={[]}
-			onToggleSkill={handleToggle}
-			service={fakeService}
-		/>
-	</div>
-</Story>
 
 <Story name="Error State">
 	<div class="max-w-2xl">
 		<!-- Create a service that throws errors -->
 		<SkillsList
 			framework={FRAMEWORKS[0]}
-			selectedSkills={[]}
+			selectedSkills={selectedSkills}
 			onToggleSkill={handleToggle}
 			service={{
 				async fetchFramework() {
@@ -116,17 +109,6 @@
 					throw new Error('Failed to fetch skill');
 				}
 			}}
-		/>
-	</div>
-</Story>
-
-<Story name="Responsive Layout">
-	<div class="w-full @md:max-w-lg @lg:max-w-2xl">
-		<SkillsList
-			framework={FRAMEWORKS[0]}
-			selectedSkills={[]}
-			onToggleSkill={handleToggle}
-			service={fakeService}
 		/>
 	</div>
 </Story>

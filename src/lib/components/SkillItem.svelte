@@ -4,16 +4,17 @@
 	interface Props {
 		skill: Skill;
 		selected: boolean;
-		onToggle: (skill: Skill) => void;
+		onToggle: (url: string) => void;
 	}
 
 	let { skill, selected, onToggle }: Props = $props();
 
 	function handleClick() {
-		onToggle(skill);
+		onToggle(skill.url);
 	}
 </script>
 
+{#if skill}
 <label
 	class="flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors @md:p-4 {selected
 		? 'border-blue-500 bg-blue-50'
@@ -39,3 +40,4 @@
 		{/if}
 	</div>
 </label>
+{/if}

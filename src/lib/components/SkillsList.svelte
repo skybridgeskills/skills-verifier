@@ -5,7 +5,7 @@
 
 	interface Props {
 		framework: Framework | null;
-		selectedSkills: Skill[];
+		selectedSkills: string[];
 		onToggleSkill: (skill: Skill) => void;
 		service: FrameworkService;
 	}
@@ -75,11 +75,18 @@
 	}
 
 	function isSelected(skill: Skill): boolean {
-		return selectedSkills.some((s) => s.url === skill.url);
+		return selectedSkills.includes(skill.url);
+	}
+
+	function handleToggle(url: string) {
+		const skill = skills.find((s) => s.url === url);
+		if (skill) {
+			onToggleSkill(skill);
+		}
 	}
 
 	// Filter skills based on search query
-	const filteredSkills = $derived(() => {
+	const filteredSkills = $derived.by(() => {
 		if (!searchQuery.trim()) {
 			return skills;
 		}
@@ -91,13 +98,8 @@
 		);
 	});
 
-	const selectionCount = $derived(() => {
-		return selectedSkills.length;
-	});
-
-	const totalCount = $derived(() => {
-		return skills.length;
-	});
+	const selectionCount = $derived(selectedSkills.length);
+	const totalCount = $derived(skills.length);
 </script>
 
 <div class="space-y-4">
@@ -178,10 +180,10 @@
 			{/if}
 		</div>
 		<!-- Skills List -->
-	{:else if framework && filteredSkills().length > 0}
+	{:else if framework && filteredSkills.length > 0}
 		<div class="space-y-2">
-			{#each filteredSkills() as skill (skill.url)}
-				<SkillItem {skill} selected={isSelected(skill)} onToggle={onToggleSkill} />
+			{#each filteredSkills as skill (skill.url)}
+				<SkillItem {skill} selected={isSelected(skill)} onToggle={handleToggle} />
 			{/each}
 		</div>
 		<!-- Empty Search Results -->

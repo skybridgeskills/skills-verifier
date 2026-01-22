@@ -4,9 +4,10 @@
 	import { FRAMEWORKS } from '$lib/config/frameworks';
 	import type { Framework } from '$lib/types/job-profile';
 
+	console.log('FRAMEWORKS', FRAMEWORKS);
+
 	const { Story } = defineMeta({
 		title: 'components/FrameworkSelector',
-		component: FrameworkSelector,
 		tags: ['autodocs'],
 		argTypes: {},
 		args: {}

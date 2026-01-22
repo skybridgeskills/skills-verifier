@@ -10,20 +10,6 @@
 	});
 </script>
 
-<script lang="ts">
-	// Example play function demonstrating interaction testing capability
-	// Note: Full play function support may require additional Storybook packages
-	// This demonstrates the structure for when interactions are fully configured
-	async function examplePlay({ canvasElement }: { canvasElement: HTMLElement }) {
-		// Example: Wait for card to be rendered and verify it's visible
-		const card = canvasElement.querySelector('.rounded-lg');
-		if (card) {
-			// Card is rendered - could add assertions here
-			console.log('Card rendered successfully');
-		}
-	}
-</script>
-
 <Story name="Default">
 	<Card>
 		<h2 class="mb-2 text-xl font-semibold">Card Title</h2>
@@ -59,14 +45,4 @@
 			<p class="text-gray-600">Third card in a responsive grid.</p>
 		</Card>
 	</div>
-</Story>
-
-<Story name="With Play Function" play={examplePlay}>
-	<Card>
-		<h2 class="mb-2 text-xl font-semibold">Interactive Card</h2>
-		<p class="text-gray-600">
-			This card demonstrates the play function capability. The play function runs after the story
-			renders to simulate interactions or verify behavior.
-		</p>
-	</Card>
 </Story>

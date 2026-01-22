@@ -5,7 +5,6 @@
 
 	const { Story } = defineMeta({
 		title: 'components/SelectedSkillsColumn',
-		component: SelectedSkillsColumn,
 		tags: ['autodocs'],
 		argTypes: {},
 		args: {}
@@ -51,7 +50,6 @@
 	};
 
 	function handleRemove(skill: Skill) {
-		console.log('Remove skill:', skill);
 		alert(`Removed: ${skill.label || skill.text}`);
 	}
 </script>
@@ -77,12 +75,6 @@
 <Story name="Fifteen Skills Selected (Warning)">
 	<div class="max-w-md">
 		<SelectedSkillsColumn selectedSkills={generateSkills(15)} onRemoveSkill={handleRemove} />
-	</div>
-</Story>
-
-<Story name="Many Skills Selected">
-	<div class="max-w-md">
-		<SelectedSkillsColumn selectedSkills={generateSkills(25)} onRemoveSkill={handleRemove} />
 	</div>
 </Story>
 

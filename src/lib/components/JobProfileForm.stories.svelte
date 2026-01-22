@@ -4,7 +4,6 @@
 
 	const { Story } = defineMeta({
 		title: 'components/JobProfileForm',
-		component: JobProfileForm,
 		tags: ['autodocs'],
 		argTypes: {},
 		args: {}

@@ -162,7 +162,7 @@
 				<div>
 					<SkillsList
 						framework={selectedFramework}
-						{selectedSkills}
+						selectedSkills={selectedSkills.map((s) => s.url)}
 						onToggleSkill={handleToggleSkill}
 						{service}
 					/>

@@ -44,7 +44,7 @@
 			type="text"
 			bind:value={searchQuery}
 			placeholder="Search by framework name or organization..."
-			class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @md:text-sm"
+			class="block w-full rounded-md border-gray-300 shadow-sm text-sm p-2 focus:border-blue-500 focus:ring-blue-500 @md:text-sm"
 			disabled={loading}
 		/>
 	</div>
