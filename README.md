@@ -182,13 +182,17 @@ pnpm turbo build:storybook
 
 #### Pre-commit
 
-The pre-commit hook is configured via Husky and runs automatically on `git commit`. It formats only staged files with Prettier (fast, non-blocking) using `fix-staged-fast`.
-
-You can also run the formatting manually:
+The pre-commit hook automatically runs before each commit:
 
 ```sh
-pnpm run fix-staged-fast
+pnpm turbo pre-commit
 ```
+
+This runs:
+
+- `fix-staged-fast` - Formats only staged files with Prettier (fast, non-blocking)
+
+The hook is configured via Husky and runs automatically on `git commit`. You can also run it manually using the command above.
 
 ### Tool-Specific Tasks
 

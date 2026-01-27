@@ -38,6 +38,18 @@
 			"dependsOn": ["e2e:playwright"]
 		},
 
+		// Pre-commit: run before committing to ensure the code is in a good state.
+		"pre-commit": {
+			"dependsOn": [
+				//
+				// We only want to run fast fixes in a pre-commit hook.
+				// Running eslint for example is slow and gets in the way of doing rebases and such.
+				// Use turbo fix task for more thorough fixes.
+				//
+				"fix-staged-fast"
+			]
+		},
+
 		// =============================================================================================
 		// Dev tasks
 		//
@@ -116,7 +128,7 @@
 		"test:vitest": {
 			"inputs": [
 				"src/**",
-				"vitest.config.ts",
+				"vite.config.ts",
 				"vitest.setup.ts",
 				"vitest.shims.d.ts",
 				"tsconfig.json"
