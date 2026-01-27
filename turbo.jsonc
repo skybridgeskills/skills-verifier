@@ -38,6 +38,11 @@
 			"dependsOn": ["e2e:playwright"]
 		},
 
+		// Validate: run locally before committing to ensure correctness.
+		"validate": {
+			"dependsOn": ["check", "test", "build"]
+		},
+
 		// Pre-commit: run before committing to ensure the code is in a good state.
 		"pre-commit": {
 			"dependsOn": [

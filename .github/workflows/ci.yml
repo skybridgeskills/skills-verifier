@@ -3,10 +3,6 @@ name: CI
 on:
   pull_request:
     branches: [main]
-  push:
-    branches:
-      - 'feature/**'
-      - 'renovate/**'
 
 jobs:
   validate:
