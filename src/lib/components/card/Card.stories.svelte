@@ -1,4 +1,7 @@
 <script lang="ts" module>
+	import { defineMeta } from '@storybook/addon-svelte-csf';
+
+	import { Button } from '$lib/components/ui/button/index.js';
 	import {
 		Card,
 		CardContent,
@@ -7,8 +10,6 @@
 		CardHeader,
 		CardTitle
 	} from '$lib/components/ui/card/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { defineMeta } from '@storybook/addon-svelte-csf';
 
 	const { Story } = defineMeta({
 		title: 'components/Card',

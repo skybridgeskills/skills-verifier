@@ -1,12 +1,12 @@
 <script lang="ts">
-	import JobProfileForm from '$lib/components/job-profile-form/JobProfileForm.svelte';
 	import FrameworkSelector from '$lib/components/framework-selector/FrameworkSelector.svelte';
-	import SkillsList from '$lib/components/skills-list/SkillsList.svelte';
+	import JobProfileForm from '$lib/components/job-profile-form/JobProfileForm.svelte';
 	import SelectedSkillsColumn from '$lib/components/selected-skills-column/SelectedSkillsColumn.svelte';
+	import SkillsList from '$lib/components/skills-list/SkillsList.svelte';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import type { Framework, Skill } from '$lib/types/job-profile';
 	import type { FrameworkService } from '$lib/services/framework-service';
+	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	interface Props {
 		service: FrameworkService;

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Skill } from '$lib/types/job-profile';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import type { Skill } from '$lib/types/job-profile';
 	import { cn } from '$lib/utils';
 
 	interface Props {

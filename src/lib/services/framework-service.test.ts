@@ -1,10 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+
+import type { FrameworkJsonLd, SkillJsonLd } from '$lib/types/job-profile';
+
 import {
 	HttpFrameworkService,
 	FakeFrameworkService,
 	createFrameworkService
 } from './framework-service';
-import type { FrameworkJsonLd, SkillJsonLd } from '$lib/types/job-profile';
 
 describe('HttpFrameworkService', () => {
 	let service: HttpFrameworkService;

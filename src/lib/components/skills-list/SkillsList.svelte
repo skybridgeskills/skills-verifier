@@ -1,11 +1,12 @@
 <script lang="ts">
-	import SkillItem from '../skill-item/SkillItem.svelte';
-	import type { Framework, Skill } from '$lib/types/job-profile';
-	import type { FrameworkService } from '$lib/services/framework-service';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import type { FrameworkService } from '$lib/services/framework-service';
+	import type { Framework, Skill } from '$lib/types/job-profile';
+
+	import SkillItem from '../skill-item/SkillItem.svelte';
 
 	interface Props {
 		framework: Framework | null;

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Skill } from '$lib/types/job-profile';
+	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
-	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
+	import type { Skill } from '$lib/types/job-profile';
 
 	interface Props {
 		selectedSkills: Skill[];
