@@ -18,7 +18,6 @@
 	</div>
 </Story>
 
-
 <Story name="Framework Load Error">
 	<div class="max-w-6xl">
 		<!-- Create a service that throws errors -->
@@ -34,4 +33,3 @@
 		/>
 	</div>
 </Story>
-

@@ -1,0 +1,34 @@
+# Technologies
+
+- Core
+  - `nvm` -- node version management
+  - `pnpm` -- package management
+  - `turbo` -- build orchestration
+- Code Quality
+  - `eslint` -- linting
+  - `prettier` -- formatting
+  - `prettier-plugin-organize-imports` -- auto-organize imports
+  - `vitest` -- unit tests
+  - `storybook` -- visual tests
+  - `playwright` -- e2e tests
+  - `svelte-check` -- type checking
+  - `typescript` -- type system
+  - `husky` -- git hooks
+- Build Tools
+  - `vite` -- build tool and dev server
+  - `@sveltejs/adapter-auto` -- deployment adapter (or adapter-node for Node.js)
+- Framework
+  - `sveltekit` -- main app framework, routing, ui, server framework
+- Frontend
+  - `tailwindcss` -- styling
+  - `@tailwindcss/forms` -- form styling utilities
+  - `@tailwindcss/typography` -- typography plugin
+  - `shadcn-svelte` -- ui components
+  - `clsx` -- class name management
+  - `tailwind-merge` -- merge Tailwind classes (often paired with clsx)
+  - `@iconify/tailwind4` -- icon system integration with Tailwind
+  - `@iconify-json/*` -- icon sets (e.g., material-symbols-light, mdi-light, ic)
+  - `sveltekit-superforms` -- form handling and validation (recommended)
+  - `svelte-french-toast` -- toast notifications (recommended)
+- Backend
+  - `zod` -- data validation

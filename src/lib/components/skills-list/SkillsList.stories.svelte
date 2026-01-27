@@ -34,10 +34,7 @@
 	];
 
 	let selectedSkills = $state<string[]>([]);
-	let selectedSkillsWithPreselected = $state<string[]>([
-		mockSkills[0].url,
-		mockSkills[1].url
-	]);
+	let selectedSkillsWithPreselected = $state<string[]>([mockSkills[0].url, mockSkills[1].url]);
 
 	function handleToggle(skill: Skill) {
 		const skillId = skill.url;
@@ -51,9 +48,7 @@
 	function handleToggleWithPreselected(skill: Skill) {
 		const skillId = skill.url;
 		if (selectedSkillsWithPreselected.includes(skillId)) {
-			selectedSkillsWithPreselected = selectedSkillsWithPreselected.filter(
-				(id) => id !== skillId
-			);
+			selectedSkillsWithPreselected = selectedSkillsWithPreselected.filter((id) => id !== skillId);
 		} else {
 			selectedSkillsWithPreselected = [...selectedSkillsWithPreselected, skillId];
 		}
@@ -64,7 +59,7 @@
 	<div class="max-w-2xl">
 		<SkillsList
 			framework={null}
-			selectedSkills={selectedSkills}
+			{selectedSkills}
 			onToggleSkill={handleToggle}
 			service={fakeService}
 		/>
@@ -75,7 +70,7 @@
 	<div class="max-w-2xl">
 		<SkillsList
 			framework={FRAMEWORKS[0]}
-			selectedSkills={selectedSkills}
+			{selectedSkills}
 			onToggleSkill={handleToggle}
 			service={fakeService}
 		/>
@@ -93,13 +88,12 @@
 	</div>
 </Story>
 
-
 <Story name="Error State">
 	<div class="max-w-2xl">
 		<!-- Create a service that throws errors -->
 		<SkillsList
 			framework={FRAMEWORKS[0]}
-			selectedSkills={selectedSkills}
+			{selectedSkills}
 			onToggleSkill={handleToggle}
 			service={{
 				async fetchFramework() {

@@ -8,6 +8,16 @@ export default defineConfig({
 
 	test: {
 		expect: { requireAssertions: true },
+		reporters: process.env.CI ? ['default', 'junit'] : ['default'],
+		...(process.env.CI && {
+			outputFile: {
+				junit: './build/test-results/junit.xml'
+			}
+		}),
+		coverage: {
+			reporter: process.env.CI ? ['text', 'lcov', 'json'] : ['text'],
+			reportsDirectory: './build/coverage'
+		},
 
 		projects: [
 			{
