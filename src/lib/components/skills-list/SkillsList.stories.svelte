@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import SkillsList from './SkillsList.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+
 	import { FRAMEWORKS } from '$lib/config/frameworks';
 	import { FakeFrameworkService } from '$lib/services/framework-service';
 	import type { Skill } from '$lib/types/job-profile';
+
+	import SkillsList from './SkillsList.svelte';
 
 	const { Story } = defineMeta({
 		title: 'components/SkillsList',

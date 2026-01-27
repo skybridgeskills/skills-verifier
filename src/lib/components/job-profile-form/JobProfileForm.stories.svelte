@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import JobProfileForm from './JobProfileForm.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import { expect, userEvent, within } from 'storybook/test';
+	import { expect, within, waitFor } from 'storybook/test';
+
+	import JobProfileForm from './JobProfileForm.svelte';
 
 	const { Story } = defineMeta({
 		title: 'components/JobProfileForm',
@@ -42,17 +43,27 @@
 	play={async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 
-		// Find and click the submit button
-		const submitButton = canvas.getByRole('button', { name: /save job profile/i });
-		await userEvent.click(submitButton);
+		// Find the form
+		const form = canvasElement.querySelector('form') as HTMLFormElement;
 
-		// Wait a bit for validation to run
-		await new Promise((resolve) => setTimeout(resolve, 100));
+		// Trigger form submission directly to bypass native validation
+		// This allows our custom validation to run
+		const submitEvent = new SubmitEvent('submit', {
+			bubbles: true,
+			cancelable: true,
+			submitter: form.querySelector('button[type="submit"]') as HTMLButtonElement
+		});
+		form.dispatchEvent(submitEvent);
 
-		// Verify validation error messages appear
-		await expect(canvas.getByText('Job name is required')).toBeInTheDocument();
-		await expect(canvas.getByText('Description is required')).toBeInTheDocument();
-		await expect(canvas.getByText('Company name is required')).toBeInTheDocument();
+		// Wait for validation error messages to appear
+		await waitFor(
+			() => {
+				expect(canvas.getByText('Job name is required')).toBeInTheDocument();
+				expect(canvas.getByText('Description is required')).toBeInTheDocument();
+				expect(canvas.getByText('Company name is required')).toBeInTheDocument();
+			},
+			{ timeout: 2000 }
+		);
 	}}
 >
 	<div class="max-w-md">

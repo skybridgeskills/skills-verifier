@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import FrameworkSelector from './FrameworkSelector.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+
 	import { FRAMEWORKS } from '$lib/config/frameworks';
 	import type { Framework } from '$lib/types/job-profile';
+
+	import FrameworkSelector from './FrameworkSelector.svelte';
 
 	console.log('FRAMEWORKS', FRAMEWORKS);
 
