@@ -30,7 +30,7 @@
 
 		// Test: unit tests
 		"test": {
-			"dependsOn": ["test:vitest"]
+			"dependsOn": ["test:vitest", "test:storybook"]
 		},
 
 		// E2E: end-to-end tests that should be run against an environment.
@@ -139,6 +139,11 @@
 				"tsconfig.json"
 			],
 			"outputs": ["build/test-results/**", "build/coverage/**"],
+			"env": ["CI"],
+			"cache": true
+		},
+		"test:storybook": {
+			"inputs": ["src/**", ".storybook/**", "vite.config.ts", "tsconfig.json"],
 			"env": ["CI"],
 			"cache": true
 		},
