@@ -39,26 +39,23 @@
 		},
 
 		// =============================================================================================
-		// Dev task
+		// Dev tasks
 		//
-		// Should run the package for development.
-		// For apps, this will run the app
 
 		"dev": {
 			"cache": false,
 			"persistent": true
 		},
 
-		"preview": {
-			"cache": false
-		},
-
-		"dev:storybook": {
+		"storybook": {
 			"cache": false,
 			"persistent": true
 		},
 
-		"build:storybook": {},
+		"preview": {
+			"cache": false,
+			"persistent": true
+		},
 
 		// =============================================================================================
 		// Build tasks
@@ -108,6 +105,9 @@
 			"inputs": ["src/**", ".eslintrc*", "eslint.config.*"],
 			"outputs": ["src/**"],
 			"cache": true
+		},
+		"fix-staged-fast": {
+			"cache": false
 		},
 
 		// =============================================================================================

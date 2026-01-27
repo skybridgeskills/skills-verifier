@@ -5,9 +5,8 @@
 	"type": "module",
 	"packageManager": "pnpm@10.22.0",
 	"scripts": {
-		"dev": "vite dev",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
+		"prepare": "husky && svelte-kit sync || echo ''",
 		"build:svelte": "vite build",
 		"build:storybook": "storybook build",
 		"check:prettier": "prettier --check .",
@@ -17,9 +16,11 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"fix:prettier": "prettier --write .",
 		"fix:eslint": "eslint . --fix",
+		"fix-staged-fast": "lint-staged --config .lintstagedrc.fast.json",
 		"test:vitest": "vitest",
 		"e2e:playwright": "playwright test",
-		"dev:storybook": "storybook dev -p 6006"
+		"storybook": "storybook dev -p 6006",
+		"dev": "vite dev"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -40,6 +41,8 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.1",
 		"globals": "^16.5.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
 		"playwright": "^1.57.0",
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.0",
