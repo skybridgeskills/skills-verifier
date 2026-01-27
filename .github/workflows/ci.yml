@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
       - name: Run checks
         run: pnpm turbo check
         env:
@@ -43,7 +46,7 @@ jobs:
         with:
           files: build/test-results/junit.xml
           check_name: Test Results
-          comment_mode: create new
+          comment_mode: always
           comment_title: 'Test Results'
 
       - name: Build
