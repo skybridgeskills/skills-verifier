@@ -1,6 +1,7 @@
 # Phase 6: Create Selected Skills Column Component
 
 ## Overview
+
 Implement SelectedSkillsColumn component with warning for >10 skills and remove functionality. Create Storybook stories.
 
 ## Tasks

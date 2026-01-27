@@ -1,6 +1,7 @@
 # Phase 8: Create SvelteKit Route
 
 ## Overview
+
 Create /jobs/create route with thin +page.svelte wrapper. Add Storybook configuration for pages directory. Test route integration.
 
 ## Tasks

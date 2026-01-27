@@ -13,6 +13,7 @@
   - `playwright` -- e2e tests
   - `svelte-check` -- type checking
   - `typescript` -- type system
+  - `husky` -- git hooks
 - Build Tools
   - `vite` -- build tool and dev server
   - `@sveltejs/adapter-auto` -- deployment adapter (or adapter-node for Node.js)

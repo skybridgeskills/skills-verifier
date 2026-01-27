@@ -1,6 +1,7 @@
 # Phase 1: Create Type Definitions and Framework Configuration
 
 ## Overview
+
 Create TypeScript type definitions for frameworks, skills, and job profiles. Create the framework configuration file with predefined frameworks. Create .env.example file.
 
 ## Tasks

@@ -1,6 +1,7 @@
 # Phase 7: Create CreateJobPage Component
 
 ## Overview
+
 Implement CreateJobPage component that orchestrates all components, manages state, handles save functionality, and coordinates between SkillsList and SelectedSkillsColumn. Create Storybook stories for full flow and all states.
 
 ## Tasks

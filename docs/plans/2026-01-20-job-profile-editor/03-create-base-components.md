@@ -1,6 +1,7 @@
 # Phase 3: Create Base Components (SkillItem, JobProfileForm)
 
 ## Overview
+
 Implement SkillItem component with abbreviated display (label/text) and JobProfileForm component. Create Storybook stories for both components.
 
 ## Tasks

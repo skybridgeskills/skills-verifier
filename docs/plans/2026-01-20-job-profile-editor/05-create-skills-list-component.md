@@ -1,6 +1,7 @@
 # Phase 5: Create Skills List Component
 
 ## Overview
+
 Implement SkillsList component with skeleton loading, filtering/searching, and selection count display. Create Storybook stories for all states.
 
 ## Tasks

@@ -174,42 +174,46 @@ App Context Creation:
    The provider system is a way to declare and build application context objects. It's designed to allow clear, concise, and reusable tests and fixtures.
 
    **Key Concepts:**
-
    - **Provider Functions**: Functions that return objects with one or more keys. By convention, named `provide<Something>()` and return `{ <something>: ... }`.
+
      ```typescript
      function provideConfig() {
-       return { config: { idPrefix: 'test-' } };
+     	return { config: { idPrefix: 'test-' } };
      }
      ```
 
    - **Provider Dependencies**: Providers can depend on other providers by accepting context as a parameter.
+
      ```typescript
      function provideData({ config }: ConfigCtx) {
-       return { data: { userId: config.idPrefix + '123' } };
+     	return { data: { userId: config.idPrefix + '123' } };
      }
      ```
 
    - **Provider Chains**: Combine providers using `Providers()` utility.
+
      ```typescript
      const provideAppCtx = Providers(provideConfig, provideData, provideTimeService);
      ```
 
    - **Context Access**: In code, access context via `providerCtx<AppContext>()` or `getApp()` (which wraps providerCtx). In tests, context is passed as a parameter.
+
      ```typescript
      // In application code
      const ctx = getApp();
      const config = ctx.config;
-     
+
      // In tests
      it('test name', provideAppCtx, async (ctx) => {
-       expect(ctx.config.idPrefix).toBe('test-');
+     	expect(ctx.config.idPrefix).toBe('test-');
      });
      ```
 
    - **Provider Factories**: Functions that return providers, useful for configuration overrides. Named `<Something>Provider` by convention.
+
      ```typescript
      function ConfigOverrideProvider(override: Partial<Config>) {
-       return () => ({ config: { ...existingConfig, ...override } });
+     	return () => ({ config: { ...existingConfig, ...override } });
      }
      ```
 
@@ -225,6 +229,7 @@ App Context Creation:
    - **Type Safety**: Full TypeScript support for context types
 
    **Example for skills-verifier:**
+
    ```typescript
    // Define providers
    function provideConfig() { return { config: configService() }; }
@@ -233,7 +238,7 @@ App Context Creation:
    function provideJobPostingStore({ datastore, timeService }: DatastoreCtx & TimeServiceCtx) {
      return { jobPostingStore: JobPostingStoreImpl(datastore, timeService) };
    }
-   
+
    // Combine into app context
    const provideTestApp = Providers(
      provideConfig,
@@ -241,12 +246,12 @@ App Context Creation:
      provideMemoryDatastore,
      provideJobPostingStore  // Works with any datastore
    );
-   
+
    // Use in tests
    it('creates job posting', provideTestApp, async (ctx) => {
      const posting = await ctx.jobPostingStore.create({ ... });
    });
-   
+
    // Use in application code (via getApp())
    function createJobPosting(data: JobPostingData) {
      const ctx = getApp();
@@ -259,23 +264,23 @@ App Context Creation:
    **Service Interface Pattern:**
 
    Each service follows this structure:
-   
+
    ```typescript
    // 1. Define the service interface
    export interface JobPostingStore {
-     create(data: JobPostingContent): Promise<JobPostingContent>;
-     getById(id: string): Promise<JobPostingContent | null>;
-     // ... other methods
+   	create(data: JobPostingContent): Promise<JobPostingContent>;
+   	getById(id: string): Promise<JobPostingContent | null>;
+   	// ... other methods
    }
-   
+
    // 2. Define the context type
    export interface JobPostingStoreCtx {
-     jobPostingStore: JobPostingStore;
+   	jobPostingStore: JobPostingStore;
    }
-   
+
    // 3. Create accessor function
    export function jobPostingStore() {
-     return providerCtx<JobPostingStoreCtx>().jobPostingStore;
+   	return providerCtx<JobPostingStoreCtx>().jobPostingStore;
    }
    ```
 
@@ -285,28 +290,32 @@ App Context Creation:
 
    ```typescript
    // Single implementation that works with any datastore
-   export function provideJobPostingStore(
-     { datastore, timeService }: DatastoreCtx & TimeServiceCtx
-   ): JobPostingStoreCtx {
-     return {
-       jobPostingStore: JobPostingStoreImpl(datastore, timeService),
-     };
+   export function provideJobPostingStore({
+   	datastore,
+   	timeService
+   }: DatastoreCtx & TimeServiceCtx): JobPostingStoreCtx {
+   	return {
+   		jobPostingStore: JobPostingStoreImpl(datastore, timeService)
+   	};
    }
-   
+
    // The implementation uses the DatastoreService interface
-   function JobPostingStoreImpl(datastore: DatastoreService, timeService: TimeService): JobPostingStore {
-     return {
-       async create(data: JobPostingContent) {
-         const key = `sv:job-content:${data.id}`;
-         await datastore.put(key, data);
-         return data;
-       },
-       async getById(id: string) {
-         const key = `sv:job-content:${id}`;
-         return await datastore.get<JobPostingContent>(key);
-       },
-       // ... other methods use datastore.get/put/delete
-     };
+   function JobPostingStoreImpl(
+   	datastore: DatastoreService,
+   	timeService: TimeService
+   ): JobPostingStore {
+   	return {
+   		async create(data: JobPostingContent) {
+   			const key = `sv:job-content:${data.id}`;
+   			await datastore.put(key, data);
+   			return data;
+   		},
+   		async getById(id: string) {
+   			const key = `sv:job-content:${id}`;
+   			return await datastore.get<JobPostingContent>(key);
+   		}
+   		// ... other methods use datastore.get/put/delete
+   	};
    }
    ```
 
@@ -317,16 +326,16 @@ App Context Creation:
    ```typescript
    // In app-main.ts or dev-app-services.ts
    export const provideAppServicesForDev = Providers(
-     (ctx: AppEnvCtx) => ctx, // Config is available
-     
-     // Select datastore based on config
-     (ctx: AppEnvCtx) =>
-       ctx.appEnv.DYNAMODB_TABLE_NAME // or processed config value from a previously provided configService
-         ? provideDynamoDatastore(ctx)
-         : provideMemoryDatastore(),
-     
-     provideJobPostingStore,
-     provideSubmissionStore,
+   	(ctx: AppEnvCtx) => ctx, // Config is available
+
+   	// Select datastore based on config
+   	(ctx: AppEnvCtx) =>
+   		ctx.appEnv.DYNAMODB_TABLE_NAME // or processed config value from a previously provided configService
+   			? provideDynamoDatastore(ctx)
+   			: provideMemoryDatastore(),
+
+   	provideJobPostingStore,
+   	provideSubmissionStore
    );
    ```
 
@@ -339,64 +348,67 @@ App Context Creation:
 3. **Storage Abstraction**: Multi-layer storage architecture with connection management.
 
    **Lower-Level Datastore Service:**
-   
+
    A base `DatastoreService` manages connections, connection pools, and provides the generic key-value operations. This is used by higher-level stores (JobPostingStore, SubmissionStore).
 
    ```typescript
    export interface DatastoreService {
-     $type: 'MemoryDatastore' | 'DynamoDatastore';
-     get(key: string): Promise<unknown | null>;
-     put(key: string, value: unknown): Promise<void>;
-     delete(key: string): Promise<void>;
-     // Connection management methods
-     close?(): Promise<void>;
+   	$type: 'MemoryDatastore' | 'DynamoDatastore';
+   	get(key: string): Promise<unknown | null>;
+   	put(key: string, value: unknown): Promise<void>;
+   	delete(key: string): Promise<void>;
+   	// Connection management methods
+   	close?(): Promise<void>;
    }
-   
+
    export interface DatastoreCtx {
-     datastore: DatastoreService;
+   	datastore: DatastoreService;
    }
    ```
 
    **KeyValueStore Interface:**
-   
+
    Generic interface for key-value operations, implemented by the datastore service:
 
    ```typescript
    export interface KeyValueStore {
-     get<T>(key: string): Promise<T | null>;
-     put<T>(key: string, value: T): Promise<void>;
-     delete(key: string): Promise<void>;
+   	get<T>(key: string): Promise<T | null>;
+   	put<T>(key: string, value: T): Promise<void>;
+   	delete(key: string): Promise<void>;
    }
    ```
 
    **Store Implementations:**
-   
+
    Higher-level stores (JobPostingStore, SubmissionStore) are datastore-agnostic - they use the DatastoreService interface and work with any implementation:
 
    ```typescript
-   function JobPostingStoreImpl(datastore: DatastoreService, timeService: TimeService): JobPostingStore {
-     return {
-       async create(data: JobPostingContent) {
-         const key = `sv:job-content:${data.id}`;
-         await datastore.put(key, data);
-         return data;
-       },
-       async getById(id: string) {
-         const key = `sv:job-content:${id}`;
-         return await datastore.get<JobPostingContent>(key);
-       },
-       // ... other methods use datastore.get/put/delete
-       // Works with both MemoryDatastore and DynamoDatastore
-     };
+   function JobPostingStoreImpl(
+   	datastore: DatastoreService,
+   	timeService: TimeService
+   ): JobPostingStore {
+   	return {
+   		async create(data: JobPostingContent) {
+   			const key = `sv:job-content:${data.id}`;
+   			await datastore.put(key, data);
+   			return data;
+   		},
+   		async getById(id: string) {
+   			const key = `sv:job-content:${id}`;
+   			return await datastore.get<JobPostingContent>(key);
+   		}
+   		// ... other methods use datastore.get/put/delete
+   		// Works with both MemoryDatastore and DynamoDatastore
+   	};
    }
    ```
 
    **Connection Management:**
-   
+
    The datastore service handles connection pooling and lifecycle:
    - **MemoryDatastore**: No connections needed, just in-memory Map
    - **DynamoDatastore**: Manages AWS SDK client, connection pool, handles reconnection
-   
+
    This separation allows:
    - **Connection reuse**: One datastore instance shared by multiple stores
    - **Lifecycle management**: Proper connection cleanup on app shutdown
@@ -432,6 +444,7 @@ User Request → SvelteKit Route
 ## Data Structures
 
 ### JobPostingIndex (`sv:job:<id>`)
+
 ```typescript
 {
   id: "sv:job:<id>",
@@ -444,6 +457,7 @@ User Request → SvelteKit Route
 ```
 
 ### JobPostingContent (`sv:job-content:<id>`)
+
 ```typescript
 {
   id: "sv:job-content:<id>",
@@ -453,6 +467,7 @@ User Request → SvelteKit Route
 ```
 
 ### Submission
+
 ```typescript
 {
   id: "sv:submission:<unguessable-id>",

@@ -1,9 +1,11 @@
 # Phase 4: Create Card Story File
 
 ## Objective
+
 Create a story file for the Card component demonstrating multiple variants and interaction testing capabilities.
 
 ## Tasks
+
 - Create `src/lib/components/Card.stories.svelte`
 - Implement multiple story variants:
   - Default story
@@ -13,15 +15,18 @@ Create a story file for the Card component demonstrating multiple variants and i
 - Demonstrate actions and interactions using out-of-the-box functionality
 
 ## Story Requirements
+
 - Multiple story variants showing Card in different contexts
 - At least one story with a play function (even if just demonstrating the capability)
 - Proper story metadata and titles
 - Use @storybook/test for play functions
 
 ## Files to Create
+
 - `src/lib/components/Card.stories.svelte`
 
 ## Success Criteria
+
 - Story file created with proper structure
 - Multiple story variants implemented
 - Play function example included
@@ -30,6 +35,7 @@ Create a story file for the Card component demonstrating multiple variants and i
 - Interactions work as expected
 
 ## Tests
+
 - Verify story file exists
 - Check that stories appear in Storybook
 - Verify all story variants render correctly

@@ -1,6 +1,7 @@
 # Phase 2: Implement Framework Service Pattern
 
 ## Overview
+
 Create the FrameworkService interface and implement both HttpFrameworkService (HTTP fetching) and FakeFrameworkService (mock data). Add service factory that reads .env to determine which service to use.
 
 ## Tasks

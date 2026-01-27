@@ -105,12 +105,14 @@ skills-verifier/
 ## Component Responsibilities
 
 ### FrameworkSelector
+
 - Displays searchable list of frameworks from config
 - Handles framework selection
 - Shows loading state when fetching framework data
 - Emits selected framework to parent
 
 ### SkillsList
+
 - Fetches skills from selected framework using framework-service
 - Shows skeleton loading states (framework fetch, then skills fetch)
 - Displays skills with SkillItem components
@@ -120,22 +122,26 @@ skills-verifier/
 - Emits selection changes to parent
 
 ### SkillItem
+
 - Displays abbreviated skill view (label/text)
 - Shows checkbox for selection
 - Handles click to toggle selection
 
 ### SelectedSkillsColumn
+
 - Displays selected skills in primary column
 - Shows warning if >10 skills selected
 - Allows removing skills from selection
 - Shows suggestion text (5-10 skills recommended)
 
 ### JobProfileForm
+
 - Form inputs for job name, description, company
 - Form validation
 - Emits form data to parent
 
 ### CreateJobPage
+
 - Orchestrates all components
 - Manages state (selected framework, selected skills, form data)
 - Handles save action (shows success message)
