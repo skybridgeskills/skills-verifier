@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import JobProfileForm from './JobProfileForm.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { expect, userEvent, within } from 'storybook/test';
 
 	const { Story } = defineMeta({
 		title: 'components/JobProfileForm',
@@ -36,21 +37,26 @@
 	</div>
 </Story>
 
-<Story name="Validation Errors">
+<Story
+	name="Validation Errors"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Find and click the submit button
+		const submitButton = canvas.getByRole('button', { name: /save job profile/i });
+		await userEvent.click(submitButton);
+
+		// Wait a bit for validation to run
+		await new Promise((resolve) => setTimeout(resolve, 100));
+
+		// Verify validation error messages appear
+		await expect(canvas.getByText('Job name is required')).toBeInTheDocument();
+		await expect(canvas.getByText('Description is required')).toBeInTheDocument();
+		await expect(canvas.getByText('Company name is required')).toBeInTheDocument();
+	}}
+>
 	<div class="max-w-md">
 		<JobProfileForm onSubmit={handleSubmit} />
-		<script>
-			// Trigger validation by attempting to submit empty form
-			setTimeout(() => {
-				const form = document.querySelector('form');
-				if (form) {
-					const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-					if (submitButton) {
-						submitButton.click();
-					}
-				}
-			}, 100);
-		</script>
 	</div>
 </Story>
 

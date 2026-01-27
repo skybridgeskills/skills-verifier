@@ -1,4 +1,10 @@
 <script lang="ts">
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { cn } from '$lib/utils';
+
 	interface JobProfileFormData {
 		name: string;
 		description: string;
@@ -69,66 +75,55 @@
 
 <form onsubmit={handleSubmit} class="space-y-4">
 	<div>
-		<label for="job-name" class="block text-sm font-medium text-gray-700">
-			Job Name <span class="text-red-500">*</span>
-		</label>
-		<input
+		<Label for="job-name">
+			Job Name <span class="text-destructive">*</span>
+		</Label>
+		<Input
 			id="job-name"
 			type="text"
 			bind:value={name}
 			required
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @md:text-sm {nameError
-				? 'border-red-300'
-				: ''}"
+			class={cn('mt-1', nameError ? 'border-destructive' : '')}
 			placeholder="e.g., Senior Software Engineer"
 		/>
 		{#if nameError}
-			<p class="mt-1 text-sm text-red-600">{nameError}</p>
+			<p class="mt-1 text-sm text-destructive">{nameError}</p>
 		{/if}
 	</div>
 
 	<div>
-		<label for="company" class="block text-sm font-medium text-gray-700">
-			Company <span class="text-red-500">*</span>
-		</label>
-		<input
+		<Label for="company">
+			Company <span class="text-destructive">*</span>
+		</Label>
+		<Input
 			id="company"
 			type="text"
 			bind:value={company}
 			required
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @md:text-sm {companyError
-				? 'border-red-300'
-				: ''}"
+			class={cn('mt-1', companyError ? 'border-destructive' : '')}
 			placeholder="e.g., Acme Corporation"
 		/>
 		{#if companyError}
-			<p class="mt-1 text-sm text-red-600">{companyError}</p>
+			<p class="mt-1 text-sm text-destructive">{companyError}</p>
 		{/if}
 	</div>
 
 	<div>
-		<label for="description" class="block text-sm font-medium text-gray-700">
-			Description <span class="text-red-500">*</span>
-		</label>
-		<textarea
+		<Label for="description">
+			Description <span class="text-destructive">*</span>
+		</Label>
+		<Textarea
 			id="description"
 			bind:value={description}
 			required
-			rows="3"
-			class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @md:text-sm {descriptionError
-				? 'border-red-300'
-				: ''}"
+			rows={3}
+			class={cn('mt-1', descriptionError ? 'border-destructive' : '')}
 			placeholder="One-sentence job description"
-		></textarea>
+		/>
 		{#if descriptionError}
-			<p class="mt-1 text-sm text-red-600">{descriptionError}</p>
+			<p class="mt-1 text-sm text-destructive">{descriptionError}</p>
 		{/if}
 	</div>
 
-	<button
-		type="submit"
-		class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none @md:w-auto"
-	>
-		Save Job Profile
-	</button>
+	<Button type="submit" class="w-full @md:w-auto">Save Job Profile</Button>
 </form>

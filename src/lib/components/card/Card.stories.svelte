@@ -1,5 +1,13 @@
 <script lang="ts" module>
-	import Card from './Card.svelte';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardFooter,
+		CardHeader,
+		CardTitle
+	} from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
 	const { Story } = defineMeta({
@@ -12,37 +20,73 @@
 
 <Story name="Default">
 	<Card>
-		<h2 class="mb-2 text-xl font-semibold">Card Title</h2>
-		<p class="text-gray-600">This is the default card with some content inside.</p>
+		<CardHeader>
+			<CardTitle>Card Title</CardTitle>
+			<CardDescription>This is the default card with some content inside.</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<p>Card content goes here.</p>
+		</CardContent>
 	</Card>
 </Story>
 
 <Story name="With Long Content">
 	<Card>
-		<h2 class="mb-2 text-xl font-semibold">Card with Long Content</h2>
-		<p class="mb-4 text-gray-600">
-			This card demonstrates how the component handles longer content. The card should wrap the
-			content nicely and maintain proper spacing and visual hierarchy.
-		</p>
-		<p class="text-gray-600">
-			Additional paragraphs will also be properly spaced within the card container.
-		</p>
+		<CardHeader>
+			<CardTitle>Card with Long Content</CardTitle>
+			<CardDescription>
+				This card demonstrates how the component handles longer content.
+			</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<p class="mb-4">
+				The card should wrap the content nicely and maintain proper spacing and visual hierarchy.
+			</p>
+			<p>Additional paragraphs will also be properly spaced within the card container.</p>
+		</CardContent>
+	</Card>
+</Story>
+
+<Story name="With Footer">
+	<Card>
+		<CardHeader>
+			<CardTitle>Card with Footer</CardTitle>
+			<CardDescription>This card includes a footer with actions.</CardDescription>
+		</CardHeader>
+		<CardContent>
+			<p>Card content with a footer below.</p>
+		</CardContent>
+		<CardFooter>
+			<Button>Action</Button>
+		</CardFooter>
 	</Card>
 </Story>
 
 <Story name="Multiple Cards">
 	<div class="grid grid-cols-1 gap-4 @md:grid-cols-2 @lg:grid-cols-3">
 		<Card>
-			<h3 class="mb-2 text-lg font-semibold">Card 1</h3>
-			<p class="text-gray-600">First card in a responsive grid.</p>
+			<CardHeader>
+				<CardTitle>Card 1</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<p>First card in a responsive grid.</p>
+			</CardContent>
 		</Card>
 		<Card>
-			<h3 class="mb-2 text-lg font-semibold">Card 2</h3>
-			<p class="text-gray-600">Second card in a responsive grid.</p>
+			<CardHeader>
+				<CardTitle>Card 2</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<p>Second card in a responsive grid.</p>
+			</CardContent>
 		</Card>
 		<Card>
-			<h3 class="mb-2 text-lg font-semibold">Card 3</h3>
-			<p class="text-gray-600">Third card in a responsive grid.</p>
+			<CardHeader>
+				<CardTitle>Card 3</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<p>Third card in a responsive grid.</p>
+			</CardContent>
 		</Card>
 	</div>
 </Story>
