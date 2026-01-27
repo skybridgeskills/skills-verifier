@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Framework } from '$lib/types/job-profile';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
-	import * as RadioGroup from '$lib/components/ui/radio-group/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import * as RadioGroup from '$lib/components/ui/radio-group/index.js';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import type { Framework } from '$lib/types/job-profile';
 
 	interface Props {
 		frameworks: Framework[];
@@ -23,6 +23,7 @@
 	}: Props = $props();
 
 	let searchQuery = $state('');
+	// Use $derived to sync with prop, but make it writable for manual updates
 	let selectedValue = $state('');
 
 	// Filter frameworks based on search query
@@ -45,7 +46,10 @@
 
 	// Update selectedValue when selectedFramework prop changes
 	$effect(() => {
-		selectedValue = selectedFramework?.ctid || '';
+		const propValue = selectedFramework?.ctid || '';
+		if (propValue !== selectedValue) {
+			selectedValue = propValue;
+		}
 	});
 
 	// Handle radio group value change
