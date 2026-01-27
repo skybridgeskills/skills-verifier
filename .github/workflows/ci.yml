@@ -45,7 +45,7 @@ jobs:
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: test-results/junit.xml
+          files: build/test-results/junit.xml
           check_name: Test Results
           comment_mode: create new
           comment_title: 'Test Results'

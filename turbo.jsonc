@@ -133,7 +133,7 @@
 				"vitest.shims.d.ts",
 				"tsconfig.json"
 			],
-			"outputs": ["test-results/**", "coverage/**"],
+			"outputs": ["build/test-results/**", "build/coverage/**"],
 			"env": ["CI"],
 			"cache": true
 		},

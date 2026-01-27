@@ -11,12 +11,12 @@ export default defineConfig({
 		reporters: process.env.CI ? ['default', 'junit'] : ['default'],
 		...(process.env.CI && {
 			outputFile: {
-				junit: './test-results/junit.xml'
+				junit: './build/test-results/junit.xml'
 			}
 		}),
 		coverage: {
 			reporter: process.env.CI ? ['text', 'lcov', 'json'] : ['text'],
-			reportsDirectory: './coverage'
+			reportsDirectory: './build/coverage'
 		},
 
 		projects: [
