@@ -1,12 +1,14 @@
 <script lang="ts">
+	import {
+		createFrameworkService,
+		type FrameworkClient
+	} from '$lib/clients/framework-client/framework-client';
 	import FrameworkSelector from '$lib/components/framework-selector/FrameworkSelector.svelte';
 	import JobProfileForm from '$lib/components/job-profile-form/JobProfileForm.svelte';
 	import SelectedSkillsColumn from '$lib/components/selected-skills-column/SelectedSkillsColumn.svelte';
 	import SkillsList from '$lib/components/skills-list/SkillsList.svelte';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import { getFrameworkClient } from '$lib/server/app-context';
-	import type { FrameworkClient } from '$lib/server/clients/framework-client/framework-client';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	interface Props {
@@ -16,7 +18,7 @@
 
 	let { service: serviceOverride }: Props = $props();
 
-	const service = $derived(serviceOverride ?? getFrameworkClient());
+	const service = $derived(serviceOverride ?? createFrameworkService());
 
 	let selectedFramework = $state<Framework | null>(null);
 	let selectedSkills = $state<Skill[]>([]);

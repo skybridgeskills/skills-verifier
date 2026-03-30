@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { FrameworkClient } from '$lib/clients/framework-client/framework-client';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
-	import type { FrameworkClient } from '$lib/server/clients/framework-client/framework-client';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	import SkillItem from '../skill-item/SkillItem.svelte';

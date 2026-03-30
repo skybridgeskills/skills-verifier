@@ -1,9 +1,9 @@
-import { extractLanguageString } from '$lib/server/clients/framework-client/fake-framework-client';
+import { extractLanguageString } from '$lib/clients/framework-client/fake-framework-client';
 import type {
 	FrameworkClient,
 	FrameworkResponse,
 	SkillResponse
-} from '$lib/server/clients/framework-client/framework-client';
+} from '$lib/clients/framework-client/framework-client';
 import type { Framework, FrameworkJsonLd, Skill, SkillJsonLd } from '$lib/types/job-profile';
 
 /**

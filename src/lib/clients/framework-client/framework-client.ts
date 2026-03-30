@@ -1,5 +1,5 @@
-import { FakeFrameworkClient } from '$lib/server/clients/framework-client/fake-framework-client';
-import { HttpFrameworkClient } from '$lib/server/clients/framework-client/http-framework-client';
+import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
+import { HttpFrameworkClient } from '$lib/clients/framework-client/http-framework-client';
 import type { Framework, Skill } from '$lib/types/job-profile';
 
 /**

@@ -2,7 +2,7 @@ import type {
 	FrameworkClient,
 	FrameworkResponse,
 	SkillResponse
-} from '$lib/server/clients/framework-client/framework-client';
+} from '$lib/clients/framework-client/framework-client';
 import type {
 	Framework,
 	FrameworkJsonLd,

@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
-	import { FakeFrameworkClient } from '$lib/server/clients/framework-client/fake-framework-client';
+	import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
 
 	import CreateJobPage from './CreateJobPage.svelte';
 

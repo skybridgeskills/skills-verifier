@@ -9,7 +9,7 @@ async function getAppContext(): Promise<AppContext> {
 }
 
 /**
- * Runs each request inside dev app context so `appContext()` and `getFrameworkClient()`
+ * Runs each request inside dev app context so server code can use `appContext()`.
  * resolve from ALS on the server.
  */
 export const handle: Handle = async ({ event, resolve }) => {

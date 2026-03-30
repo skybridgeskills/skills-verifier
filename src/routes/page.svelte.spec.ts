@@ -5,10 +5,11 @@ import { render } from 'vitest-browser-svelte';
 import Page from './+page.svelte';
 
 describe('/+page.svelte', () => {
-	it('should render h1', async () => {
+	it('links to create job (fallback when load is not run)', async () => {
 		render(Page);
 
-		const heading = page.getByRole('heading', { level: 1 });
-		await expect.element(heading).toBeInTheDocument();
+		const link = page.getByRole('link', { name: /create job/i });
+		await expect.element(link).toBeInTheDocument();
+		await expect.element(link).toHaveAttribute('href', '/jobs/create');
 	});
 });
