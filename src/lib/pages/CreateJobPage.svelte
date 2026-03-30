@@ -5,14 +5,18 @@
 	import SkillsList from '$lib/components/skills-list/SkillsList.svelte';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
+	import { getFrameworkClient } from '$lib/server/app-context';
 	import type { FrameworkClient } from '$lib/server/clients/framework-client/framework-client';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	interface Props {
-		service: FrameworkClient;
+		/** Override for Storybook / tests when ALS is not set */
+		service?: FrameworkClient;
 	}
 
-	let { service }: Props = $props();
+	let { service: serviceOverride }: Props = $props();
+
+	const service = $derived(serviceOverride ?? getFrameworkClient());
 
 	let selectedFramework = $state<Framework | null>(null);
 	let selectedSkills = $state<Skill[]>([]);

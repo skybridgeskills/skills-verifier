@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
-import { runInContext, appContext } from './app-context.js';
+import { appContext } from './app-context.js';
 import { DevAppContext } from './dev-app-context.js';
 import { TestAppContext } from './test-app-context.js';
+import { runInContext } from './util/provider/provider-ctx.js';
 
 describe('App Context Integration', () => {
 	it('works with FakeAppContext', async () => {

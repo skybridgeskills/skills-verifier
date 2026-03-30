@@ -15,7 +15,7 @@ Wire up the app context system to:
 ### App Context System
 
 - ✅ `AppContext` interface exists in `src/lib/server/app-context.ts`
-- ✅ `appContext()`, `runInContext()`, `runWithExtraContext()` functions exist
+- ✅ `appContext()` and `getFrameworkClient()` in `app-context.ts`; ALS entry (`runInContext`, `runWithExtraContext`) lives in `util/provider/provider-ctx.ts` only
 - ✅ `DevAppContext()` factory exists in `src/lib/server/dev-app-context.ts`
 - ✅ `TestAppContext()` factory exists in `src/lib/server/test-app-context.ts`
 - ✅ Context store uses async local storage via `UniversalAsyncLocalStore`
@@ -27,7 +27,7 @@ Wire up the app context system to:
   Cannot import $lib/server/clients/framework-client/framework-client.ts into code that runs in the browser
   ```
 - ❌ Components (`CreateJobPage`, `SkillsList`) receive `FrameworkClient` as props, which means they need server-side code passed down
-- ❌ No `hooks.server.ts` to set up app context for requests
+- ✅ `hooks.server.ts` wraps requests with `DevAppContext()` via `runInContext`
 - ❌ No `+page.server.ts` to load data server-side
 - ❌ Stories don't use app context system
 

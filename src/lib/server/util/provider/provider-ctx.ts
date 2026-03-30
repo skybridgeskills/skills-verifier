@@ -29,7 +29,7 @@ function panic(msgOrErr: string | Error): never {
 /**
  * Type guard to check if a value is a PromiseLike.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Type guard needs to accept any value
+
 function isPromiseLike<T>(value: any): value is PromiseLike<T> {
 	return !!(value && typeof value.then === 'function');
 }
@@ -66,7 +66,7 @@ function FakeAsyncLocalStore<T>(): Pick<AsyncLocalStorage<T>, 'getStore' | 'run'
 				throw error;
 			}
 		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic function signature requires any[]
+
 		exit<R, TArgs extends any[]>(callback: (...args: TArgs) => R, ...args: TArgs): R {
 			const prevValue = currentStore;
 			currentStore = undefined;
@@ -100,10 +100,10 @@ function FakeAsyncLocalStore<T>(): Pick<AsyncLocalStorage<T>, 'getStore' | 'run'
  */
 export async function UniversalAsyncLocalStore<T>(): Promise<{
 	getStore(): T | undefined;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic function signature requires any[]
+
 	exit<R, TArgs extends any[]>(callback: (...args: TArgs) => R, ...args: TArgs): R;
 	run<R>(store: T, callback: () => R): R;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic function signature requires any[]
+
 	run<R, TArgs extends any[]>(store: T, callback: (...args: TArgs) => R, ...args: TArgs): R;
 }> {
 	if (typeof window !== 'undefined') {
