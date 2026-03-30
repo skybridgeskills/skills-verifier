@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
-	import { FakeFrameworkService } from '$lib/services/framework-service';
+	import { FakeFrameworkClient } from '$lib/server/clients/framework-client/fake-framework-client';
 
 	import CreateJobPage from './CreateJobPage.svelte';
 
@@ -11,7 +11,7 @@
 		args: {}
 	});
 
-	const fakeService = new FakeFrameworkService();
+	const fakeService = new FakeFrameworkClient();
 </script>
 
 <Story name="Initial State">

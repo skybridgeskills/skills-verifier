@@ -12,7 +12,6 @@
 	} from '$lib/components/ui/card/index.js';
 
 	const { Story } = defineMeta({
-		title: 'components/Card',
 		tags: ['autodocs'],
 		argTypes: {},
 		args: {}

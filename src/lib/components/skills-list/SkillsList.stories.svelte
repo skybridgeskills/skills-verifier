@@ -2,7 +2,7 @@
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import { FakeFrameworkService } from '$lib/services/framework-service';
+	import { FakeFrameworkClient } from '$lib/server/clients/framework-client/fake-framework-client';
 	import type { Skill } from '$lib/types/job-profile';
 
 	import SkillsList from './SkillsList.svelte';
@@ -14,7 +14,7 @@
 		args: {}
 	});
 
-	const fakeService = new FakeFrameworkService();
+	const fakeService = new FakeFrameworkClient();
 
 	const mockSkills: Skill[] = [
 		{

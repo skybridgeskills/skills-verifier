@@ -5,11 +5,11 @@
 	import SkillsList from '$lib/components/skills-list/SkillsList.svelte';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import type { FrameworkService } from '$lib/services/framework-service';
+	import type { FrameworkClient } from '$lib/server/clients/framework-client/framework-client';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	interface Props {
-		service: FrameworkService;
+		service: FrameworkClient;
 	}
 
 	let { service }: Props = $props();

@@ -3,7 +3,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
-	import type { FrameworkService } from '$lib/services/framework-service';
+	import type { FrameworkClient } from '$lib/server/clients/framework-client/framework-client';
 	import type { Framework, Skill } from '$lib/types/job-profile';
 
 	import SkillItem from '../skill-item/SkillItem.svelte';
@@ -12,7 +12,7 @@
 		framework: Framework | null;
 		selectedSkills: string[];
 		onToggleSkill: (skill: Skill) => void;
-		service: FrameworkService;
+		service: FrameworkClient;
 	}
 
 	let { framework, selectedSkills, onToggleSkill, service }: Props = $props();
