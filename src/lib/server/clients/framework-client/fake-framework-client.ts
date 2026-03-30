@@ -1,4 +1,9 @@
 import type {
+	FrameworkClient,
+	FrameworkResponse,
+	SkillResponse
+} from '$lib/server/clients/framework-client/framework-client';
+import type {
 	Framework,
 	FrameworkJsonLd,
 	LanguageString,
@@ -7,46 +12,10 @@ import type {
 } from '$lib/types/job-profile';
 
 /**
- * Response type for framework fetch operations.
- */
-export interface FrameworkResponse {
-	framework: Framework;
-	skillUrls: string[];
-}
-
-/**
- * Response type for skill fetch operations.
- */
-export interface SkillResponse {
-	skill: Skill;
-}
-
-/**
- * Service interface for fetching framework and skill data.
- */
-export interface FrameworkService {
-	/**
-	 * Fetches a framework by URL and returns framework data with skill URLs.
-	 * @param url - The URL of the framework JSON-LD resource
-	 * @returns Promise resolving to framework data and array of skill URLs
-	 * @throws Error if fetch fails, JSON is invalid, or structure is invalid
-	 */
-	fetchFramework(url: string): Promise<FrameworkResponse>;
-
-	/**
-	 * Fetches a skill by URL and returns skill data.
-	 * @param url - The URL of the skill JSON-LD resource
-	 * @returns Promise resolving to skill data
-	 * @throws Error if fetch fails, JSON is invalid, or structure is invalid
-	 */
-	fetchSkill(url: string): Promise<SkillResponse>;
-}
-
-/**
  * Extracts the English (en-us) value from a language-specific string object.
  * Falls back to the first available value if en-us is not present.
  */
-function extractLanguageString(langString: LanguageString | undefined): string {
+export function extractLanguageString(langString: LanguageString | undefined): string {
 	if (!langString) {
 		throw new Error('Language string is missing');
 	}
@@ -54,117 +23,10 @@ function extractLanguageString(langString: LanguageString | undefined): string {
 }
 
 /**
- * HTTP-based implementation of FrameworkService.
- * Fetches real JSON-LD data from Credential Engine Registry.
- */
-export class HttpFrameworkService implements FrameworkService {
-	async fetchFramework(url: string): Promise<FrameworkResponse> {
-		try {
-			const response = await fetch(url);
-
-			if (!response.ok) {
-				throw new Error(`Failed to fetch framework: ${response.status} ${response.statusText}`);
-			}
-
-			const json: FrameworkJsonLd = await response.json();
-
-			// Validate required fields
-			if (!json['@id']) {
-				throw new Error('Invalid framework: missing @id');
-			}
-			if (!json['ceterms:ctid']) {
-				throw new Error('Invalid framework: missing ceterms:ctid');
-			}
-			if (!json['ceasn:name']) {
-				throw new Error('Invalid framework: missing ceasn:name');
-			}
-			if (!Array.isArray(json['ceasn:hasTopChild'])) {
-				throw new Error('Invalid framework: missing or invalid ceasn:hasTopChild');
-			}
-
-			const name = extractLanguageString(json['ceasn:name']);
-			const organization = json['ceasn:publisherName']
-				? extractLanguageString(json['ceasn:publisherName'])
-				: 'Unknown';
-
-			const framework: Framework = {
-				name,
-				organization,
-				url: json['@id'],
-				ctid: json['ceterms:ctid']
-			};
-
-			return {
-				framework,
-				skillUrls: json['ceasn:hasTopChild']
-			};
-		} catch (error) {
-			if (error instanceof TypeError) {
-				throw new Error(`Network error: Failed to fetch framework from ${url}`);
-			}
-			if (error instanceof SyntaxError) {
-				throw new Error(`Invalid JSON: Failed to parse framework response from ${url}`);
-			}
-			throw error;
-		}
-	}
-
-	async fetchSkill(url: string): Promise<SkillResponse> {
-		try {
-			const response = await fetch(url);
-
-			if (!response.ok) {
-				throw new Error(`Failed to fetch skill: ${response.status} ${response.statusText}`);
-			}
-
-			const json: SkillJsonLd = await response.json();
-
-			// Validate required fields
-			if (!json['@id']) {
-				throw new Error('Invalid skill: missing @id');
-			}
-			if (!json['ceterms:ctid']) {
-				throw new Error('Invalid skill: missing ceterms:ctid');
-			}
-
-			const label = json['ceasn:competencyLabel']
-				? extractLanguageString(json['ceasn:competencyLabel'])
-				: undefined;
-			const text = json['ceasn:competencyText']
-				? extractLanguageString(json['ceasn:competencyText'])
-				: '';
-
-			if (!text && !label) {
-				throw new Error(
-					'Invalid skill: missing both ceasn:competencyLabel and ceasn:competencyText'
-				);
-			}
-
-			const skill: Skill = {
-				url: json['@id'],
-				label,
-				text: text || label || '',
-				ctid: json['ceterms:ctid']
-			};
-
-			return { skill };
-		} catch (error) {
-			if (error instanceof TypeError) {
-				throw new Error(`Network error: Failed to fetch skill from ${url}`);
-			}
-			if (error instanceof SyntaxError) {
-				throw new Error(`Invalid JSON: Failed to parse skill response from ${url}`);
-			}
-			throw error;
-		}
-	}
-}
-
-/**
- * Mock/fake implementation of FrameworkService.
+ * Mock/fake implementation of FrameworkClient.
  * Returns predefined mock data for Storybook and testing.
  */
-export class FakeFrameworkService implements FrameworkService {
+export class FakeFrameworkClient implements FrameworkClient {
 	private mockFrameworks: Map<string, FrameworkJsonLd> = new Map();
 	private mockSkills: Map<string, SkillJsonLd> = new Map();
 
@@ -329,18 +191,4 @@ export class FakeFrameworkService implements FrameworkService {
 
 		return { skill };
 	}
-}
-
-/**
- * Creates a FrameworkService instance based on environment configuration.
- * Reads PUBLIC_USE_FAKE_FRAMEWORK_SERVICE from environment variables.
- * Uses import.meta.env which SvelteKit populates from PUBLIC_ prefixed env vars.
- * @returns FrameworkService instance (HttpFrameworkService or FakeFrameworkService)
- */
-export function createFrameworkService(): FrameworkService {
-	const useFake =
-		import.meta.env.PUBLIC_USE_FAKE_FRAMEWORK_SERVICE === 'true' ||
-		import.meta.env.PUBLIC_USE_FAKE_FRAMEWORK_SERVICE === true;
-
-	return useFake ? new FakeFrameworkService() : new HttpFrameworkService();
 }

@@ -1,19 +1,17 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
+import { FakeFrameworkClient } from '$lib/server/clients/framework-client/fake-framework-client';
+import { HttpFrameworkClient } from '$lib/server/clients/framework-client/http-framework-client';
 import type { FrameworkJsonLd, SkillJsonLd } from '$lib/types/job-profile';
 
-import {
-	HttpFrameworkService,
-	FakeFrameworkService,
-	createFrameworkService
-} from './framework-service';
+import { createFrameworkService } from './framework-client';
 
-describe('HttpFrameworkService', () => {
-	let service: HttpFrameworkService;
+describe('HttpFrameworkClient', () => {
+	let service: HttpFrameworkClient;
 	const mockFetch = vi.fn();
 
 	beforeEach(() => {
-		service = new HttpFrameworkService();
+		service = new HttpFrameworkClient();
 		vi.stubGlobal('fetch', mockFetch);
 		mockFetch.mockClear();
 	});
@@ -237,11 +235,11 @@ describe('HttpFrameworkService', () => {
 	});
 });
 
-describe('FakeFrameworkService', () => {
-	let service: FakeFrameworkService;
+describe('FakeFrameworkClient', () => {
+	let service: FakeFrameworkClient;
 
 	beforeEach(() => {
-		service = new FakeFrameworkService();
+		service = new FakeFrameworkClient();
 	});
 
 	describe('fetchFramework', () => {
@@ -292,17 +290,17 @@ describe('FakeFrameworkService', () => {
 });
 
 describe('createFrameworkService', () => {
-	it('should create HttpFrameworkService when env var is false', () => {
-		// Test with actual env (should default to HttpFrameworkService)
+	it('should create HttpFrameworkClient when env var is false', () => {
+		// Test with actual env (should default to HttpFrameworkClient)
 		// Since we can't easily mock import.meta.env in vitest, we test the default behavior
 		const service = createFrameworkService();
-		// Default behavior should be HttpFrameworkService unless env var is set to 'true'
-		expect(service).toBeInstanceOf(HttpFrameworkService);
+		// Default behavior should be HttpFrameworkClient unless env var is set to 'true'
+		expect(service).toBeInstanceOf(HttpFrameworkClient);
 	});
 
-	it('should create HttpFrameworkService when env var is undefined', () => {
+	it('should create HttpFrameworkClient when env var is undefined', () => {
 		const service = createFrameworkService();
-		expect(service).toBeInstanceOf(HttpFrameworkService);
+		expect(service).toBeInstanceOf(HttpFrameworkClient);
 	});
 
 	// Note: Testing with env var set to 'true' requires actual environment setup
