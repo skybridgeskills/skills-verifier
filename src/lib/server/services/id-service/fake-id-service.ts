@@ -1,4 +1,4 @@
-import type { IdService } from './id-service.js';
+import type { IdService, IdServiceCtx } from './id-service.js';
 
 // Counters per prefix for testStr
 const testStrCounters = new Map<string, number>();
@@ -26,3 +26,7 @@ export function FakeIdService(): IdService {
 		}
 	};
 }
+export type FakeIdService = ReturnType<typeof FakeIdService>;
+
+export const FakeIdServiceCtx = () => ({ idService: FakeIdService() }) satisfies IdServiceCtx;
+export type FakeIdServiceCtx = ReturnType<typeof FakeIdServiceCtx>;

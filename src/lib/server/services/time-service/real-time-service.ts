@@ -1,4 +1,4 @@
-import type { TimeService } from './time-service.js';
+import type { TimeService, TimeServiceCtx } from './time-service.js';
 
 /**
  * Real implementation of TimeService using Date.now() and performance.now().
@@ -13,3 +13,8 @@ export function RealTimeService(): TimeService {
 		}
 	};
 }
+export type RealTimeService = ReturnType<typeof RealTimeService>;
+
+export const RealTimeServiceCtx = () =>
+	({ timeService: RealTimeService() }) satisfies TimeServiceCtx;
+export type RealTimeServiceCtx = ReturnType<typeof RealTimeServiceCtx>;

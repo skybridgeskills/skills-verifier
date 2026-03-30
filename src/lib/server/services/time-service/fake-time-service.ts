@@ -1,4 +1,4 @@
-import type { TimeService } from './time-service.js';
+import type { TimeService, TimeServiceCtx } from './time-service.js';
 
 /**
  * Fake implementation of TimeService for testing.
@@ -22,3 +22,8 @@ export function FakeTimeService(): TimeService {
 		}
 	};
 }
+export type FakeTimeService = ReturnType<typeof FakeTimeService>;
+
+export const FakeTimeServiceCtx = () =>
+	({ timeService: FakeTimeService() }) satisfies TimeServiceCtx;
+export type FakeTimeServiceCtx = ReturnType<typeof FakeTimeServiceCtx>;

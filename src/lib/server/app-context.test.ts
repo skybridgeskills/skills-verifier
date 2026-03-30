@@ -3,15 +3,15 @@ import { describe, it, expect } from 'vitest';
 import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
 import { FakeFrameworkClient } from './clients/framework-client/fake-framework-client.js';
-import { FakeIdService } from './services/id-service/fake-id-service.js';
-import { FakeTimeService } from './services/time-service/fake-time-service.js';
+import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
+import { FakeTimeService, FakeTimeServiceCtx } from './services/time-service/fake-time-service.js';
 import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.js';
 
 describe('app-context', () => {
 	function createTestContext(): AppContext {
 		return {
-			timeService: FakeTimeService(),
-			idService: FakeIdService(),
+			...FakeTimeServiceCtx(),
+			...FakeIdServiceCtx(),
 			frameworkClient: new FakeFrameworkClient()
 		};
 	}

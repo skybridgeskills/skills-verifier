@@ -21,3 +21,8 @@ export interface IdService {
 	 */
 	uniqueUid(): string;
 }
+
+/** Context slice installed by {@link RealIdServiceCtx} / {@link FakeIdServiceCtx}. */
+export type IdServiceCtx = {
+	idService: IdService;
+};

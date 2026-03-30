@@ -19,3 +19,7 @@ export interface TimeService {
 	 */
 	performanceNowMs(): number;
 }
+
+export type TimeServiceCtx = {
+	timeService: TimeService;
+};

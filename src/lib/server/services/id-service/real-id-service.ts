@@ -1,7 +1,7 @@
 import { bytesToBigInt } from '../../util/number/bytes-to-big-int.js';
 import { toBase62 } from '../../util/number/to-base62.js';
 
-import type { IdService } from './id-service.js';
+import type { IdService, IdServiceCtx } from './id-service.js';
 
 /**
  * Generates secure random bytes using crypto.getRandomValues.
@@ -49,3 +49,7 @@ export function RealIdService(): IdService {
 		}
 	};
 }
+export type RealIdService = ReturnType<typeof RealIdService>;
+
+export const RealIdServiceCtx = () => ({ idService: RealIdService() }) satisfies IdServiceCtx;
+export type RealIdServiceCtx = ReturnType<typeof RealIdServiceCtx>;

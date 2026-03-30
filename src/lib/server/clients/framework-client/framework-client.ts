@@ -51,3 +51,11 @@ export function createFrameworkService(): FrameworkClient {
 
 	return useFake ? new FakeFrameworkClient() : new HttpFrameworkClient();
 }
+/** Shape of the framework client slice (for satisfies). */
+export type FrameworkClientSlice = {
+	frameworkClient: FrameworkClient;
+};
+
+export const FrameworkClientCtx = () =>
+	({ frameworkClient: createFrameworkService() }) satisfies FrameworkClientSlice;
+export type FrameworkClientCtx = ReturnType<typeof FrameworkClientCtx>;
