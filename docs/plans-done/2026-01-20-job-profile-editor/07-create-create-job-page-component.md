@@ -39,7 +39,7 @@ Implement CreateJobPage component that orchestrates all components, manages stat
    - Story showing validation errors
    - Story showing error states
    - Use ResponsivePreview for breakpoint testing
-   - Use FakeFrameworkService for stories
+   - Use FakeFrameworkClient for stories
 
 ## Tests
 

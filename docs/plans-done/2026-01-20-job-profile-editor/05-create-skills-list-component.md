@@ -7,7 +7,7 @@ Implement SkillsList component with skeleton loading, filtering/searching, and s
 ## Tasks
 
 1. Create `src/lib/components/SkillsList.svelte`:
-   - Props: `framework: Framework | null`, `selectedSkills: Skill[]`, `onToggleSkill: (skill: Skill) => void`, `service: FrameworkService`
+   - Props: `framework: Framework | null`, `selectedSkills: Skill[]`, `onToggleSkill: (skill: Skill) => void`, `service: FrameworkClient`
    - Fetches skills from selected framework using framework-service:
      - Show skeleton loading state while fetching framework JSON-LD
      - Show skeleton loading state while fetching individual skill URLs
@@ -30,7 +30,7 @@ Implement SkillsList component with skeleton loading, filtering/searching, and s
    - Story showing error state
    - Story with partial results (some skills failed)
    - Use ResponsivePreview for breakpoint testing
-   - Use FakeFrameworkService for stories
+   - Use FakeFrameworkClient for stories
 
 ## Tests
 

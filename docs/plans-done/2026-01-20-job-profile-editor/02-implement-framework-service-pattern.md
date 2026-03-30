@@ -2,19 +2,19 @@
 
 ## Overview
 
-Create the FrameworkService interface and implement both HttpFrameworkService (HTTP fetching) and FakeFrameworkService (mock data). Add service factory that reads .env to determine which service to use.
+Create the FrameworkClient interface and implement both HttpFrameworkClient (HTTP fetching) and FakeFrameworkClient (mock data). Add service factory that reads .env to determine which service to use.
 
 ## Tasks
 
-1. Create `src/lib/services/framework-service.ts` with:
-   - `FrameworkService` interface with methods:
+1. Create `src/lib/services/framework-client.ts` with:
+   - `FrameworkClient` interface with methods:
      - `fetchFramework(url: string): Promise<FrameworkResponse>`
      - `fetchSkill(url: string): Promise<SkillResponse>`
-   - `HttpFrameworkService` class implementing the interface:
+   - `HttpFrameworkClient` class implementing the interface:
      - Uses `fetch` to get JSON-LD from URLs
      - Parses JSON-LD responses
      - Handles errors (network, invalid JSON, invalid structure)
-   - `FakeFrameworkService` class implementing the interface:
+   - `FakeFrameworkClient` class implementing the interface:
      - Returns mock JSON-LD data matching the structure
      - Includes mock data for both example frameworks
    - Service factory function that reads `.env` to determine which service to instantiate
@@ -33,16 +33,16 @@ Create the FrameworkService interface and implement both HttpFrameworkService (H
 
 ## Tests
 
-- Unit tests for `HttpFrameworkService` (with mocked fetch)
-- Unit tests for `FakeFrameworkService`
+- Unit tests for `HttpFrameworkClient` (with mocked fetch)
+- Unit tests for `FakeFrameworkClient`
 - Unit tests for service factory
 - Error handling tests
 
 ## Success Criteria
 
-- [ ] FrameworkService interface defined
-- [ ] HttpFrameworkService fetches and parses JSON-LD correctly
-- [ ] FakeFrameworkService returns mock data correctly
+- [ ] FrameworkClient interface defined
+- [ ] HttpFrameworkClient fetches and parses JSON-LD correctly
+- [ ] FakeFrameworkClient returns mock data correctly
 - [ ] Service factory reads .env and returns correct service
 - [ ] Error handling works for all error cases
 - [ ] All tests pass (`pnpm test:unit`)

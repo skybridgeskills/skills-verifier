@@ -34,9 +34,9 @@ Answer: If JobPosting content is immutable, then Submission should only referenc
 
 ## 5. Skills Framework Service Integration
 
-The existing `FrameworkService` fetches from external URLs. Should the Skills Framework Service wrap this, or should it be a separate service that lists available frameworks (potentially cached)?
+The existing `FrameworkClient` fetches from external URLs. Should the Skills Framework Service wrap this, or should it be a separate service that lists available frameworks (potentially cached)?
 
-**Suggested approach**: Create a `SkillsFrameworkService` that can list available frameworks (with caching) and wraps the existing `FrameworkService` for fetching. This provides a clean separation: FrameworkService handles HTTP fetching, SkillsFrameworkService handles framework discovery and listing.
+**Suggested approach**: Create a `SkillsFrameworkService` that can list available frameworks (with caching) and wraps the existing `FrameworkClient` for fetching. This provides a clean separation: FrameworkClient handles HTTP fetching, SkillsFrameworkService handles framework discovery and listing.
 
 Answer: We can update the names from the initial prototype code to be more descriptive of the new service boundaries. The SkillsFrameworkService should have an interface that allows async fetching of frameworks and skills, and a way to list available frameworks. There should be both static-sourced and HTTP-sourced versions of the service, which can be part of the app context provided to request handlers. It would be nice to have some amount of caching of frameworks and skills fetched over HTTP for performance reasons, with the ability to override the cache with a fresh fetch if needed (for example if somebody is actively working on the framework as they test it with creating job postings).
 

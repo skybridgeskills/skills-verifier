@@ -15,10 +15,10 @@ src/lib/
 │   ├── skills-framework-service/            # UPDATE: Rename from framework-service
 │   │   ├── schema.ts                        # NEW: Zod schemas for Framework, Skill
 │   │   ├── schema.test.ts                   # NEW: Tests for schemas
-│   │   ├── skills-framework-service.ts      # NEW: Interface definition
-│   │   ├── http-skills-framework-service.ts # UPDATE: Rename from HttpFrameworkService
-│   │   ├── http-skills-framework-service.test.ts # NEW: Tests for HTTP service
-│   │   └── static-skills-framework-service.ts # UPDATE: Rename from FakeFrameworkService
+│   │   ├── skills-framework-client.ts      # NEW: Interface definition
+│   │   ├── http-skills-framework-client.ts # UPDATE: Rename from HttpFrameworkClient
+│   │   ├── http-skills-framework-client.test.ts # NEW: Tests for HTTP service
+│   │   └── static-skills-framework-client.ts # UPDATE: Rename from FakeFrameworkClient
 │   │
 │   ├── time-service/                       # NEW
 │   │   ├── time-service.ts                 # NEW: Interface, timeService() accessor

@@ -11,7 +11,7 @@ skills-verifier/
     │   ├── config/
     │   │   └── frameworks.ts                    # NEW: Framework configuration with predefined list
     │   ├── services/
-    │   │   ├── framework-service.ts             # NEW: Service interface and real implementation
+    │   │   ├── framework-client.ts             # NEW: Service interface and real implementation
     │   │   └── framework-service-fake.ts         # NEW: Fake service for Storybook/testing
     │   ├── types/
     │   │   └── job-profile.ts                   # NEW: TypeScript types for frameworks, skills, job profiles
@@ -85,7 +85,7 @@ skills-verifier/
                             │ uses
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              framework-service.ts                            │
+│              framework-client.ts                            │
 │  - HttpService: Fetches from actual URLs via fetch          │
 │  - FakeService: Returns mock JSON-LD data                   │
 │  - Service interface for type safety                        │
@@ -157,9 +157,9 @@ skills-verifier/
 
 ## Service Pattern
 
-- `FrameworkService` interface defines contract
-- `HttpFrameworkService` implements actual HTTP fetching
-- `FakeFrameworkService` implements mock data for Storybook/testing
+- `FrameworkClient` interface defines contract
+- `HttpFrameworkClient` implements actual HTTP fetching
+- `FakeFrameworkClient` implements mock data for Storybook/testing
 - `.env` configuration determines which service to instantiate (e.g., `USE_FAKE_FRAMEWORK_SERVICE=true`)
 - Services handle JSON-LD parsing and error handling
 

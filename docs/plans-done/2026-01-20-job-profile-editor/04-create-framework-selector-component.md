@@ -25,7 +25,7 @@ Implement searchable FrameworkSelector component with loading states and error h
    - Story showing error state
    - Story with empty search results
    - Use ResponsivePreview for breakpoint testing
-   - Use FakeFrameworkService for stories
+   - Use FakeFrameworkClient for stories
 
 ## Tests
 
