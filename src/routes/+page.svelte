@@ -1,2 +1,6 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	import { resolve } from '$app/paths';
+</script>
+
+<!-- Fallback only when this file is loaded without +page.server.ts (e.g. isolated tests). -->
+<p><a href={resolve('/jobs/create')}>Create job</a></p>

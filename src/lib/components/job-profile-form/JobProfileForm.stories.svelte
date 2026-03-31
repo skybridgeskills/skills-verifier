@@ -1,6 +1,8 @@
 <script lang="ts" module>
-	import JobProfileForm from './JobProfileForm.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { expect, within, waitFor } from 'storybook/test';
+
+	import JobProfileForm from './JobProfileForm.svelte';
 
 	const { Story } = defineMeta({
 		title: 'components/JobProfileForm',
@@ -36,21 +38,36 @@
 	</div>
 </Story>
 
-<Story name="Validation Errors">
+<Story
+	name="Validation Errors"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// Find the form
+		const form = canvasElement.querySelector('form') as HTMLFormElement;
+
+		// Trigger form submission directly to bypass native validation
+		// This allows our custom validation to run
+		const submitEvent = new SubmitEvent('submit', {
+			bubbles: true,
+			cancelable: true,
+			submitter: form.querySelector('button[type="submit"]') as HTMLButtonElement
+		});
+		form.dispatchEvent(submitEvent);
+
+		// Wait for validation error messages to appear
+		await waitFor(
+			() => {
+				expect(canvas.getByText('Job name is required')).toBeInTheDocument();
+				expect(canvas.getByText('Description is required')).toBeInTheDocument();
+				expect(canvas.getByText('Company name is required')).toBeInTheDocument();
+			},
+			{ timeout: 2000 }
+		);
+	}}
+>
 	<div class="max-w-md">
 		<JobProfileForm onSubmit={handleSubmit} />
-		<script>
-			// Trigger validation by attempting to submit empty form
-			setTimeout(() => {
-				const form = document.querySelector('form');
-				if (form) {
-					const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-					if (submitButton) {
-						submitButton.click();
-					}
-				}
-			}, 100);
-		</script>
 	</div>
 </Story>
 

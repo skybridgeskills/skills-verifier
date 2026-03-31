@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import FrameworkSelector from './FrameworkSelector.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+
 	import { FRAMEWORKS } from '$lib/config/frameworks';
 	import type { Framework } from '$lib/types/job-profile';
+
+	import FrameworkSelector from './FrameworkSelector.svelte';
 
 	console.log('FRAMEWORKS', FRAMEWORKS);
 
@@ -27,7 +29,7 @@
 
 <Story name="With Search Filtering">
 	<div class="max-w-2xl">
-		<p class="mb-4 text-sm text-gray-600">
+		<p class="mb-4 text-sm text-muted-foreground">
 			Type in the search box to filter frameworks by name or organization.
 		</p>
 		<FrameworkSelector frameworks={FRAMEWORKS} onSelect={handleSelect} />
@@ -52,7 +54,7 @@
 
 <Story name="Empty Search Results">
 	<div class="max-w-2xl">
-		<p class="mb-4 text-sm text-gray-600">
+		<p class="mb-4 text-sm text-muted-foreground">
 			Type a search query that doesn't match any frameworks to see the empty state.
 		</p>
 		<FrameworkSelector frameworks={FRAMEWORKS} onSelect={handleSelect} />

@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import SkillsList from './SkillsList.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+
+	import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
 	import { FRAMEWORKS } from '$lib/config/frameworks';
-	import { FakeFrameworkService } from '$lib/services/framework-service';
 	import type { Skill } from '$lib/types/job-profile';
+
+	import SkillsList from './SkillsList.svelte';
 
 	const { Story } = defineMeta({
 		title: 'components/SkillsList',
@@ -12,7 +14,7 @@
 		args: {}
 	});
 
-	const fakeService = new FakeFrameworkService();
+	const fakeService = new FakeFrameworkClient();
 
 	const mockSkills: Skill[] = [
 		{

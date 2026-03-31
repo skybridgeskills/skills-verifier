@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import SkillItem from './SkillItem.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import { fn } from 'storybook/test';
+
 	import type { Skill } from '$lib/types/job-profile';
+
+	import SkillItem from './SkillItem.svelte';
 
 	const skillWithLabelOnly: Skill = {
 		url: 'https://example.com/skill1',

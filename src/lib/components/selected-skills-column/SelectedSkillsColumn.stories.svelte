@@ -1,7 +1,9 @@
 <script lang="ts" module>
-	import SelectedSkillsColumn from './SelectedSkillsColumn.svelte';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+
 	import type { Skill } from '$lib/types/job-profile';
+
+	import SelectedSkillsColumn from './SelectedSkillsColumn.svelte';
 
 	const { Story } = defineMeta({
 		title: 'components/SelectedSkillsColumn',

@@ -30,19 +30,24 @@ following sections:
 
 ## Question Iteration
 
-Go through the questions one at a time, asking me for clarification and answers.
+Ask the user each question, ONE AT A TIME:
 
-- a summary of the current state
+include in the qustion:
+
+- the question
+- the current state of the codebase as it pertains to the question
 - your suggested course forward
 
-I will answer or ask more questions.
-You will record the answers in the `00-notes.md` file.
-If my answers imply additional questions, add them to the file.
-If my answers include other notes, add them to the file in a `# Notes` section.
-If my answers affect other questions or the scope of work, update the file
-accordingly before moving on.
+The user will answer the question or ask follow up questions.
 
-Move on to the next question.
+Once the question is answered or otherwise resolved:
+
+- You will record the answers in the `00-notes.md` file.
+- If the user's answers imply additional questions, add them to the file.
+- If the user's answers include other notes, add them to the file in a `# Notes` section.
+- If the user's answers affect other questions or the scope of work, update the file
+  accordingly before moving on.
+- Move on to the next question.
 
 ## Design Iteration
 

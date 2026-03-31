@@ -1,13 +1,18 @@
 <script lang="ts">
-	import SkillItem from '../skill-item/SkillItem.svelte';
+	import type { FrameworkClient } from '$lib/clients/framework-client/framework-client';
+	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import type { Framework, Skill } from '$lib/types/job-profile';
-	import type { FrameworkService } from '$lib/services/framework-service';
+
+	import SkillItem from '../skill-item/SkillItem.svelte';
 
 	interface Props {
 		framework: Framework | null;
 		selectedSkills: string[];
 		onToggleSkill: (skill: Skill) => void;
-		service: FrameworkService;
+		service: FrameworkClient;
 	}
 
 	let { framework, selectedSkills, onToggleSkill, service }: Props = $props();
@@ -107,19 +112,18 @@
 	{#if framework && !loadingFramework && !loadingSkills && skills.length > 0}
 		<div>
 			<label for="skill-search" class="sr-only">Search skills</label>
-			<input
+			<Input
 				id="skill-search"
 				type="text"
 				bind:value={searchQuery}
 				placeholder="Search skills..."
-				class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @md:text-sm"
 			/>
 		</div>
 	{/if}
 
 	<!-- Selection Count -->
 	{#if framework && !loadingFramework && !loadingSkills && skills.length > 0}
-		<div class="text-sm text-gray-600">
+		<div class="text-sm text-muted-foreground">
 			{selectionCount} of {totalCount} selected
 		</div>
 	{/if}
@@ -128,9 +132,9 @@
 	{#if loadingFramework}
 		<div class="space-y-3">
 			{#each Array.from({ length: 3 }, (_, i) => i) as i (i)}
-				<div class="animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-4">
-					<div class="h-5 w-3/4 rounded bg-gray-300"></div>
-					<div class="mt-2 h-4 w-1/2 rounded bg-gray-300"></div>
+				<div class="space-y-2 rounded-lg border p-4">
+					<Skeleton class="h-5 w-3/4" />
+					<Skeleton class="h-4 w-1/2" />
 				</div>
 			{/each}
 		</div>
@@ -138,47 +142,26 @@
 	{:else if loadingSkills}
 		<div class="space-y-3">
 			{#each Array.from({ length: 5 }, (_, i) => i) as i (i)}
-				<div class="animate-pulse rounded-lg border border-gray-200 bg-gray-100 p-3 @md:p-4">
-					<div class="flex items-start gap-3">
-						<div class="mt-1 h-4 w-4 rounded bg-gray-300"></div>
-						<div class="flex-1">
-							<div class="h-4 w-3/4 rounded bg-gray-300"></div>
-							<div class="mt-2 h-3 w-1/2 rounded bg-gray-300"></div>
-						</div>
+				<div class="flex items-start gap-3 rounded-lg border p-3 @md:p-4">
+					<Skeleton class="mt-1 h-4 w-4 rounded" />
+					<div class="flex-1 space-y-2">
+						<Skeleton class="h-4 w-3/4" />
+						<Skeleton class="h-3 w-1/2" />
 					</div>
 				</div>
 			{/each}
 		</div>
 		<!-- Error State -->
 	{:else if error}
-		<div class="rounded-lg border border-red-300 bg-red-50 p-4">
-			<div class="flex items-center">
-				<svg
-					class="mr-2 h-5 w-5 text-red-600"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-				<p class="text-sm font-medium text-red-800">Error loading skills</p>
-			</div>
-			<p class="mt-1 text-sm text-red-600">{error}</p>
+		<Alert variant="destructive">
+			<AlertTitle>Error loading skills</AlertTitle>
+			<AlertDescription>{error}</AlertDescription>
 			{#if framework}
-				<button
-					type="button"
-					onclick={handleRetry}
-					class="mt-3 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
-				>
+				<Button type="button" variant="outline" size="sm" class="mt-3" onclick={handleRetry}>
 					Retry
-				</button>
+				</Button>
 			{/if}
-		</div>
+		</Alert>
 		<!-- Skills List -->
 	{:else if framework && filteredSkills.length > 0}
 		<div class="space-y-2">
@@ -188,18 +171,18 @@
 		</div>
 		<!-- Empty Search Results -->
 	{:else if framework && searchQuery.trim() && skills.length > 0}
-		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-			<p class="text-sm text-gray-600">No skills found matching "{searchQuery}"</p>
+		<div class="rounded-lg border border-border bg-muted p-8 text-center">
+			<p class="text-sm text-muted-foreground">No skills found matching "{searchQuery}"</p>
 		</div>
 		<!-- No Framework Selected -->
 	{:else if !framework}
-		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-			<p class="text-sm text-gray-600">Select a framework to view skills</p>
+		<div class="rounded-lg border border-border bg-muted p-8 text-center">
+			<p class="text-sm text-muted-foreground">Select a framework to view skills</p>
 		</div>
 		<!-- No Skills -->
 	{:else}
-		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-			<p class="text-sm text-gray-600">No skills available in this framework</p>
+		<div class="rounded-lg border border-border bg-muted p-8 text-center">
+			<p class="text-sm text-muted-foreground">No skills available in this framework</p>
 		</div>
 	{/if}
 </div>

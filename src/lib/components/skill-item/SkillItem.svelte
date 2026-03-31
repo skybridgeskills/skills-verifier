@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import type { Skill } from '$lib/types/job-profile';
+	import { cn } from '$lib/utils';
 
 	interface Props {
 		skill: Skill;
@@ -9,35 +12,34 @@
 
 	let { skill, selected, onToggle }: Props = $props();
 
-	function handleClick() {
+	function handleCheckedChange() {
+		// Toggle when checkbox state changes (both checked and unchecked)
 		onToggle(skill.url);
 	}
 </script>
 
 {#if skill}
-	<label
-		class="flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors @md:p-4 {selected
-			? 'border-blue-500 bg-blue-50'
-			: 'border-gray-200 bg-white hover:border-gray-300'}"
+	<Label
+		class={cn(
+			'flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors @md:p-4',
+			selected ? 'border-primary bg-accent' : 'border-border bg-card hover:border-border'
+		)}
 	>
-		<input
-			type="checkbox"
-			checked={selected}
-			onchange={handleClick}
-			class="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-		/>
+		<div class="flex shrink-0 items-center pt-0.5">
+			<Checkbox checked={selected} onCheckedChange={handleCheckedChange} />
+		</div>
 		<div class="flex-1">
 			{#if skill.label && skill.text}
 				<!-- Both label and text present -->
-				<div class="font-medium text-gray-900">{skill.label}</div>
-				<div class="mt-1 text-sm text-gray-600">{skill.text}</div>
+				<div class="leading-tight font-medium text-foreground">{skill.label}</div>
+				<div class="mt-1 text-sm leading-tight text-muted-foreground">{skill.text}</div>
 			{:else if skill.label}
 				<!-- Label only -->
-				<div class="font-medium text-gray-900">{skill.label}</div>
+				<div class="leading-tight font-medium text-foreground">{skill.label}</div>
 			{:else}
 				<!-- Text only (fallback) -->
-				<div class="text-gray-900">{skill.text}</div>
+				<div class="leading-tight text-foreground">{skill.text}</div>
 			{/if}
 		</div>
-	</label>
+	</Label>
 {/if}

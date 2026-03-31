@@ -64,6 +64,15 @@ The tool addresses key gaps in the LER ecosystem by providing an open-source, em
 
    Storybook will be available at `http://localhost:6006`
 
+### VS Code Launch Configurations
+
+This project includes VS Code launch configurations for debugging:
+
+- **App: dev** – Runs `pnpm dev` in the integrated terminal
+- **Storybook** – Runs `pnpm storybook` in the integrated terminal
+
+Open the Run and Debug panel (`Cmd+Shift+D` / `Ctrl+Shift+D`) to use these.
+
 ### Development Tools
 
 #### Type Checking (Watch Mode)
@@ -222,23 +231,78 @@ pnpm run e2e:playwright
 
 ```
 skills-verifier/
-├── src/                    # Source code
-│   ├── lib/               # Library code (components, services, types)
-│   ├── routes/            # SvelteKit routes
-│   └── app.d.ts           # Type definitions
-├── e2e/                   # End-to-end tests
-├── .storybook/            # Storybook configuration
-├── static/                # Static assets
-├── turbo.jsonc            # Turborepo configuration
-├── package.json           # Dependencies and scripts
-└── README.md              # This file
+├── src/
+│   ├── lib/
+│   │   ├── clients/           # Shared clients (browser + server safe)
+│   │   │   └── framework-client/   # Framework/skill API client
+│   │   ├── components/
+│   │   │   ├── app-header/    # App navigation header
+│   │   │   ├── theme-toggle/  # Light/dark/system theme switcher
+│   │   │   └── ui/            # shadcn-svelte components
+│   │   ├── pages/             # Page-level components
+│   │   ├── server/            # Server-only code
+│   │   │   ├── services/      # Time, ID, and other services
+│   │   │   │   ├── time-service/
+│   │   │   │   └── id-service/
+│   │   │   └── util/provider/ # Provider context system (ALS)
+│   │   │       ├── providers.ts
+│   │   │       ├── provider-ctx.ts
+│   │   │       └── README.test.ts
+│   │   └── utils.ts
+│   ├── routes/                # SvelteKit routes
+│   │   ├── +layout.svelte    # Root layout with header
+│   │   ├── +page.server.ts   # Home redirect
+│   │   └── jobs/create/       # Create job page
+│   ├── app.d.ts
+│   └── hooks.server.ts        # Request context setup
+├── docs/
+│   └── ideas/                 # Future enhancement ideas
+├── e2e/                       # End-to-end tests
+├── .storybook/                # Storybook configuration
+├── .vscode/                   # VS Code settings and launch configs
+├── static/                    # Static assets
+└── turbo.jsonc                # Turborepo configuration
 ```
+
+## Architecture
+
+### Provider Context System
+
+This project uses a lightweight dependency injection system built on AsyncLocalStorage (ALS):
+
+- **Providers** – Composable functions that return context slices (e.g., `TimeServiceCtx`, `IdServiceCtx`)
+- **Provider chains** – `Providers(a, b, c)` merges slices into a full context
+- **Entry points** – `runInContext(ctx, fn)` or `runWithProvider(chain, fn)` for tests
+- **Server requests** – `hooks.server.ts` wraps each request in dev app context
+- **Safe access** – `providerCtx<T>()` reads from ALS; throws if no context
+
+Example service slice pattern:
+
+```typescript
+// Service factory returns the narrow service
+export function FakeTimeService(): TimeService { ... }
+
+// Context slice wraps it for the provider chain
+export const FakeTimeServiceCtx = () =>
+  ({ timeService: FakeTimeService() }) satisfies TimeServiceCtx;
+```
+
+See `src/lib/server/util/provider/README.test.ts` for full examples.
+
+### Browser vs Server Code
+
+- **`src/lib/clients/`** – Code safe for browser and server (e.g., framework client)
+- **`src/lib/server/`** – Server-only code (services, provider system, app context)
+- **`createFrameworkService()`** – Creates client env-aware; safe to call anywhere
+- **`getFrameworkClient()`** – Server-only helper that reads from request ALS
 
 ## Technology Stack
 
 - **Framework**: SvelteKit
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS with shadcn-svelte
+- **UI Components**: shadcn-svelte (bits-ui, tailwind-variants)
+- **Theming**: Light/dark/system mode (custom, no mode-watcher)
 - **Testing**: Vitest (unit), Playwright (E2E)
 - **Component Development**: Storybook
 - **Task Runner**: Turborepo
