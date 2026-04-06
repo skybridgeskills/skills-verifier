@@ -4,6 +4,20 @@
  */
 
 /**
+ * Skill represents a competency/skill from a framework.
+ */
+export interface Skill {
+	/** URL to the skill JSON-LD resource */
+	url: string;
+	/** Competency label (short name) if available */
+	label: string;
+	/** Competency text (description) */
+	text?: string;
+	/** URL to the framework that the skill belongs to */
+	frameworkUrl?: string;
+}
+
+/**
  * Framework represents a competency framework from Credential Engine Registry.
  */
 export interface Framework {
@@ -13,20 +27,6 @@ export interface Framework {
 	organization: string;
 	/** URL to the framework JSON-LD resource */
 	url: string;
-	/** Credential Transparency Description Language ID */
-	ctid: string;
-}
-
-/**
- * Skill represents a competency/skill from a framework.
- */
-export interface Skill {
-	/** URL to the skill JSON-LD resource */
-	url: string;
-	/** Competency label (short name) if available */
-	label?: string;
-	/** Competency text (description) */
-	text: string;
 	/** Credential Transparency Description Language ID */
 	ctid: string;
 }

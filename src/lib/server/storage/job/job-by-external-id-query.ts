@@ -1,0 +1,41 @@
+import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { z } from 'zod';
+
+import { defineQuery } from '../core/define-query.js';
+
+import { parseJobRow, rowToJob } from './job-row.js';
+import type { Job } from './job.js';
+
+export const jobByExternalIdQuery = defineQuery(
+	'JobByExternalId',
+	z.object({ externalId: z.string() }),
+	{
+		memory: (db, { externalId }): Job | null => {
+			for (const job of db.jobsById.values()) {
+				if (job.externalId === externalId) {
+					return job;
+				}
+			}
+			return null;
+		},
+		dynamo: async (ctx, { externalId }) => {
+			const res = await ctx.docClient.send(
+				new QueryCommand({
+					TableName: ctx.tableName,
+					IndexName: 'GSI1',
+					KeyConditionExpression: 'GSI1PK = :p AND GSI1SK = :s',
+					ExpressionAttributeValues: {
+						':p': `EXTERNAL#${externalId}`,
+						':s': 'META'
+					},
+					Limit: 1
+				})
+			);
+			const item = res.Items?.[0];
+			if (!item) {
+				return null;
+			}
+			return rowToJob(parseJobRow(item));
+		}
+	}
+);
