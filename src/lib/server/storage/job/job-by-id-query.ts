@@ -3,8 +3,8 @@ import { z } from 'zod';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { parseJobRow, rowToJobResource } from './job-row.js';
 import type { JobResource } from './job-resource.js';
+import { parseJobRow, rowToJobResource } from './job-row.js';
 
 export const jobByIdQuery = defineQuery('JobById', z.object({ id: z.string() }), {
 	memory: (db, { id }): JobResource | null => db.jobsById.get(id) ?? null,

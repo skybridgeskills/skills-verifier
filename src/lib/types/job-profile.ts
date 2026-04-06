@@ -5,14 +5,17 @@
 
 /**
  * Skill represents a competency/skill from a framework.
+ * Aligned with storage {@link SkillResource} (ctid, required text).
  */
 export interface Skill {
 	/** URL to the skill JSON-LD resource */
 	url: string;
 	/** Competency label (short name) if available */
-	label: string;
+	label?: string;
 	/** Competency text (description) */
-	text?: string;
+	text: string;
+	/** Credential Transparency Description Language ID */
+	ctid: string;
 	/** URL to the framework that the skill belongs to */
 	frameworkUrl?: string;
 }

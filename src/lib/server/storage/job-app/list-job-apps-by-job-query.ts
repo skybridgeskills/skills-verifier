@@ -3,8 +3,8 @@ import { z } from 'zod';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { parseJobAppRow, rowToJobAppResource } from './job-app-row.js';
 import type { JobAppResource } from './job-app-resource.js';
+import { parseJobAppRow, rowToJobAppResource } from './job-app-row.js';
 
 export const listJobAppsByJobQuery = defineQuery(
 	'ListJobAppsByJob',

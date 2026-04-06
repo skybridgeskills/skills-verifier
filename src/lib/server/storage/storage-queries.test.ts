@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { TestAppContext } from '$lib/server/test-app-context.js';
 import { runInContext } from '$lib/server/util/provider/provider-ctx.js';
 
-import { createJobAppQuery } from './job-app/create-job-app-query.js';
-import { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
-import { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';
 import { createJobQuery } from './job/create-job-query.js';
 import { jobByExternalIdQuery } from './job/job-by-external-id-query.js';
 import { jobByIdQuery } from './job/job-by-id-query.js';
 import { listActiveJobsQuery } from './job/list-active-jobs-query.js';
+import { createJobAppQuery } from './job-app/create-job-app-query.js';
+import { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
+import { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';
 
 describe('storage queries (memory)', () => {
 	it('creates job, finds by id and external id, lists active', async () => {

@@ -80,6 +80,9 @@ export class HttpFrameworkClient implements FrameworkClient {
 				throw new Error('Invalid skill: missing ceterms:ctid');
 			}
 
+			const skillId = json['@id'];
+			const skillCtid = json['ceterms:ctid'];
+
 			const label = json['ceasn:competencyLabel']
 				? extractLanguageString(json['ceasn:competencyLabel'])
 				: undefined;
@@ -94,10 +97,10 @@ export class HttpFrameworkClient implements FrameworkClient {
 			}
 
 			const skill: Skill = {
-				url: json['@id'],
+				url: skillId,
 				label,
 				text: text || label || '',
-				ctid: json['ceterms:ctid']
+				ctid: skillCtid
 			};
 
 			return { skill };

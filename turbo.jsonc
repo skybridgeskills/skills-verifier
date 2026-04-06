@@ -106,6 +106,7 @@
 			"cache": true
 		},
 		"check:svelte": {
+			"dependsOn": ["check:typescript"],
 			"inputs": ["src/**", "tsconfig.json", "svelte.config.js"],
 			"cache": true
 		},

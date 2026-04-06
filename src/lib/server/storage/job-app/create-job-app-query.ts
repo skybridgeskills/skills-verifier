@@ -5,8 +5,8 @@ import { appContext } from '$lib/server/app-context.js';
 import { defineQuery } from '../core/define-query.js';
 
 import { CreateJobAppParams, JobAppResource } from './job-app-resource.js';
-import { jobAppToRow } from './job-app-row.js';
 import type { JobAppResource as JobAppResourceType } from './job-app-resource.js';
+import { jobAppToRow } from './job-app-row.js';
 
 export const createJobAppQuery = defineQuery('CreateJobApp', CreateJobAppParams, {
 	memory: (db, params) => {

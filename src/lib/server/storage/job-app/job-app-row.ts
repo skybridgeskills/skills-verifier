@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 import { AppRowFields } from '../core/app-row.js';
 
-import type { JobAppResource } from './job-app-resource.js';
 import { JobAppResource, JobAppStatus } from './job-app-resource.js';
+import type { JobAppResource as JobAppResourceType } from './job-app-resource.js';
 
 /**
  * DynamoDB item shape for a job app (single-table design).
@@ -41,7 +41,7 @@ export function jobAppMetaKeys(
 	};
 }
 
-export function jobAppToRow(app: JobAppResource): JobAppRow {
+export function jobAppToRow(app: JobAppResourceType): JobAppRow {
 	const iso = app.createdAt.toISOString();
 	return {
 		...jobAppMetaKeys(app.id, app.jobId, iso),
@@ -55,7 +55,7 @@ export function jobAppToRow(app: JobAppResource): JobAppRow {
 	};
 }
 
-export function rowToJobAppResource(row: JobAppRow): JobAppResource {
+export function rowToJobAppResource(row: JobAppRow): JobAppResourceType {
 	return JobAppResource({
 		id: row.id,
 		jobId: row.jobId,

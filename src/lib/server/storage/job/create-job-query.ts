@@ -4,9 +4,9 @@ import { appContext } from '$lib/server/app-context.js';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { jobToRow } from './job-row.js';
 import { CreateJobParams, JobResource } from './job-resource.js';
 import type { JobResource as JobResourceType } from './job-resource.js';
+import { jobToRow } from './job-row.js';
 
 export const createJobQuery = defineQuery('CreateJob', CreateJobParams, {
 	memory: (db, params) => {
