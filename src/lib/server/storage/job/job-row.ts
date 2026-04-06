@@ -1,58 +1,31 @@
 import { z } from 'zod';
 
-import type { Job } from './job.js';
-import { ZodFactory } from '$lib/server/util/zod-factory.js';
+import { AppRowFields } from '../core/app-row.js';
 
-export const FrameworkSchema = ZodFactory(
-	z.object({
-		name: z.string(),
-		organization: z.string(),
-		url: z.string(),
-		ctid: z.string()
-	})
-);
-
-export const SkillSchema = ZodFactory(
-	z.object({
-		url: z.string(),
-		label: z.string().optional(),
-		text: z.string(),
-		ctid: z.string()
-	})
-);
-
-export const JobStatus = ZodFactory(z.enum(['active', 'closed', 'draft']));
-
-export const JobInfo = ZodFactory(
-	z.object({
-		sourceId: z.string().optional(),
-		sourceUrl: z.string().optional(),
-		label: z.string(),
-		description: z.string(),
-		company: z.string(),
-		location: z.string().optional(),
-		skills: z.array(SkillSchema),
-		createdAt: z.date()
-	})
-);
+import type { JobResource } from './job-resource.js';
+import { FrameworkResource, SkillResource, JobStatus, JobResource } from './job-resource.js';
 
 /**
  * DynamoDB item shape for a job (single-table design).
+ * Extends AppRow with domain-specific fields.
  */
 export const JobRow = z.object({
-	PK: z.string(),
-	SK: z.string(),
-	GSI1PK: z.string(),
-	GSI1SK: z.string(),
-	id: z.string(),
-	externalId: z.string(),
-	externalUrl: z.string().optional(),
-	name: z.string(),
-	description: z.string(),
-	company: z.string(),
-	frameworks: z.array(FrameworkSchema),
-	skills: z.array(SkillSchema),
-	status: JobStatus,
+	// AppRow base fields
+	PK: AppRowFields.PK,
+	SK: AppRowFields.SK,
+	GSI1PK: AppRowFields.GSI1PK,
+	GSI1SK: AppRowFields.GSI1SK,
+
+	// Domain fields (referenced from source schema for consistency)
+	id: JobResource.schema.shape.id,
+	externalId: JobResource.schema.shape.externalId,
+	externalUrl: JobResource.schema.shape.externalUrl,
+	name: JobResource.schema.shape.name,
+	description: JobResource.schema.shape.description,
+	company: JobResource.schema.shape.company,
+	frameworks: z.array(FrameworkResource.schema),
+	skills: z.array(SkillResource.schema),
+	status: JobStatus.schema,
 	createdAt: z.string()
 });
 
@@ -70,7 +43,7 @@ export function jobMetaKeys(
 	};
 }
 
-export function jobToRow(job: Job): JobRow {
+export function jobToRow(job: JobResource): JobRow {
 	return {
 		...jobMetaKeys(job.id, job.externalId),
 		id: job.id,
@@ -86,8 +59,8 @@ export function jobToRow(job: Job): JobRow {
 	};
 }
 
-export function rowToJob(row: JobRow): Job {
-	return {
+export function rowToJobResource(row: JobRow): JobResource {
+	return JobResource({
 		id: row.id,
 		externalId: row.externalId,
 		externalUrl: row.externalUrl,
@@ -98,7 +71,7 @@ export function rowToJob(row: JobRow): Job {
 		skills: row.skills,
 		status: row.status,
 		createdAt: new Date(row.createdAt)
-	};
+	});
 }
 
 export function parseJobRow(raw: unknown): JobRow {

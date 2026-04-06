@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { TestAppContext } from '$lib/server/test-app-context.js';
 import { runInContext } from '$lib/server/util/provider/provider-ctx.js';
 
+import { createJobAppQuery } from './job-app/create-job-app-query.js';
+import { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
+import { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';
 import { createJobQuery } from './job/create-job-query.js';
 import { jobByExternalIdQuery } from './job/job-by-external-id-query.js';
 import { jobByIdQuery } from './job/job-by-id-query.js';
 import { listActiveJobsQuery } from './job/list-active-jobs-query.js';
-import { createJobApplicationQuery } from './job-application/create-job-application-query.js';
-import { jobApplicationByIdQuery } from './job-application/job-application-by-id-query.js';
-import { listJobApplicationsByJobQuery } from './job-application/list-job-applications-by-job-query.js';
 
 describe('storage queries (memory)', () => {
 	it('creates job, finds by id and external id, lists active', async () => {
@@ -33,7 +33,7 @@ describe('storage queries (memory)', () => {
 		});
 	});
 
-	it('creates job application and lists by job', async () => {
+	it('creates job app and lists by job', async () => {
 		const ctx = await TestAppContext();
 		await runInContext(ctx, async () => {
 			const job = await createJobQuery({
@@ -45,14 +45,14 @@ describe('storage queries (memory)', () => {
 				skills: []
 			});
 
-			const app = await createJobApplicationQuery({
+			const app = await createJobAppQuery({
 				jobId: job.id,
 				candidateName: 'Alex',
 				candidateEmail: 'alex@example.com'
 			});
 
-			expect(await jobApplicationByIdQuery({ id: app.id })).toEqual(app);
-			const forJob = await listJobApplicationsByJobQuery({ jobId: job.id });
+			expect(await jobAppByIdQuery({ id: app.id })).toEqual(app);
+			const forJob = await listJobAppsByJobQuery({ jobId: job.id });
 			expect(forJob).toHaveLength(1);
 			expect(forJob[0].id).toBe(app.id);
 		});

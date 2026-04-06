@@ -9,40 +9,65 @@ export {
 	type DynamoStorageDatabase,
 	type StorageDatabase
 } from './core/types.js';
+export {
+	AppResource,
+	AppResourceFields,
+	type AppResource as AppResourceType
+} from './core/app-resource.js';
+export { AppRow, AppRowFields, type AppRow as AppRowType } from './core/app-row.js';
 export { StorageDatabaseCtx } from './storage-database-ctx.js';
 
-/** Job */
-export type { Job, JobStatus } from './job/job.js';
+/** Job Domain */
 export {
-	FrameworkSchema,
-	JobRow as JobRowSchema,
-	JobStatus as JobStatusSchema,
-	SkillSchema,
+	FrameworkResource,
+	SkillResource,
+	JobStatus,
+	JobResource,
+	CreateJobParams,
+	type FrameworkResource as FrameworkResourceType,
+	type SkillResource as SkillResourceType,
+	type JobStatus as JobStatusType,
+	type JobResource as JobResourceType,
+	type CreateJobParams as CreateJobParamsType
+} from './job/job-resource.js';
+
+/** Job Row (Database Layer) */
+export {
+	JobRow,
 	jobMetaKeys,
 	jobToRow,
+	rowToJobResource,
 	parseJobRow,
-	rowToJob,
-	type JobRow
+	type JobRow as JobRowType
 } from './job/job-row.js';
-export { createJobQuery, CreateJobParamsSchema } from './job/create-job-query.js';
+
+/** Job Queries */
+export { createJobQuery } from './job/create-job-query.js';
 export { jobByIdQuery } from './job/job-by-id-query.js';
 export { jobByExternalIdQuery } from './job/job-by-external-id-query.js';
 export { listActiveJobsQuery } from './job/list-active-jobs-query.js';
 
-/** Job application */
-export type { JobApplication, JobApplicationStatus } from './job-application/job-application.js';
+/** Job app domain */
 export {
-	JobApplicationRowSchema,
-	JobApplicationStatusSchema,
-	jobApplicationMetaKeys,
-	jobApplicationToRow,
-	parseJobApplicationRow,
-	rowToJobApplication,
-	type JobApplicationRow
-} from './job-application/job-application-row.js';
+	JobAppStatus,
+	JobAppResource,
+	CreateJobAppParams,
+	type JobAppStatus as JobAppStatusType,
+	type JobAppResource as JobAppResourceType,
+	type CreateJobAppParams as CreateJobAppParamsType
+} from './job-app/job-app-resource.js';
+
+/** Job app row (database layer) */
 export {
-	createJobApplicationQuery,
-	CreateJobApplicationParamsSchema
-} from './job-application/create-job-application-query.js';
-export { jobApplicationByIdQuery } from './job-application/job-application-by-id-query.js';
-export { listJobApplicationsByJobQuery } from './job-application/list-job-applications-by-job-query.js';
+	JobAppRow,
+	jobAppMetaKeys,
+	jobAppToRow,
+	rowToJobAppResource,
+	parseJobAppRow,
+	type JobAppRow as JobAppRowType
+} from './job-app/job-app-row.js';
+
+/** Job app queries */
+export { createJobAppQuery } from './job-app/create-job-app-query.js';
+export { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
+export { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';

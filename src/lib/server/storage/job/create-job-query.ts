@@ -1,32 +1,19 @@
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { z } from 'zod';
 
 import { appContext } from '$lib/server/app-context.js';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { FrameworkSchema, JobStatus, SkillSchema, jobToRow } from './job-row.js';
-import type { Job } from './job.js';
+import { jobToRow } from './job-row.js';
+import { CreateJobParams, JobResource } from './job-resource.js';
+import type { JobResource as JobResourceType } from './job-resource.js';
 
-export const CreateJobParamsSchema = z.object({
-	externalId: z.string(),
-	externalUrl: z.string().optional(),
-	name: z.string(),
-	description: z.string(),
-	company: z.string(),
-	frameworks: z.array(FrameworkSchema),
-	skills: z.array(SkillSchema),
-	status: JobStatus.default('draft')
-});
-
-export const createJobQuery = defineQuery('CreateJob', CreateJobParamsSchema, {
+export const createJobQuery = defineQuery('CreateJob', CreateJobParams, {
 	memory: (db, params) => {
 		const { idService, timeService } = appContext();
-		const id = idService.secureUid();
-		const createdAt = new Date(timeService.dateNowMs());
-		const job: Job = {
-			id,
-			createdAt,
+		const job: JobResourceType = JobResource({
+			id: idService.secureUid(),
+			createdAt: new Date(timeService.dateNowMs()),
 			externalId: params.externalId,
 			externalUrl: params.externalUrl,
 			name: params.name,
@@ -35,17 +22,15 @@ export const createJobQuery = defineQuery('CreateJob', CreateJobParamsSchema, {
 			frameworks: params.frameworks,
 			skills: params.skills,
 			status: params.status
-		};
-		db.jobsById.set(id, job);
+		});
+		db.jobsById.set(job.id, job);
 		return job;
 	},
 	dynamo: async (ctx, params) => {
 		const { idService, timeService } = appContext();
-		const id = idService.secureUid();
-		const createdAt = new Date(timeService.dateNowMs());
-		const job: Job = {
-			id,
-			createdAt,
+		const job: JobResourceType = JobResource({
+			id: idService.secureUid(),
+			createdAt: new Date(timeService.dateNowMs()),
 			externalId: params.externalId,
 			externalUrl: params.externalUrl,
 			name: params.name,
@@ -54,7 +39,7 @@ export const createJobQuery = defineQuery('CreateJob', CreateJobParamsSchema, {
 			frameworks: params.frameworks,
 			skills: params.skills,
 			status: params.status
-		};
+		});
 		await ctx.docClient.send(
 			new PutCommand({
 				TableName: ctx.tableName,

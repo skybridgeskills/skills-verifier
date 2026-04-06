@@ -3,12 +3,13 @@ import { z } from 'zod';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { parseJobRow, rowToJob } from './job-row.js';
-import type { Job } from './job.js';
+import { parseJobRow, rowToJobResource } from './job-row.js';
+import type { JobResource } from './job-resource.js';
 
 export const listActiveJobsQuery = defineQuery('ListActiveJobs', z.object({}), {
-	memory: (db): Job[] => Array.from(db.jobsById.values()).filter((job) => job.status === 'active'),
-	dynamo: async (ctx): Promise<Job[]> => {
+	memory: (db): JobResource[] =>
+		Array.from(db.jobsById.values()).filter((job) => job.status === 'active'),
+	dynamo: async (ctx): Promise<JobResource[]> => {
 		const res = await ctx.docClient.send(
 			new ScanCommand({
 				TableName: ctx.tableName,
@@ -21,10 +22,10 @@ export const listActiveJobsQuery = defineQuery('ListActiveJobs', z.object({}), {
 				}
 			})
 		);
-		const jobs: Job[] = [];
+		const jobs: JobResource[] = [];
 		for (const item of res.Items ?? []) {
 			try {
-				jobs.push(rowToJob(parseJobRow(item)));
+				jobs.push(rowToJobResource(parseJobRow(item)));
 			} catch {
 				// ignore malformed rows
 			}

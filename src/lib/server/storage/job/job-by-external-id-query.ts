@@ -3,14 +3,14 @@ import { z } from 'zod';
 
 import { defineQuery } from '../core/define-query.js';
 
-import { parseJobRow, rowToJob } from './job-row.js';
-import type { Job } from './job.js';
+import { parseJobRow, rowToJobResource } from './job-row.js';
+import type { JobResource } from './job-resource.js';
 
 export const jobByExternalIdQuery = defineQuery(
 	'JobByExternalId',
 	z.object({ externalId: z.string() }),
 	{
-		memory: (db, { externalId }): Job | null => {
+		memory: (db, { externalId }): JobResource | null => {
 			for (const job of db.jobsById.values()) {
 				if (job.externalId === externalId) {
 					return job;
@@ -35,7 +35,7 @@ export const jobByExternalIdQuery = defineQuery(
 			if (!item) {
 				return null;
 			}
-			return rowToJob(parseJobRow(item));
+			return rowToJobResource(parseJobRow(item));
 		}
 	}
 );
