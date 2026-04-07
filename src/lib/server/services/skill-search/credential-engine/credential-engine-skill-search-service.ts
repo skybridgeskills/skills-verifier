@@ -30,7 +30,10 @@ export function CredentialEngineSkillSearchService(
 			});
 
 			if (!response.ok) {
-				throw new Error(`CE search failed: ${response.status} ${response.statusText}`);
+				const errorBody = await response.text().catch(() => 'Unable to read error body');
+				throw new Error(
+					`CE search failed: ${response.status} ${response.statusText} - ${errorBody}`
+				);
 			}
 
 			const ceResponse: unknown = await response.json();

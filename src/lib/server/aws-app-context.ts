@@ -5,6 +5,7 @@ import { provideHttpFrameworkClient } from '$lib/clients/framework-client/framew
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
+import { RealLoggerServiceCtx } from './services/logging/real-logger-service.js';
 import { provideCredentialEngineSkillSearchService } from './services/skill-search/credential-engine/provide-credential-engine-skill-search-service.js';
 import { RealTimeServiceCtx } from './services/time-service/real-time-service.js';
 import { Providers } from './util/provider/providers.js';
@@ -32,6 +33,7 @@ export async function AwsAppContext(env: Record<string, unknown>): Promise<AppCo
 	});
 
 	return (await Providers(
+		RealLoggerServiceCtx({ level: 'info', pretty: false }),
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
 		provideHttpFrameworkClient,

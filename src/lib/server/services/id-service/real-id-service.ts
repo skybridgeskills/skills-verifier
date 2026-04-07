@@ -1,3 +1,4 @@
+import { logServiceInitialized } from '../../util/log-service-initialized.js';
 import { bytesToBigInt } from '../../util/number/bytes-to-big-int.js';
 import { toBase62 } from '../../util/number/to-base62.js';
 
@@ -51,5 +52,9 @@ export function RealIdService(): IdService {
 }
 export type RealIdService = ReturnType<typeof RealIdService>;
 
-export const RealIdServiceCtx = () => ({ idService: RealIdService() }) satisfies IdServiceCtx;
+export const RealIdServiceCtx = () => {
+	const slice = { idService: RealIdService() } satisfies IdServiceCtx;
+	logServiceInitialized('idService', 'real');
+	return slice;
+};
 export type RealIdServiceCtx = ReturnType<typeof RealIdServiceCtx>;

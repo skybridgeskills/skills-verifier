@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import { treeifyError, z } from 'zod';
 
 import { appContext } from '$lib/server/app-context.js';
+import { appLogger } from '$lib/server/services/logging/index.js';
 import { SkillSearchQuery } from '$lib/server/services/skill-search/skill-search-service.js';
 
 import type { RequestHandler } from './$types';
@@ -11,17 +12,24 @@ const PostBody = z.object({
 	limit: z.coerce.number().int().min(1).max(100).optional().default(20)
 });
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	let body: unknown;
 	try {
 		body = await request.json();
 	} catch {
-		return json({ error: 'Invalid JSON body' }, { status: 400 });
+		return json({ error: 'Invalid JSON body', requestId: locals.requestId }, { status: 400 });
 	}
 
 	const parsed = PostBody.safeParse(body);
 	if (!parsed.success) {
-		return json({ error: 'Invalid request', details: treeifyError(parsed.error) }, { status: 400 });
+		return json(
+			{
+				error: 'Invalid request',
+				details: treeifyError(parsed.error),
+				requestId: locals.requestId
+			},
+			{ status: 400 }
+		);
 	}
 
 	try {
@@ -36,7 +44,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				limit: parsed.data.limit
 			}
 		});
-	} catch {
-		return json({ error: 'Search failed' }, { status: 500 });
+	} catch (error) {
+		appLogger().error({ err: error, requestId: locals.requestId }, 'Skill search failed');
+		const message = error instanceof Error ? error.message : 'Search failed';
+		return json({ error: message, requestId: locals.requestId }, { status: 500 });
 	}
 };

@@ -1,3 +1,5 @@
+import { appLoggerSafe } from '$lib/server/services/logging/logger-service.js';
+
 import { MemoryDatabase } from './memory-database.js';
 import type { StorageDatabase } from './types.js';
 
@@ -11,9 +13,11 @@ import type { StorageDatabase } from './types.js';
  */
 export function createStorageDatabase(): StorageDatabase {
 	if (process.env.DYNAMODB_TABLE?.trim()) {
-		console.warn(
-			'[storage] DYNAMODB_TABLE is set but DynamoDB is not enabled in this build; using MemoryDatabase.'
-		);
+		const log = appLoggerSafe();
+		const msg =
+			'[storage] DYNAMODB_TABLE is set but DynamoDB is not enabled in this build; using MemoryDatabase.';
+		if (log) log.warn(msg);
+		else console.warn(msg);
 	}
 	return new MemoryDatabase();
 }

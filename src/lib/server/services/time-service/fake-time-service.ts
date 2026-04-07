@@ -1,3 +1,5 @@
+import { logServiceInitialized } from '../../util/log-service-initialized.js';
+
 import type { TimeService, TimeServiceCtx } from './time-service.js';
 
 /**
@@ -24,6 +26,9 @@ export function FakeTimeService(): TimeService {
 }
 export type FakeTimeService = ReturnType<typeof FakeTimeService>;
 
-export const FakeTimeServiceCtx = () =>
-	({ timeService: FakeTimeService() }) satisfies TimeServiceCtx;
+export const FakeTimeServiceCtx = () => {
+	const slice = { timeService: FakeTimeService() } satisfies TimeServiceCtx;
+	logServiceInitialized('timeService', 'fake');
+	return slice;
+};
 export type FakeTimeServiceCtx = ReturnType<typeof FakeTimeServiceCtx>;

@@ -6,6 +6,7 @@ import {
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
+import { RealLoggerServiceCtx } from './services/logging/real-logger-service.js';
 import { provideCredentialEngineSkillSearchService } from './services/skill-search/credential-engine/provide-credential-engine-skill-search-service.js';
 import { provideFakeSkillSearchService } from './services/skill-search/provide-fake-skill-search-service.js';
 import { RealTimeServiceCtx } from './services/time-service/real-time-service.js';
@@ -33,8 +34,13 @@ function devCredentialEngineConfig(env: Record<string, unknown>): {
  */
 export async function DevAppContext(env: Record<string, unknown>): Promise<AppContext> {
 	const ce = devCredentialEngineConfig(env);
+	const logLevel =
+		typeof env.LOG_LEVEL === 'string' && env.LOG_LEVEL.trim().length > 0
+			? env.LOG_LEVEL.trim()
+			: 'info';
 
 	return (await Providers(
+		RealLoggerServiceCtx({ level: logLevel, pretty: true }),
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
 		ce.useReal ? provideHttpFrameworkClient : provideFakeFrameworkClient,

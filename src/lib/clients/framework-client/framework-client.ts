@@ -1,5 +1,6 @@
 import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
 import { HttpFrameworkClient } from '$lib/clients/framework-client/http-framework-client';
+import { logServiceInitialized } from '$lib/server/util/log-service-initialized.js';
 import type { Framework, Skill } from '$lib/types/job-profile';
 
 /**
@@ -44,9 +45,15 @@ export type FrameworkClientSlice = {
 };
 
 /** Provider for real HTTP framework client. */
-export const provideHttpFrameworkClient = () =>
-	({ frameworkClient: new HttpFrameworkClient() }) satisfies FrameworkClientSlice;
+export const provideHttpFrameworkClient = () => {
+	const slice = { frameworkClient: new HttpFrameworkClient() } satisfies FrameworkClientSlice;
+	logServiceInitialized('frameworkClient', 'http');
+	return slice;
+};
 
 /** Provider for fake/mock framework client. */
-export const provideFakeFrameworkClient = () =>
-	({ frameworkClient: new FakeFrameworkClient() }) satisfies FrameworkClientSlice;
+export const provideFakeFrameworkClient = () => {
+	const slice = { frameworkClient: new FakeFrameworkClient() } satisfies FrameworkClientSlice;
+	logServiceInitialized('frameworkClient', 'fake');
+	return slice;
+};

@@ -6,6 +6,7 @@ import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
+import { FakeLoggerService } from './services/logging/fake-logger-service.js';
 import { FakeSkillSearchService } from './services/skill-search/fake-skill-search-service.js';
 import { FakeTimeService, FakeTimeServiceCtx } from './services/time-service/fake-time-service.js';
 import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.js';
@@ -13,6 +14,7 @@ import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.
 describe('app-context', () => {
 	function createTestContext(): AppContext {
 		return {
+			logger: FakeLoggerService(),
 			...FakeTimeServiceCtx(),
 			...FakeIdServiceCtx(),
 			frameworkClient: new FakeFrameworkClient(),
@@ -91,6 +93,7 @@ describe('app-context', () => {
 
 			runWithExtraContext(
 				{
+					logger: FakeLoggerService(),
 					timeService: newTimeService,
 					idService: newIdService,
 					frameworkClient: new FakeFrameworkClient(),

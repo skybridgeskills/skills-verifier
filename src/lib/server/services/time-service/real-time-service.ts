@@ -1,3 +1,5 @@
+import { logServiceInitialized } from '../../util/log-service-initialized.js';
+
 import type { TimeService, TimeServiceCtx } from './time-service.js';
 
 /**
@@ -15,6 +17,9 @@ export function RealTimeService(): TimeService {
 }
 export type RealTimeService = ReturnType<typeof RealTimeService>;
 
-export const RealTimeServiceCtx = () =>
-	({ timeService: RealTimeService() }) satisfies TimeServiceCtx;
+export const RealTimeServiceCtx = () => {
+	const slice = { timeService: RealTimeService() } satisfies TimeServiceCtx;
+	logServiceInitialized('timeService', 'real');
+	return slice;
+};
 export type RealTimeServiceCtx = ReturnType<typeof RealTimeServiceCtx>;

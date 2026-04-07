@@ -1,3 +1,5 @@
+import { logServiceInitialized } from '../../util/log-service-initialized.js';
+
 import type { IdService, IdServiceCtx } from './id-service.js';
 
 // Counters per prefix for testStr
@@ -28,5 +30,9 @@ export function FakeIdService(): IdService {
 }
 export type FakeIdService = ReturnType<typeof FakeIdService>;
 
-export const FakeIdServiceCtx = () => ({ idService: FakeIdService() }) satisfies IdServiceCtx;
+export const FakeIdServiceCtx = () => {
+	const slice = { idService: FakeIdService() } satisfies IdServiceCtx;
+	logServiceInitialized('idService', 'fake');
+	return slice;
+};
 export type FakeIdServiceCtx = ReturnType<typeof FakeIdServiceCtx>;

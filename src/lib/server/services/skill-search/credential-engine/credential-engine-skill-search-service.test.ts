@@ -55,7 +55,8 @@ describe('CredentialEngineSkillSearchService', () => {
 			vi.fn().mockResolvedValue({
 				ok: false,
 				status: 401,
-				statusText: 'Unauthorized'
+				statusText: 'Unauthorized',
+				text: async () => 'Invalid API key'
 			})
 		);
 
@@ -65,7 +66,7 @@ describe('CredentialEngineSkillSearchService', () => {
 		});
 
 		await expect(service.search(SkillSearchQuery({ query: 'test' }))).rejects.toThrow(
-			'CE search failed: 401 Unauthorized'
+			'CE search failed: 401 Unauthorized - Invalid API key'
 		);
 	});
 });
