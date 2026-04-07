@@ -49,6 +49,8 @@ Skill search uses the **Credential Registry Search API** (CTDL JSON queries over
 
 Paths are under `/assistant/search/ctdl` on the registry host.
 
+The server client sends the same JSON envelope as the [Query Helper](https://credreg.net/quickstart/queryhelper): `Query` (CTDL object), `Skip`, `Take`, and `Environment` (`Sandbox` when the URL host contains `sandbox`, otherwise `Production`). A flat body with only `search:skip` / `search:take` is not used.
+
 ## Storage
 
 Currently, all environments use **in-memory storage**. DynamoDB support is stubbed but disabled until production persistence is required. When enabled, `aws` context will likely use DynamoDB while `dev` and `test` continue using memory storage.

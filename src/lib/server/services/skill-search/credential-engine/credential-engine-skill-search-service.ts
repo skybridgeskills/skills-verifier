@@ -20,7 +20,7 @@ export function CredentialEngineSkillSearchService(
 ): SkillSearchService {
 	return {
 		async search(query: SkillSearchQuery): Promise<SkillSearchResult[]> {
-			const requestBody = buildCredentialEngineSearchRequest(query);
+			const requestBody = buildCredentialEngineSearchRequest(query, config.searchUrl);
 
 			const log = appLoggerSafe();
 			if (log) {

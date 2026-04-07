@@ -1,17 +1,43 @@
 import type { SkillSearchQuery } from '../skill-search-service.js';
 
+export type CeAssistantEnvironment = 'Production' | 'Sandbox';
+
 /**
- * Build Registry Search API POST body (CTDL JSON query + paging).
- * Searches for competencies matching the query text.
- * @see https://credreg.net/registry/searchapi
+ * `POST …/assistant/search/ctdl` expects the same JSON envelope as
+ * [Query Helper DoSearch](https://credreg.net/quickstart/queryhelper): `Query`, `Skip`, `Take`,
+ * and `Environment`. A flat body with `search:skip` / `search:take` can return 500 on sandbox.
  */
-export function buildCredentialEngineSearchRequest(query: SkillSearchQuery): unknown {
+export function ceAssistantEnvironmentFromSearchUrl(searchUrl: string): CeAssistantEnvironment {
+	try {
+		if (new URL(searchUrl).hostname.toLowerCase().includes('sandbox')) {
+			return 'Sandbox';
+		}
+	} catch {
+		/* invalid URL → Production */
+	}
+	return 'Production';
+}
+
+/**
+ * Build POST body for Credential Engine Assistant Search (`/assistant/search/ctdl`).
+ *
+ * Inner query matches competencies with `ceasn:competencyText` (plain string), as in the
+ * Query Helper.
+ *
+ * @see https://credreg.net/registry/searchapi — Search API Handbook
+ * @see https://credreg.net/quickstart/queryhelper — Query Helper
+ */
+export function buildCredentialEngineSearchRequest(
+	query: SkillSearchQuery,
+	searchUrl: string
+): unknown {
 	return {
-		'@type': ['ceasn:Competency'],
-		'search:termGroup': {
-			'search:term': query.query
+		Query: {
+			'@type': ['ceasn:Competency'],
+			'ceasn:competencyText': query.query
 		},
-		'search:skip': 0,
-		'search:take': query.limit
+		Skip: 0,
+		Take: query.limit,
+		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
 	};
 }

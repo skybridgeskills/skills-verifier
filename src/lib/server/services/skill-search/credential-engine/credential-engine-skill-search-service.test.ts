@@ -46,8 +46,31 @@ describe('CredentialEngineSkillSearchService', () => {
 		const call = mockFetch.mock.calls[0];
 		const init = call[1] as RequestInit;
 		const body = JSON.parse(init.body as string);
-		expect(body['search:termGroup']['search:term']).toBe('Nursing');
-		expect(body['search:take']).toBe(10);
+		expect(body.Environment).toBe('Production');
+		expect(body.Skip).toBe(0);
+		expect(body.Take).toBe(10);
+		expect(body.Query).toEqual({
+			'@type': ['ceasn:Competency'],
+			'ceasn:competencyText': 'Nursing'
+		});
+	});
+
+	it('uses Sandbox Environment when search URL host is sandbox', async () => {
+		const mockFetch = vi.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({ data: [] })
+		});
+		vi.stubGlobal('fetch', mockFetch);
+
+		const service = CredentialEngineSkillSearchService({
+			searchUrl: 'https://sandbox.credentialengine.org/assistant/search/ctdl',
+			apiKey: 'test-api-key'
+		});
+
+		await service.search(SkillSearchQuery({ query: 'x', limit: 5 }));
+
+		const init = mockFetch.mock.calls[0][1] as RequestInit;
+		expect(JSON.parse(init.body as string).Environment).toBe('Sandbox');
 	});
 
 	it('throws on non-ok response', async () => {
