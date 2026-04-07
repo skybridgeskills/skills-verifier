@@ -1,4 +1,7 @@
-import { FrameworkClientCtx } from '$lib/clients/framework-client/framework-client.js';
+import {
+	provideFakeFrameworkClient,
+	provideHttpFrameworkClient
+} from '$lib/clients/framework-client/framework-client.js';
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
@@ -25,7 +28,8 @@ function devCredentialEngineConfig(env: Record<string, unknown>): {
 
 /**
  * Creates an AppContext for local development (`CONTEXT=dev`).
- * Skill search uses CE when both `CREDENTIAL_ENGINE_*` vars are set; otherwise fake.
+ * Framework client and skill search use real CE when both `CREDENTIAL_ENGINE_*` vars are set;
+ * otherwise fake (for offline development, Storybook, etc.).
  */
 export async function DevAppContext(env: Record<string, unknown>): Promise<AppContext> {
 	const ce = devCredentialEngineConfig(env);
@@ -33,7 +37,7 @@ export async function DevAppContext(env: Record<string, unknown>): Promise<AppCo
 	return (await Providers(
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
-		FrameworkClientCtx,
+		ce.useReal ? provideHttpFrameworkClient : provideFakeFrameworkClient,
 		StorageDatabaseCtx,
 		ce.useReal
 			? () =>

@@ -22,9 +22,9 @@
 
 - **App context**: `AppContext` (`src/lib/server/app-context.ts`) holds `timeService`, `idService`, `frameworkClient`, `database`. Built via `devAppProviders` in `dev-app-context.ts` (no `CONTEXT` switch yet; always dev-shaped providers).
 - **Hooks**: `hooks.server.ts` builds context once in `init` with `DevAppContext()` and wraps requests in `runInContext`.
-- **Credential Engine today**: `FrameworkClient` + `createFrameworkService()` toggles **fake vs HTTP** via `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE` and fetches **JSON-LD by URL** (`HttpFrameworkClient`). That is **not** a keyword search API; it complements a future **skill search** port.
+- **Credential Engine today**: `FrameworkClient` toggles **fake vs HTTP** based on `CONTEXT` and CE env vars (same as skill search). Fetches **JSON-LD by URL** (`HttpFrameworkClient`). That is **not** a keyword search API; it complements a future **skill search** port.
 - **UI**: Create-job flow still **framework-first** (`FrameworkSelector` + `SkillsList` client-side filtering). `docs/design/open-questions.md` records tension with skills-only direction—search service supports moving toward skill discovery without requiring a framework first.
-- **Env**: `.env.example` documents framework fake flag and storage placeholders only; no parsed server-side Zod env module yet.
+- **Env**: `.env.example` documents CE credentials only; no separate framework/storage toggles. Context-based selection in app contexts.
 
 ## Style conventions (for this plan)
 
@@ -67,7 +67,7 @@
 
 **Context**: Framework client fake toggle is separate from skill search.
 
-**Answer**: **Independent** — no shared “all CE off” flag. Framework fetch uses `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE`; skill search uses `CONTEXT` + CE vars as above. Documented under “Skill search vs framework client” in [`docs/deployment.md`](../../deployment.md).
+**Answer**: **Unified** — both framework client and skill search now use the same gating logic: `CONTEXT=aws` requires CE vars, `CONTEXT=dev` uses CE vars when present (otherwise fake), `CONTEXT=test` always uses fake. See [`docs/deployment.md`](../../deployment.md). “all CE off” flag. Framework fetch uses `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE`; skill search uses `CONTEXT` + CE vars as above. Documented under “Skill search vs framework client” in [`docs/deployment.md`](../../deployment.md).
 
 ---
 
@@ -94,4 +94,4 @@
 
 ### Q4 — Framework client
 
-- **Independent** of skill search; see `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE` in `.env.example`.
+- **Unified with skill search** — both use the same `CONTEXT` + CE vars gating (see [`docs/deployment.md`](../../deployment.md)).

@@ -6,7 +6,7 @@ Decisions deferred while the app architecture stabilizes. Update this file when 
 
 **Current choice:** The runtime uses an **in-memory database only**. `createStorageDatabase()` always returns `MemoryDatabase`; DynamoDB wiring in the factory is disabled until we need production persistence. Query modules still carry DynamoDB implementations so turning the cloud path back on is mostly a factory/env change plus validation.
 
-**When revisiting:** Re-enable the factory branch that reads `DYNAMODB_TABLE` (and optional `USE_MEMORY_STORAGE`), keep Terraform/table design aligned with query key patterns, and document local testing (e.g. [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) or LocalStack).
+**When revisiting:** Re-enable the factory branch that reads `DYNAMODB_TABLE` (or gate on `CONTEXT=aws`), keep Terraform/table design aligned with query key patterns, and document local testing (e.g. [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) or LocalStack).
 
 ## Frameworks vs skills on jobs
 

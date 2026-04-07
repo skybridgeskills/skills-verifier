@@ -67,7 +67,7 @@ Tests: TestAppContext() builds MemoryDatabase with SEED skipped → empty maps u
 | **`init`**              | Await `DevAppContext()` once; store result in module-level `let appContextSingleton`.                                                                                |
 | **`handle`**            | `runInContext(appContextSingleton, () => resolve(event))` — no async rebuild.                                                                                        |
 | **`seedDevData(ctx)`**  | Uses `createJobQuery` / `createJobAppQuery` (or direct map mutation only if we avoid circular imports) to populate memory. Using queries keeps row shape consistent. |
-| **`TestAppContext`**    | Use `MemoryDatabase` **without** calling `seedDevData`, or set `process.env.SKIP_MEMORY_SEED='1'` before building factory — document pattern.                        |
+| **`TestAppContext`**    | Use `MemoryDatabase` **without** calling `seedDevData`, or set `process.env.SEED_MEMORY_DATABASE='false'` before building factory — document pattern.                |
 | **Create job UI**       | Server `actions.default` validates body, calls `createJobQuery` with `frameworks: []` or optional payload; redirect or return updated list.                          |
 | **Optional frameworks** | Zod: `frameworks` default `[]`; UI removes “must select framework” gate; skills remain required (or as you define in validation).                                    |
 

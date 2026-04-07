@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { FrameworkClientCtx } from '$lib/clients/framework-client/framework-client.js';
+import { provideHttpFrameworkClient } from '$lib/clients/framework-client/framework-client.js';
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
@@ -10,20 +10,21 @@ import { RealTimeServiceCtx } from './services/time-service/real-time-service.js
 import { Providers } from './util/provider/providers.js';
 import { ZodFactory } from './util/zod-factory.js';
 
-/** AWS / production env: Credential Engine skill search is required. */
-const AwsSkillSearchEnv = ZodFactory(
+/** AWS / production env: Credential Engine is required. */
+const AwsEnv = ZodFactory(
 	z.object({
 		CREDENTIAL_ENGINE_SEARCH_URL: z.string().trim().min(1),
 		CREDENTIAL_ENGINE_API_KEY: z.string().trim().min(1)
 	})
 );
-export type AwsSkillSearchEnv = ReturnType<typeof AwsSkillSearchEnv>;
+export type AwsEnv = ReturnType<typeof AwsEnv>;
 
 /**
  * Creates AppContext for `CONTEXT=aws` (production-style).
+ * Framework client and skill search always use real CE (required env vars).
  */
 export async function AwsAppContext(env: Record<string, unknown>): Promise<AppContext> {
-	const ce = AwsSkillSearchEnv({
+	const ce = AwsEnv({
 		CREDENTIAL_ENGINE_SEARCH_URL:
 			typeof env.CREDENTIAL_ENGINE_SEARCH_URL === 'string' ? env.CREDENTIAL_ENGINE_SEARCH_URL : '',
 		CREDENTIAL_ENGINE_API_KEY:
@@ -33,7 +34,7 @@ export async function AwsAppContext(env: Record<string, unknown>): Promise<AppCo
 	return (await Providers(
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
-		FrameworkClientCtx,
+		provideHttpFrameworkClient,
 		StorageDatabaseCtx,
 		() =>
 			provideCredentialEngineSkillSearchService({

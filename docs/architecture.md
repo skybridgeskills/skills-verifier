@@ -109,7 +109,7 @@ Fetches JSON-LD competency frameworks from Credential Engine Registry.
 - `FrameworkClient` interface for fetching frameworks and skills by URL
 - `FakeFrameworkClient` -- Mock for Storybook/tests
 - `HttpFrameworkClient` -- Real HTTP implementation
-- Selected via `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE` env var
+- Selected by `CONTEXT` and Credential Engine env vars (same as skill search)
 
 Note: This is **separate** from skill search. Framework client fetches by URL (browse mode), while skill search queries by keyword (search mode).
 
@@ -156,4 +156,3 @@ Key variables:
 
 - `CREDENTIAL_ENGINE_SEARCH_URL` -- CE Registry Search API endpoint
 - `CREDENTIAL_ENGINE_API_KEY` -- Bearer token for CE API
-- `PUBLIC_USE_FAKE_FRAMEWORK_SERVICE` -- Toggle framework client (separate from skill search)

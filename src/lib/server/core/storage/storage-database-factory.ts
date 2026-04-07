@@ -6,7 +6,7 @@ import type { StorageDatabase } from './types.js';
  *
  * DynamoDB-backed storage is intentionally disabled until production persistence
  * is required. Query modules still implement `dynamo` branches; restoring cloud
- * storage is mainly: branch here on `DYNAMODB_TABLE` / `USE_MEMORY_STORAGE`,
+ * storage is mainly: branch here on `DYNAMODB_TABLE` presence (or `CONTEXT=aws`),
  * wire `DynamoDBDocumentClient`, and validate against the single-table design.
  */
 export function createStorageDatabase(): StorageDatabase {
