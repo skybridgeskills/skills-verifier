@@ -32,7 +32,7 @@ following sections:
 
 Ask the user each question, ONE AT A TIME:
 
-include in the qustion:
+include in the question:
 
 - the question
 - the current state of the codebase as it pertains to the question
@@ -48,6 +48,42 @@ Once the question is answered or otherwise resolved:
 - If the user's answers affect other questions or the scope of work, update the file
   accordingly before moving on.
 - Move on to the next question.
+
+## Code style (before design)
+
+**Before** the design iteration (and again when writing phase files), read the
+style guide so the plan matches team conventions:
+
+1. Read [`docs/style/README.md`](../../docs/style/README.md) (golden rules and index).
+2. Open any topic files that apply to this plan — for example
+   [`factory-functions.md`](../../docs/style/factory-functions.md),
+   [`providers.md`](../../docs/style/providers.md),
+   [`schemas.md`](../../docs/style/schemas.md),
+   [`naming.md`](../../docs/style/naming.md),
+   [`file-organization.md`](../../docs/style/file-organization.md),
+   [`documentation.md`](../../docs/style/documentation.md).
+3. Skim [`AGENTS.md`](../../AGENTS.md) for the short pattern checklist.
+
+You will **copy** the conventions that matter for this work into the plan
+artifacts (below) so implementation does not rely on memory alone. Prefer
+verbatim bullets or tight paraphrases of the style guide — enough detail to choose
+factories vs classes, naming, file layout, and schema patterns without re-reading
+every doc during each phase.
+
+### In `00-notes.md`
+
+Add a section **## Style conventions (for this plan)** when the scope touches
+code structure, APIs, or UI. List only what applies (e.g. "ZodFactory for new
+DTOs", "domain folder under `src/lib/server/domain/`"). If the plan is docs-only,
+note that or omit the section.
+
+### In `00-design.md`
+
+Include **## Style conventions** after the architecture summary. This section
+must mirror the relevant points from `docs/style/` and `AGENTS.md` for this
+feature (factory functions, providers, ZodFactory, domain-first layout, file size,
+naming, import order, documentation expectations — as applicable). The goal is a
+single place the agent re-reads while implementing.
 
 ## Design Iteration
 
@@ -86,6 +122,8 @@ The design file should include:
 - File structure (as shown above)
 - Conceptual architecture summary
 - Main components and how they interact
+- **Style conventions** (required) — bullets drawn from `docs/style/` and
+  `AGENTS.md` for this plan; see [Code style (before design)](#code-style-before-design)
 
 # Plan phases
 
@@ -128,6 +166,15 @@ Every phase should include some code quality reminders.
 - Place helper utility functions **at the bottom** of files.
 - Keep related functionality grouped together
 - Any temporary code should have a TODO comment so we can find it later.
+
+## Style conventions
+
+Repeat the **subset** of `docs/style/` / `AGENTS.md` rules that applies to **this
+phase** (copy or tighten bullets from `00-design.md` — factories vs classes,
+ZodFactory, `provide*` / providers, domain-first paths, naming, ~200-line files,
+import order, TSDoc for new public APIs, etc.). If this phase is documentation or
+tooling-only, say so explicitly. The agent should not need to re-open the full
+style guide for routine decisions while executing the phase.
 
 ## Implementation Details
 
