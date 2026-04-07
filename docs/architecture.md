@@ -113,6 +113,15 @@ Fetches JSON-LD competency frameworks from Credential Engine Registry.
 
 Note: This is **separate** from skill search. Framework client fetches by URL (browse mode), while skill search queries by keyword (search mode).
 
+## Create job UI (skills-first)
+
+The create-job flow does **not** require selecting a framework. Users add skills via:
+
+- **QuickSkillPicks** (`sample-skills.ts`) — one-click curated skills
+- **SkillSearch** (`components/skill-search/`) — debounced search calling `POST /api/skill-search`, implemented with `searchSkills()` in `src/lib/clients/skill-search-client.ts`
+
+Selected skills are shown in **SelectedSkillsColumn**. The form still posts `frameworksJson` as an empty array for backend compatibility.
+
 ## API Routes
 
 SvelteKit server routes (`src/routes/api/*`):
