@@ -1,12 +1,13 @@
 {
 	"name": "skills-verifier",
 	"private": true,
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"type": "module",
 	"packageManager": "pnpm@10.22.0",
 	"scripts": {
 		"preview": "vite preview",
 		"prepare": "husky && svelte-kit sync || echo ''",
+		"print-app-version": "./scripts/print-app-version.sh",
 		"build:svelte": "vite build",
 		"build:storybook": "storybook build",
 		"check:prettier": "prettier --check .",
