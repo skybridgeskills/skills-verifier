@@ -1,0 +1,2 @@
+- JobApplication doesn't feel like the right name, closer to a skill presentation, or addendum, or evidence, or something like that.
+-

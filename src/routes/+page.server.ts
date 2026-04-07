@@ -3,5 +3,5 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = () => {
-	redirect(302, '/jobs/create');
+	redirect(302, '/jobs');
 };

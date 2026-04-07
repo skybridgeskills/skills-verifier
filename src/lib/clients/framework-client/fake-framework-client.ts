@@ -183,10 +183,10 @@ export class FakeFrameworkClient implements FrameworkClient {
 		}
 
 		const skill: Skill = {
-			url: mockSkill['@id'],
+			url,
 			label,
 			text: text || label || '',
-			ctid: mockSkill['ceterms:ctid']
+			ctid: mockSkill['ceterms:ctid'] ?? ''
 		};
 
 		return { skill };

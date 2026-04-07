@@ -4,6 +4,7 @@ import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framewor
 
 import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
+import { MemoryDatabase } from './core/storage/memory-database.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeTimeService, FakeTimeServiceCtx } from './services/time-service/fake-time-service.js';
 import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.js';
@@ -13,7 +14,8 @@ describe('app-context', () => {
 		return {
 			...FakeTimeServiceCtx(),
 			...FakeIdServiceCtx(),
-			frameworkClient: new FakeFrameworkClient()
+			frameworkClient: new FakeFrameworkClient(),
+			database: new MemoryDatabase()
 		};
 	}
 
@@ -76,6 +78,7 @@ describe('app-context', () => {
 					expect(ctx.timeService).toBe(newTimeService);
 					expect(ctx.idService).toBe(baseContext.idService);
 					expect(ctx.frameworkClient).toBe(baseContext.frameworkClient);
+					expect(ctx.database).toBe(baseContext.database);
 				});
 			});
 		});
@@ -87,7 +90,9 @@ describe('app-context', () => {
 			runWithExtraContext(
 				{
 					timeService: newTimeService,
-					idService: newIdService
+					idService: newIdService,
+					frameworkClient: new FakeFrameworkClient(),
+					database: new MemoryDatabase()
 				},
 				() => {
 					const ctx = appContext();

@@ -93,7 +93,7 @@
 				</svg>
 				<p class="mt-2 text-sm text-muted-foreground">No skills selected yet</p>
 				<p class="mt-1 text-xs text-muted-foreground">
-					Select skills from the framework to add them here
+					Add skills using quick picks or the optional framework browser
 				</p>
 			</CardContent>
 		</Card>

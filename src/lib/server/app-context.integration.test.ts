@@ -24,6 +24,8 @@ describe('App Context Integration', () => {
 
 			// Test framework client exists
 			expect(ctx.frameworkClient).toBeDefined();
+			expect(ctx.database).toBeDefined();
+			expect(ctx.database.$type).toBe('memory');
 		});
 	});
 
@@ -43,6 +45,7 @@ describe('App Context Integration', () => {
 
 			// Test framework client exists
 			expect(ctx.frameworkClient).toBeDefined();
+			expect(ctx.database).toBeDefined();
 		});
 	});
 });

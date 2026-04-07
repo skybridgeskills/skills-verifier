@@ -4,6 +4,23 @@
  */
 
 /**
+ * Skill represents a competency/skill from a framework.
+ * Aligned with storage {@link SkillResource} (ctid, required text).
+ */
+export interface Skill {
+	/** URL to the skill JSON-LD resource */
+	url: string;
+	/** Competency label (short name) if available */
+	label?: string;
+	/** Competency text (description) */
+	text: string;
+	/** Credential Transparency Description Language ID */
+	ctid: string;
+	/** URL to the framework that the skill belongs to */
+	frameworkUrl?: string;
+}
+
+/**
  * Framework represents a competency framework from Credential Engine Registry.
  */
 export interface Framework {
@@ -18,20 +35,6 @@ export interface Framework {
 }
 
 /**
- * Skill represents a competency/skill from a framework.
- */
-export interface Skill {
-	/** URL to the skill JSON-LD resource */
-	url: string;
-	/** Competency label (short name) if available */
-	label?: string;
-	/** Competency text (description) */
-	text: string;
-	/** Credential Transparency Description Language ID */
-	ctid: string;
-}
-
-/**
  * JobProfile represents a job profile with selected frameworks and skills.
  */
 export interface JobProfile {
@@ -41,8 +44,8 @@ export interface JobProfile {
 	description: string;
 	/** Company name */
 	company: string;
-	/** Selected frameworks (array to support multi-framework selection in future) */
-	frameworks: Framework[];
+	/** Optional framework metadata (hints, provenance); not required to create a job */
+	frameworks?: Framework[];
 	/** Selected skills for this job */
 	skills: Skill[];
 }

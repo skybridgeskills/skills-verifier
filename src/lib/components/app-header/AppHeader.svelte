@@ -13,6 +13,12 @@
 		</a>
 		<nav class="flex flex-1 items-center justify-end gap-4">
 			<a
+				href={resolve('/jobs')}
+				class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+			>
+				Jobs
+			</a>
+			<a
 				href={resolve('/jobs/create')}
 				class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 			>
