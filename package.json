@@ -18,7 +18,7 @@
 		"fix:prettier": "prettier --write .",
 		"fix:eslint": "eslint . --fix",
 		"fix-staged-fast": "lint-staged --config .lintstagedrc.fast.json",
-		"test:vitest": "vitest run",
+		"test:vitest": "CONTEXT=test vitest run",
 		"test:storybook": "vite optimize --force && vitest run --reporter=verbose --no-file-parallelism --no-coverage",
 		"e2e:playwright": "playwright test",
 		"storybook": "storybook dev -p 6006",

@@ -13,7 +13,7 @@ import { listJobAppsByJobQuery } from '../../domain/job-app/list-job-apps-by-job
 
 describe('storage queries (memory)', () => {
 	it('creates job, finds by id and external id, lists active', async () => {
-		const ctx = await TestAppContext();
+		const ctx = await TestAppContext({});
 		await runInContext(ctx, async () => {
 			const job = await createJobQuery({
 				externalId: 'ext-career-1',
@@ -34,7 +34,7 @@ describe('storage queries (memory)', () => {
 	});
 
 	it('creates job app and lists by job', async () => {
-		const ctx = await TestAppContext();
+		const ctx = await TestAppContext({});
 		await runInContext(ctx, async () => {
 			const job = await createJobQuery({
 				externalId: 'ext-2',

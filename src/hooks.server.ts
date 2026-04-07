@@ -1,15 +1,17 @@
 import type { Handle, ServerInit } from '@sveltejs/kit';
 
 import type { AppContext } from '$lib/server/app-context.js';
+import { buildAppContext } from '$lib/server/build-app-context.js';
 import { seedDevDataIfNeeded } from '$lib/server/core/storage/seed-dev-data.js';
-import { DevAppContext } from '$lib/server/dev-app-context.js';
 import { panic } from '$lib/server/util/panic.js';
 import { runInContext } from '$lib/server/util/provider/provider-ctx.js';
+
+import { env } from '$env/dynamic/private';
 
 let serverAppContext: AppContext | undefined;
 
 export const init: ServerInit = async () => {
-	serverAppContext = await DevAppContext();
+	serverAppContext = await buildAppContext(env as Record<string, unknown>);
 	await runInContext(serverAppContext, async () => {
 		await seedDevDataIfNeeded(serverAppContext!);
 	});
