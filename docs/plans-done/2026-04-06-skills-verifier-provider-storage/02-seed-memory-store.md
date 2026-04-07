@@ -23,7 +23,7 @@ When the app uses **`MemoryDatabase`**, populate it with a **small deterministic
 **Logic**
 
 1. If `ctx.database` is not memory (`isMemoryDatabase`), return immediately.
-2. If test skip is active (e.g. `process.env.SKIP_MEMORY_SEED === '1'` or `true`), return immediately.
+2. If seeding is disabled (`process.env.SEED_MEMORY_DATABASE === 'false'` or `no` or `0`), return immediately.
 3. Optionally: skip if maps are already non-empty (idempotent dev restarts / HMR) — or always upsert by external id; document choice.
 4. Inside `runInContext(ctx, async () => { … })` from `hooks.server.ts` `init` **after** `serverAppContext` is assigned:
    - Call `await createJobQuery({ … })` with realistic minimal fields (`frameworks: []`, `skills` with at least one item if schema requires, etc.).
@@ -32,11 +32,11 @@ When the app uses **`MemoryDatabase`**, populate it with a **small deterministic
 **Test context**
 
 - Update [`src/lib/server/test-app-context.ts`](../../../src/lib/server/test-app-context.ts) so tests do **not** trigger seeding:
-  - Either set `SKIP_MEMORY_SEED` in test setup before `TestAppContext()`, or use a dedicated `MemoryDatabase` constructor path that never seeds, or build test providers without calling `seedDevDataIfNeeded`.
+  - Either set `SEED_MEMORY_DATABASE=false` in test setup before `TestAppContext()`, or use a dedicated `MemoryDatabase` constructor path that never seeds, or build test providers without calling `seedDevDataIfNeeded`.
 
 **Env / docs**
 
-- Add `SKIP_MEMORY_SEED` to [`.env.example`](../../../.env.example) with a one-line description.
+- Add `SEED_MEMORY_DATABASE` to [`.env.example`](../../../.env.example) with a one-line description (defaults to true in dev).
 - Mention in [`docs/design/open-questions.md`](../../design/open-questions.md) or README only if it helps contributors; avoid duplicating long prose.
 
 **Tests to add or extend**
@@ -51,4 +51,4 @@ pnpm exec svelte-kit sync && pnpm exec svelte-check --tsconfig ./tsconfig.json
 pnpm exec vitest run
 ```
 
-Manual: `pnpm dev` without `SKIP_MEMORY_SEED`, confirm seeded jobs appear wherever listing exists (after phase 4) or via a temporary log; with `SKIP_MEMORY_SEED=true`, confirm no seed side effects if you add a quick diagnostic route (optional).
+Manual: `pnpm dev` (seeding on by default), confirm seeded jobs appear wherever listing exists (after phase 4) or via a temporary log; with `SEED_MEMORY_DATABASE=false`, confirm no seed side effects if you add a quick diagnostic route (optional).

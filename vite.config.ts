@@ -11,6 +11,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	/** pino-pretty (dev) pulls in `colorette`; bundle for SSR. */
+	ssr: {
+		noExternal: ['colorette']
+	},
 
 	test: {
 		expect: { requireAssertions: true },

@@ -18,7 +18,7 @@
 		"fix:prettier": "prettier --write .",
 		"fix:eslint": "eslint . --fix",
 		"fix-staged-fast": "lint-staged --config .lintstagedrc.fast.json",
-		"test:vitest": "vitest run",
+		"test:vitest": "CONTEXT=test vitest run",
 		"test:storybook": "vite optimize --force && vitest run --reporter=verbose --no-file-parallelism --no-coverage",
 		"e2e:playwright": "playwright test",
 		"storybook": "storybook dev -p 6006",
@@ -78,6 +78,8 @@
 		"@aws-sdk/client-dynamodb": "^3.1022.0",
 		"@aws-sdk/lib-dynamodb": "^3.1022.0",
 		"clsx": "^2.1.1",
+		"pino": "^10.0.0",
+		"pino-pretty": "^13.0.0",
 		"tailwind-merge": "^3.4.0",
 		"zod": "^4.3.6"
 	}

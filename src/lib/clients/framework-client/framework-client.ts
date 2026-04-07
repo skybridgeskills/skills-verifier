@@ -1,5 +1,6 @@
 import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
 import { HttpFrameworkClient } from '$lib/clients/framework-client/http-framework-client';
+import { logServiceInitialized } from '$lib/server/util/log-service-initialized.js';
 import type { Framework, Skill } from '$lib/types/job-profile';
 
 /**
@@ -38,24 +39,21 @@ export interface FrameworkClient {
 	fetchSkill(url: string): Promise<SkillResponse>;
 }
 
-/**
- * Creates a FrameworkClient instance based on environment configuration.
- * Reads PUBLIC_USE_FAKE_FRAMEWORK_SERVICE from environment variables.
- * Uses import.meta.env which SvelteKit populates from PUBLIC_ prefixed env vars.
- * @returns FrameworkClient instance (HttpFrameworkClient or FakeFrameworkClient)
- */
-export function createFrameworkService(): FrameworkClient {
-	const useFake =
-		import.meta.env.PUBLIC_USE_FAKE_FRAMEWORK_SERVICE === 'true' ||
-		import.meta.env.PUBLIC_USE_FAKE_FRAMEWORK_SERVICE === true;
-
-	return useFake ? new FakeFrameworkClient() : new HttpFrameworkClient();
-}
 /** Shape of the framework client slice (for satisfies). */
 export type FrameworkClientSlice = {
 	frameworkClient: FrameworkClient;
 };
 
-export const FrameworkClientCtx = () =>
-	({ frameworkClient: createFrameworkService() }) satisfies FrameworkClientSlice;
-export type FrameworkClientCtx = ReturnType<typeof FrameworkClientCtx>;
+/** Provider for real HTTP framework client. */
+export const provideHttpFrameworkClient = () => {
+	const slice = { frameworkClient: new HttpFrameworkClient() } satisfies FrameworkClientSlice;
+	logServiceInitialized('frameworkClient', 'http');
+	return slice;
+};
+
+/** Provider for fake/mock framework client. */
+export const provideFakeFrameworkClient = () => {
+	const slice = { frameworkClient: new FakeFrameworkClient() } satisfies FrameworkClientSlice;
+	logServiceInitialized('frameworkClient', 'fake');
+	return slice;
+};

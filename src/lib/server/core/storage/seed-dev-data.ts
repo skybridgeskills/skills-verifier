@@ -3,9 +3,10 @@ import { isMemoryDatabase } from '$lib/server/core/storage/types.js';
 import { createJobQuery } from '$lib/server/domain/job/create-job-query.js';
 import { createJobAppQuery } from '$lib/server/domain/job-app/create-job-app-query.js';
 
-function skipSeed(): boolean {
-	const v = process.env.SKIP_MEMORY_SEED?.toLowerCase();
-	return v === '1' || v === 'true' || v === 'yes';
+function shouldSeed(): boolean {
+	const v = process.env.SEED_MEMORY_DATABASE?.toLowerCase();
+	// Default to true (seed in dev) when not explicitly set to false/no/0
+	return v !== 'false' && v !== 'no' && v !== '0';
 }
 
 /**
@@ -13,7 +14,7 @@ function skipSeed(): boolean {
  * Must run inside `runInContext(ctx, …)` so `createJobQuery` can call `appContext()`.
  */
 export async function seedDevDataIfNeeded(ctx: AppContext): Promise<void> {
-	if (!isMemoryDatabase(ctx.database) || skipSeed()) {
+	if (!isMemoryDatabase(ctx.database) || !shouldSeed()) {
 		return;
 	}
 	if (ctx.database.jobsById.size > 0) {

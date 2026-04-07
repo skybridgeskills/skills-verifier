@@ -1,8 +1,6 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
-	import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framework-client';
-
 	import CreateJobPage from './CreateJobPage.svelte';
 
 	const { Story } = defineMeta({
@@ -10,28 +8,18 @@
 		argTypes: {},
 		args: {}
 	});
-
-	const fakeService = new FakeFrameworkClient();
 </script>
 
 <Story name="Initial State">
 	<div class="max-w-6xl">
-		<CreateJobPage service={fakeService} />
+		<CreateJobPage />
 	</div>
 </Story>
 
-<Story name="Framework Load Error">
+<Story name="With form error">
 	<div class="max-w-6xl">
-		<!-- Create a service that throws errors -->
 		<CreateJobPage
-			service={{
-				async fetchFramework() {
-					throw new Error('Failed to fetch framework: Network error');
-				},
-				async fetchSkill() {
-					throw new Error('Failed to fetch skill');
-				}
-			}}
+			form={{ error: 'Example server validation message', values: { name: '', company: '' } }}
 		/>
 	</div>
 </Story>

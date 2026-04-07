@@ -4,7 +4,7 @@ import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framewor
 import { HttpFrameworkClient } from '$lib/clients/framework-client/http-framework-client';
 import type { FrameworkJsonLd, SkillJsonLd } from '$lib/types/job-profile';
 
-import { createFrameworkService } from './framework-client';
+import { provideFakeFrameworkClient, provideHttpFrameworkClient } from './framework-client';
 
 describe('HttpFrameworkClient', () => {
 	let service: HttpFrameworkClient;
@@ -289,20 +289,14 @@ describe('FakeFrameworkClient', () => {
 	});
 });
 
-describe('createFrameworkService', () => {
-	it('should create HttpFrameworkClient when env var is false', () => {
-		// Test with actual env (should default to HttpFrameworkClient)
-		// Since we can't easily mock import.meta.env in vitest, we test the default behavior
-		const service = createFrameworkService();
-		// Default behavior should be HttpFrameworkClient unless env var is set to 'true'
-		expect(service).toBeInstanceOf(HttpFrameworkClient);
+describe('FrameworkClient providers', () => {
+	it('provideHttpFrameworkClient returns HttpFrameworkClient', () => {
+		const ctx = provideHttpFrameworkClient();
+		expect(ctx.frameworkClient).toBeInstanceOf(HttpFrameworkClient);
 	});
 
-	it('should create HttpFrameworkClient when env var is undefined', () => {
-		const service = createFrameworkService();
-		expect(service).toBeInstanceOf(HttpFrameworkClient);
+	it('provideFakeFrameworkClient returns FakeFrameworkClient', () => {
+		const ctx = provideFakeFrameworkClient();
+		expect(ctx.frameworkClient).toBeInstanceOf(FakeFrameworkClient);
 	});
-
-	// Note: Testing with env var set to 'true' requires actual environment setup
-	// This is tested in practice when running Storybook with PUBLIC_USE_FAKE_FRAMEWORK_SERVICE=true
 });

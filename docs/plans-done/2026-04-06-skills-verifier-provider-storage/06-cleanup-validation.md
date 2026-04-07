@@ -17,7 +17,7 @@ Remove **temporary TODOs** introduced for scaffolding, **debug logging**, and **
 **Cleanup**
 
 - Grep the working tree for `TODO`, `FIXME`, `console.debug`, and temporary comments from phases 1–5; remove or convert to tracked issues if still valid.
-- Confirm `.env.example` documents `SKIP_MEMORY_SEED` and any new vars.
+- Confirm `.env.example` documents `SEED_MEMORY_DATABASE` and any new vars.
 - Align [`00-design.md`](./00-design.md) / [`00-notes.md`](./00-notes.md) only if the implementation diverged (brief delta note in `summary.md` is enough).
 
 **Plan completion**

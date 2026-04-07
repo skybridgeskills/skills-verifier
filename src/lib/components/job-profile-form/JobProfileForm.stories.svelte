@@ -12,7 +12,8 @@
 	});
 
 	function handleSubmit(data: { name: string; description: string; company: string }) {
-		console.log('Form submitted:', data);
+		// Storybook runs in the browser; server `appLogger()` is not available here.
+		console.info('Form submitted:', data);
 		alert(
 			`Form submitted:\nName: ${data.name}\nCompany: ${data.company}\nDescription: ${data.description}`
 		);
