@@ -5,6 +5,10 @@ This repository uses **date-based versions** in the form `YYYY.MM.DD-N`. Git tag
 - `YYYY.MM.DD` is the date in **Pacific Time** (`America/Los_Angeles`).
 - `N` is an incrementing build number for that day (starting at 1).
 
+## Rationale
+
+We do **not** use [Semantic Versioning](https://semver.org/). This project is an **application**, not a library or package with downstream consumers who need to reason about breaking changes from a major/minor/patch number. Date-based versions give a clear **when** each release was cut and a simple monotonic sequence within a day, which is enough for deployments, support, and correlating releases with incidents or changelog history.
+
 ## Source of truth
 
 - **Release versions** come from **git tags**, not from `package.json`. The root `package.json` field `"version"` is set to `0.0.0` as a sentinel to show it is not maintained for releases.
