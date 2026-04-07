@@ -1,0 +1,22 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+	"automerge": true,
+	"platformAutomerge": true,
+	"packageRules": [
+		{
+			"description": "Group all patch and minor updates together",
+			"matchUpdateTypes": ["patch", "minor"],
+			"groupName": "all non-major dependencies",
+			"groupSlug": "all-minor-patch"
+		},
+		{
+			"description": "Keep major updates in separate PRs; auto-merge when CI passes",
+			"matchUpdateTypes": ["major"],
+			"groupName": null
+		}
+	],
+	"dependencyDashboard": true,
+	"prConcurrentLimit": 5,
+	"prHourlyLimit": 2
+}
