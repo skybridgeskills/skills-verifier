@@ -1,5 +1,9 @@
 # Commit Current Changes
 
+When reviewing the diff, follow codebase conventions in [`AGENTS.md`](../../AGENTS.md)
+and [`docs/style/`](../../docs/style/README.md) (factory functions, providers,
+ZodFactory for shared schemas, domain-first layout, naming).
+
 Check the current git status: `git status`
 
 If there are no changes to commit, inform the user and stop.
