@@ -29,6 +29,10 @@ The tool addresses key gaps in the LER ecosystem by providing an open-source, em
 - Node.js (version specified in `.nvmrc`)
 - pnpm (version 10.22.0 or compatible)
 
+### Versioning
+
+Release versions are **git tags** (date-based), not the `version` field in `package.json`. See [docs/design/versioning.md](docs/design/versioning.md).
+
 ### Setup
 
 1. **Clone the repository**
