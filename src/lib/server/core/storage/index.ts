@@ -1,20 +1,20 @@
 /** Core */
-export { defineQuery } from './core/define-query.js';
-export { createDynamoDbClient } from './core/dynamo-client.js';
-export { MemoryDatabase } from './core/memory-database.js';
-export { createStorageDatabase } from './core/storage-database-factory.js';
+export { defineQuery } from './define-query.js';
+export { createDynamoDbClient } from './dynamo-client.js';
+export { MemoryDatabase } from './memory-database.js';
+export { createStorageDatabase } from './storage-database-factory.js';
 export {
 	isDynamoDatabase,
 	isMemoryDatabase,
 	type DynamoStorageDatabase,
 	type StorageDatabase
-} from './core/types.js';
+} from './types.js';
 export {
 	AppResource,
 	AppResourceFields,
 	type AppResource as AppResourceType
-} from './core/app-resource.js';
-export { AppRow, AppRowFields, type AppRow as AppRowType } from './core/app-row.js';
+} from './app-resource.js';
+export { AppRow, AppRowFields, type AppRow as AppRowType } from './app-row.js';
 export { StorageDatabaseCtx } from './storage-database-ctx.js';
 
 /** Job Domain */
@@ -29,7 +29,7 @@ export {
 	type JobStatus as JobStatusType,
 	type JobResource as JobResourceType,
 	type CreateJobParams as CreateJobParamsType
-} from './job/job-resource.js';
+} from '../../domain/job/job-resource.js';
 
 /** Job Row (Database Layer) */
 export {
@@ -39,13 +39,13 @@ export {
 	rowToJobResource,
 	parseJobRow,
 	type JobRow as JobRowType
-} from './job/job-row.js';
+} from '../../domain/job/job-row.js';
 
 /** Job Queries */
-export { createJobQuery } from './job/create-job-query.js';
-export { jobByIdQuery } from './job/job-by-id-query.js';
-export { jobByExternalIdQuery } from './job/job-by-external-id-query.js';
-export { listActiveJobsQuery } from './job/list-active-jobs-query.js';
+export { createJobQuery } from '../../domain/job/create-job-query.js';
+export { jobByIdQuery } from '../../domain/job/job-by-id-query.js';
+export { jobByExternalIdQuery } from '../../domain/job/job-by-external-id-query.js';
+export { listActiveJobsQuery } from '../../domain/job/list-active-jobs-query.js';
 
 /** Job app domain */
 export {
@@ -55,7 +55,7 @@ export {
 	type JobAppStatus as JobAppStatusType,
 	type JobAppResource as JobAppResourceType,
 	type CreateJobAppParams as CreateJobAppParamsType
-} from './job-app/job-app-resource.js';
+} from '../../domain/job-app/job-app-resource.js';
 
 /** Job app row (database layer) */
 export {
@@ -65,9 +65,9 @@ export {
 	rowToJobAppResource,
 	parseJobAppRow,
 	type JobAppRow as JobAppRowType
-} from './job-app/job-app-row.js';
+} from '../../domain/job-app/job-app-row.js';
 
 /** Job app queries */
-export { createJobAppQuery } from './job-app/create-job-app-query.js';
-export { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
-export { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';
+export { createJobAppQuery } from '../../domain/job-app/create-job-app-query.js';
+export { jobAppByIdQuery } from '../../domain/job-app/job-app-by-id-query.js';
+export { listJobAppsByJobQuery } from '../../domain/job-app/list-job-apps-by-job-query.js';

@@ -177,7 +177,10 @@
 		<!-- No Framework Selected -->
 	{:else if !framework}
 		<div class="rounded-lg border border-border bg-muted p-8 text-center">
-			<p class="text-sm text-muted-foreground">Select a framework to view skills</p>
+			<p class="text-sm text-muted-foreground">
+				Select a framework above to load skills from the registry, or use quick picks on the create
+				page.
+			</p>
 		</div>
 		<!-- No Skills -->
 	{:else}

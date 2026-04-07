@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ZodFactory } from '$lib/server/util/zod-factory.js';
 
-import { AppResourceFields } from '../core/app-resource.js';
+import { AppResourceFields } from '../../core/storage/app-resource.js';
 
 /**
  * Status values for a job app (candidate application to a job).

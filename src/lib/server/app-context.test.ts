@@ -4,9 +4,9 @@ import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framewor
 
 import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
+import { MemoryDatabase } from './core/storage/memory-database.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeTimeService, FakeTimeServiceCtx } from './services/time-service/fake-time-service.js';
-import { MemoryDatabase } from './storage/core/memory-database.js';
 import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.js';
 
 describe('app-context', () => {

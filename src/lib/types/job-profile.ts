@@ -44,8 +44,8 @@ export interface JobProfile {
 	description: string;
 	/** Company name */
 	company: string;
-	/** Selected frameworks (array to support multi-framework selection in future) */
-	frameworks: Framework[];
+	/** Optional framework metadata (hints, provenance); not required to create a job */
+	frameworks?: Framework[];
 	/** Selected skills for this job */
 	skills: Skill[];
 }

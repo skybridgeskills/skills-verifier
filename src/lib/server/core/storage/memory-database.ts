@@ -1,5 +1,5 @@
-import type { JobResource } from '../job/job-resource.js';
-import type { JobAppResource } from '../job-app/job-app-resource.js';
+import type { JobResource } from '../../domain/job/job-resource.js';
+import type { JobAppResource } from '../../domain/job-app/job-app-resource.js';
 
 /**
  * In-memory tables for tests and local development.

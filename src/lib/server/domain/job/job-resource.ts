@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ZodFactory } from '$lib/server/util/zod-factory.js';
 
-import { AppResourceFields } from '../core/app-resource.js';
+import { AppResourceFields } from '../../core/storage/app-resource.js';
 
 /**
  * Framework represents a competency framework from Credential Engine Registry.
@@ -69,8 +69,8 @@ export const CreateJobParams = z.object({
 	name: JobResource.schema.shape.name,
 	description: JobResource.schema.shape.description,
 	company: JobResource.schema.shape.company,
-	frameworks: z.array(FrameworkResource.schema),
-	skills: z.array(SkillResource.schema),
-	status: JobStatus.schema.default('draft')
+	frameworks: z.array(FrameworkResource.schema).default([]),
+	skills: z.array(SkillResource.schema).min(1, 'At least one skill is required'),
+	status: JobStatus.schema.default('active')
 });
 export type CreateJobParams = z.infer<typeof CreateJobParams>;

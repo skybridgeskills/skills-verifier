@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { AppRowFields } from '../core/app-row.js';
+import { AppRowFields } from '../../core/storage/app-row.js';
 
 import { FrameworkResource, SkillResource, JobStatus, JobResource } from './job-resource.js';
 import type { JobResource as JobResourceType } from './job-resource.js';

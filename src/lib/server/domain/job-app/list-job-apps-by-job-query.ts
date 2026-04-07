@@ -1,7 +1,7 @@
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { z } from 'zod';
 
-import { defineQuery } from '../core/define-query.js';
+import { defineQuery } from '../../core/storage/define-query.js';
 
 import type { JobAppResource } from './job-app-resource.js';
 import { parseJobAppRow, rowToJobAppResource } from './job-app-row.js';

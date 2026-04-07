@@ -1,30 +1,19 @@
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-
-import { createDynamoDbClient } from './dynamo-client.js';
 import { MemoryDatabase } from './memory-database.js';
 import type { StorageDatabase } from './types.js';
 
 /**
- * Builds storage: memory when forced or when no table is configured; otherwise DynamoDB.
+ * Builds in-memory storage for all environments for now.
+ *
+ * DynamoDB-backed storage is intentionally disabled until production persistence
+ * is required. Query modules still implement `dynamo` branches; restoring cloud
+ * storage is mainly: branch here on `DYNAMODB_TABLE` / `USE_MEMORY_STORAGE`,
+ * wire `DynamoDBDocumentClient`, and validate against the single-table design.
  */
 export function createStorageDatabase(): StorageDatabase {
-	const useMemory =
-		process.env.USE_MEMORY_STORAGE === 'true' || process.env.USE_MEMORY_STORAGE === '1';
-
-	if (useMemory) {
-		return new MemoryDatabase();
+	if (process.env.DYNAMODB_TABLE?.trim()) {
+		console.warn(
+			'[storage] DYNAMODB_TABLE is set but DynamoDB is not enabled in this build; using MemoryDatabase.'
+		);
 	}
-
-	const tableName = process.env.DYNAMODB_TABLE?.trim();
-	if (tableName) {
-		return {
-			$type: 'dynamo',
-			docClient: DynamoDBDocumentClient.from(createDynamoDbClient(), {
-				marshallOptions: { removeUndefinedValues: true }
-			}),
-			tableName
-		};
-	}
-
 	return new MemoryDatabase();
 }

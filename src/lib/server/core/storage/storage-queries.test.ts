@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { TestAppContext } from '$lib/server/test-app-context.js';
 import { runInContext } from '$lib/server/util/provider/provider-ctx.js';
 
-import { createJobQuery } from './job/create-job-query.js';
-import { jobByExternalIdQuery } from './job/job-by-external-id-query.js';
-import { jobByIdQuery } from './job/job-by-id-query.js';
-import { listActiveJobsQuery } from './job/list-active-jobs-query.js';
-import { createJobAppQuery } from './job-app/create-job-app-query.js';
-import { jobAppByIdQuery } from './job-app/job-app-by-id-query.js';
-import { listJobAppsByJobQuery } from './job-app/list-job-apps-by-job-query.js';
+import { createJobQuery } from '../../domain/job/create-job-query.js';
+import { jobByExternalIdQuery } from '../../domain/job/job-by-external-id-query.js';
+import { jobByIdQuery } from '../../domain/job/job-by-id-query.js';
+import { listActiveJobsQuery } from '../../domain/job/list-active-jobs-query.js';
+import { createJobAppQuery } from '../../domain/job-app/create-job-app-query.js';
+import { jobAppByIdQuery } from '../../domain/job-app/job-app-by-id-query.js';
+import { listJobAppsByJobQuery } from '../../domain/job-app/list-job-apps-by-job-query.js';
 
 describe('storage queries (memory)', () => {
 	it('creates job, finds by id and external id, lists active', async () => {
@@ -21,7 +21,7 @@ describe('storage queries (memory)', () => {
 				description: 'Build things',
 				company: 'Co',
 				frameworks: [],
-				skills: [],
+				skills: [{ url: 'https://example.com/s1', text: 'Skill one', ctid: 'ce-s1' }],
 				status: 'active'
 			});
 
@@ -42,7 +42,7 @@ describe('storage queries (memory)', () => {
 				description: 'Desc',
 				company: 'Co',
 				frameworks: [],
-				skills: []
+				skills: [{ url: 'https://example.com/s2', text: 'Skill two', ctid: 'ce-s2' }]
 			});
 
 			const app = await createJobAppQuery({

@@ -2,7 +2,7 @@ import { PutCommand } from '@aws-sdk/lib-dynamodb';
 
 import { appContext } from '$lib/server/app-context.js';
 
-import { defineQuery } from '../core/define-query.js';
+import { defineQuery } from '../../core/storage/define-query.js';
 
 import { CreateJobAppParams, JobAppResource } from './job-app-resource.js';
 import type { JobAppResource as JobAppResourceType } from './job-app-resource.js';

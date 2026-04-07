@@ -3,9 +3,9 @@ import {
 	type FrameworkClient
 } from '$lib/clients/framework-client/framework-client.js';
 
+import type { StorageDatabase } from './core/storage/types.js';
 import type { IdService } from './services/id-service/id-service.js';
 import type { TimeService } from './services/time-service/time-service.js';
-import type { StorageDatabase } from './storage/core/types.js';
 import { panic } from './util/panic.js';
 import { contextStore, providerCtx, providerCtxSafe } from './util/provider/provider-ctx.js';
 
