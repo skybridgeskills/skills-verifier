@@ -33,8 +33,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	try {
+		appLogger().debug(
+			{ query: parsed.data.query, limit: parsed.data.limit, requestId: locals.requestId },
+			'Skill search started'
+		);
 		const results = await appContext().skillSearchService.search(
 			SkillSearchQuery({ query: parsed.data.query, limit: parsed.data.limit })
+		);
+		appLogger().debug(
+			{ count: results.length, requestId: locals.requestId },
+			'Skill search completed'
 		);
 		return json({
 			results,

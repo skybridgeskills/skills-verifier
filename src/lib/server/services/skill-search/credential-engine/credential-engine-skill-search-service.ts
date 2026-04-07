@@ -1,3 +1,5 @@
+import { appLoggerSafe } from '$lib/server/services/logging/logger-service.js';
+
 import type {
 	SkillSearchQuery,
 	SkillSearchResult,
@@ -20,6 +22,11 @@ export function CredentialEngineSkillSearchService(
 		async search(query: SkillSearchQuery): Promise<SkillSearchResult[]> {
 			const requestBody = buildCredentialEngineSearchRequest(query);
 
+			const log = appLoggerSafe();
+			if (log) {
+				log.debug({ requestBody, searchUrl: config.searchUrl }, 'CE search request');
+			}
+
 			const response = await fetch(config.searchUrl, {
 				method: 'POST',
 				headers: {
@@ -31,6 +38,9 @@ export function CredentialEngineSkillSearchService(
 
 			if (!response.ok) {
 				const errorBody = await response.text().catch(() => 'Unable to read error body');
+				if (log) {
+					log.debug({ status: response.status, errorBody }, 'CE search error response');
+				}
 				throw new Error(
 					`CE search failed: ${response.status} ${response.statusText} - ${errorBody}`
 				);
