@@ -45,8 +45,9 @@ describe('CredentialEngineSkillSearchService', () => {
 
 		const call = mockFetch.mock.calls[0];
 		const init = call[1] as RequestInit;
-		expect(JSON.parse(init.body as string)['search:term']).toBe('Nursing');
-		expect(JSON.parse(init.body as string)['search:take']).toBe(10);
+		const body = JSON.parse(init.body as string);
+		expect(body['search:termGroup']['search:term']).toBe('Nursing');
+		expect(body['search:take']).toBe(10);
 	});
 
 	it('throws on non-ok response', async () => {
