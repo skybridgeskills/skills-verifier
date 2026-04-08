@@ -18,16 +18,6 @@ export interface SkillSearchApiResult {
 	description?: string;
 }
 
-/** API response for skills mode */
-interface SkillSearchApiResponse {
-	results: SkillSearchApiResult[];
-	meta: {
-		query: string;
-		count: number;
-		limit: number;
-	};
-}
-
 /** API response row for container mode */
 interface ContainerSearchApiResult {
 	'@id': string;
@@ -79,8 +69,8 @@ export function mapApiSkillToSkill(result: SkillSearchApiResult): Skill {
  */
 function mapApiContainerToResult(result: ContainerSearchApiResult): CtdlSkillContainerSearchResult {
 	const validTypes = ['Job', 'Occupation', 'WorkRole', 'Task'] as const;
-	const type = validTypes.includes(result['@type'] as any)
-		? (result['@type'] as any)
+	const type = validTypes.includes(result['@type'] as (typeof validTypes)[number])
+		? (result['@type'] as (typeof validTypes)[number])
 		: 'Occupation';
 	return {
 		'@id': result['@id'],
@@ -192,4 +182,17 @@ export function extractSkillUrls(container: CtdlSkillContainer): string[] {
 	const knowledgeUrls = container['ceasn:knowledgeEmbodied'] ?? [];
 	const abilityUrls = container['ceasn:abilityEmbodied'] ?? [];
 	return [...new Set([...skillUrls, ...knowledgeUrls, ...abilityUrls])];
+}
+
+/**
+ * Competency URLs from a fetched CTDL entity (occupation/job or competency framework).
+ */
+export function extractCompetencyUrlsFromCtdlEntity(
+	entity: CtdlSkillContainer | CtdlCompetencyFramework
+): string[] {
+	if (entity['@type'] === 'CompetencyFramework') {
+		const top = entity['ceasn:hasTopChild'] ?? [];
+		return [...new Set(top)];
+	}
+	return extractSkillUrls(entity);
 }
