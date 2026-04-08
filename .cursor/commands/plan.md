@@ -215,9 +215,9 @@ Move the plan files to the `docs/plans-done/` directory.
 ## Commit
 
 Once the plan is complete, and everything compiles and passes tests, it's time
-to commit the changes.
-commit the changes with a message following
-the [Conventional Commits](https://www.conventionalcommits.org/) format
+to commit the changes. STOP FOR HUMAN REVIEW before committing with a proposed
+commit message. The message should follow the
+[Conventional Commits](https://www.conventionalcommits.org/) format
 
 ```
 <type>(<scope>): <description>
@@ -236,3 +236,5 @@ Where:
 It should be a bulleted list of the changes made. Each item should be a single
 line.
 Be clear, concise, and to the point.
+
+After human approval, commit the changes.
