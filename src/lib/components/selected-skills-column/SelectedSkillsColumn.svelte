@@ -49,7 +49,7 @@
 						size="icon"
 						class="opacity-0 transition-opacity group-hover:opacity-100"
 						onclick={() => onRemoveSkill(skill)}
-						aria-label="Remove skill"
+						aria-label="Remove {skill.label?.trim() || skill.text?.trim() || skill.ctid}"
 					>
 						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path

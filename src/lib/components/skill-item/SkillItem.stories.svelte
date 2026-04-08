@@ -8,7 +8,6 @@
 	const skillWithLabelOnly: Skill = {
 		url: 'https://example.com/skill1',
 		label: 'Health Information Systems',
-		text: '',
 		ctid: 'ce-skill-1'
 	};
 

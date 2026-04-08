@@ -36,9 +36,13 @@
 		clientError = null;
 	}
 
-	function handleAddSkillFromSearch(skill: Skill) {
-		if (!selectedUrls.includes(skill.url)) {
-			selectedSkills = [...selectedSkills, skill];
+	function handleToggleSkillFromSearch(skill: Skill, add: boolean) {
+		if (add) {
+			if (!selectedUrls.includes(skill.url)) {
+				selectedSkills = [...selectedSkills, skill];
+			}
+		} else {
+			selectedSkills = selectedSkills.filter((s) => s.url !== skill.url);
 		}
 		clientError = null;
 	}
@@ -115,7 +119,7 @@
 					<p class="mb-4 text-sm text-muted-foreground">
 						Search Credential Engine for competencies by keyword.
 					</p>
-					<SkillSearch {selectedUrls} onSelect={handleAddSkillFromSearch} />
+					<SkillSearch {selectedUrls} onToggle={handleToggleSkillFromSearch} />
 				</div>
 			</div>
 

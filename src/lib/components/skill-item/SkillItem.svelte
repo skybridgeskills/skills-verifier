@@ -7,9 +7,11 @@
 
 	let { skill }: Props = $props();
 
-	const title = $derived(skill.label ?? skill.text);
+	const title = $derived(skill.label?.trim() || skill.text?.trim() || skill.ctid);
 	const subtitle = $derived(
-		skill.label && skill.text && skill.text !== skill.label ? skill.text : null
+		skill.label && skill.text?.trim() && skill.text.trim() !== skill.label.trim()
+			? skill.text.trim()
+			: null
 	);
 </script>
 

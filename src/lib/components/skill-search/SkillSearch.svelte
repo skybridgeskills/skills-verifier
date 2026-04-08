@@ -10,10 +10,10 @@
 
 	interface Props {
 		selectedUrls: string[];
-		onSelect: (skill: Skill) => void;
+		onToggle: (skill: Skill, add: boolean) => void;
 	}
 
-	let { selectedUrls, onSelect }: Props = $props();
+	let { selectedUrls, onToggle }: Props = $props();
 
 	let query = $state('');
 	let results = $state<Skill[]>([]);
@@ -123,7 +123,7 @@
 						<SkillSearchResultItem
 							{skill}
 							isSelected={isSelected(skill)}
-							onSelect={() => onSelect(skill)}
+							onToggle={() => onToggle(skill, !isSelected(skill))}
 						/>
 					{/each}
 				</div>

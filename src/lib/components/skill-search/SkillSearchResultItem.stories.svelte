@@ -19,7 +19,7 @@
 				ctid: 'ce-js-prog'
 			}}
 			isSelected={false}
-			onSelect={() => {}}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>
@@ -34,7 +34,7 @@
 				ctid: 'ce-js-prog'
 			}}
 			isSelected={true}
-			onSelect={() => {}}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>
@@ -48,7 +48,21 @@
 				ctid: 'ce-react'
 			}}
 			isSelected={false}
-			onSelect={() => {}}
+			onToggle={() => {}}
+		/>
+	</div>
+</Story>
+
+<Story name="Label only (search without description)">
+	<div class="max-w-md">
+		<SkillSearchResultItem
+			skill={{
+				url: 'https://example.com/skills/ce-only',
+				label: 'Perform patient intake assessments',
+				ctid: 'ce-intake'
+			}}
+			isSelected={false}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>

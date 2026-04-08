@@ -8,12 +8,20 @@ import { CreateJobParams } from '$lib/server/domain/job/job-resource.js';
 
 import type { Actions } from './$types';
 
-const skillJsonSchema = z.object({
-	url: z.string(),
-	text: z.string(),
-	ctid: z.string(),
-	label: z.string().optional()
-});
+const skillJsonSchema = z
+	.object({
+		url: z.string(),
+		text: z.string().optional(),
+		ctid: z.string(),
+		label: z.string().optional()
+	})
+	.transform((s) => ({
+		url: s.url,
+		ctid: s.ctid,
+		label: s.label,
+		// Derive from description or label so CE rows without a description still persist.
+		text: (s.text?.trim() || s.label?.trim() || '').trim()
+	}));
 
 const frameworkJsonSchema = z.object({
 	name: z.string(),
