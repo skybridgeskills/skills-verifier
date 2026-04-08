@@ -47,13 +47,19 @@
 		}
 	}
 
-	function handleSearchSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		event.stopPropagation();
+	/** Standalone search (no <form>) so this can live beside a parent form. */
+	function triggerSearch() {
 		if (query.trim().length >= MIN_QUERY_LENGTH) {
 			hasSubmitted = true;
 			void performSearch(query);
 		}
+	}
+
+	function handleSearchKeydown(event: KeyboardEvent) {
+		if (event.key !== 'Enter') return;
+		event.preventDefault();
+		event.stopPropagation();
+		triggerSearch();
 	}
 
 	function handleRetry() {
@@ -69,7 +75,7 @@
 </script>
 
 <div class="space-y-4">
-	<form onsubmit={handleSearchSubmit}>
+	<div>
 		<label for="skill-search-input" class="sr-only">Search for skills</label>
 		<div class="relative flex gap-2">
 			<Input
@@ -80,8 +86,13 @@
 				disabled={loading}
 				class="w-full"
 				autocomplete="off"
+				onkeydown={handleSearchKeydown}
 			/>
-			<Button type="submit" disabled={loading || query.trim().length < MIN_QUERY_LENGTH}>
+			<Button
+				type="button"
+				disabled={loading || query.trim().length < MIN_QUERY_LENGTH}
+				onclick={triggerSearch}
+			>
 				{#if loading}
 					<span class="sr-only">Searching...</span>
 					<div
@@ -93,7 +104,7 @@
 				{/if}
 			</Button>
 		</div>
-	</form>
+	</div>
 
 	{#if error}
 		<Alert variant="destructive">

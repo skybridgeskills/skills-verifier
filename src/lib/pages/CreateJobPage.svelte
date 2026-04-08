@@ -84,50 +84,46 @@
 		</Alert>
 	{/if}
 
-	<form
-		method="POST"
-		action="?/createJob"
-		use:enhance={({ cancel }) => {
-			if (!validateClient()) {
-				cancel();
-			}
-		}}
-		class="space-y-8"
-	>
-		<input type="hidden" name="skillsJson" value={skillsJson} />
-		<input type="hidden" name="frameworksJson" value={frameworksJson} />
+	<div class="grid gap-6 @lg:grid-cols-2">
+		<div class="space-y-6">
+			<div>
+				<h2 class="mb-2 text-lg font-semibold text-foreground">Quick skill picks</h2>
+				<p class="mb-4 text-sm text-muted-foreground">Common skills you can add in one click.</p>
+				<QuickSkillPicks skills={SAMPLE_SKILLS} {selectedUrls} onToggleSkill={handleToggleSkill} />
+			</div>
 
-		<div>
-			<h2 class="mb-4 text-lg font-semibold text-foreground">Job information</h2>
-			<JobProfileForm embedded />
+			<div>
+				<h2 class="mb-2 text-lg font-semibold text-foreground">Search for skills</h2>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Search the Credential Registry for competencies by keyword.
+				</p>
+				<SkillSearch {selectedUrls} onToggle={handleToggleSkillFromSearch} />
+			</div>
 		</div>
 
-		<div class="grid gap-6 @lg:grid-cols-2">
-			<div class="space-y-6">
-				<div>
-					<h2 class="mb-2 text-lg font-semibold text-foreground">Quick skill picks</h2>
-					<p class="mb-4 text-sm text-muted-foreground">Common skills you can add in one click.</p>
-					<QuickSkillPicks
-						skills={SAMPLE_SKILLS}
-						{selectedUrls}
-						onToggleSkill={handleToggleSkill}
-					/>
-				</div>
+		<form
+			method="POST"
+			action="?/createJob"
+			use:enhance={({ cancel }) => {
+				if (!validateClient()) {
+					cancel();
+				}
+			}}
+			class="space-y-8"
+		>
+			<input type="hidden" name="skillsJson" value={skillsJson} />
+			<input type="hidden" name="frameworksJson" value={frameworksJson} />
 
-				<div>
-					<h2 class="mb-2 text-lg font-semibold text-foreground">Search for skills</h2>
-					<p class="mb-4 text-sm text-muted-foreground">
-						Search the Credential Registry for competencies by keyword.
-					</p>
-					<SkillSearch {selectedUrls} onToggle={handleToggleSkillFromSearch} />
-				</div>
+			<div>
+				<h2 class="mb-4 text-lg font-semibold text-foreground">Job information</h2>
+				<JobProfileForm embedded />
 			</div>
 
 			<div>
 				<SelectedSkillsColumn {selectedSkills} onRemoveSkill={handleRemoveSkill} />
 			</div>
-		</div>
 
-		<Button type="submit" class="w-full @md:w-auto">Save job</Button>
-	</form>
+			<Button type="submit" class="w-full @md:w-auto">Save job</Button>
+		</form>
+	</div>
 </div>
