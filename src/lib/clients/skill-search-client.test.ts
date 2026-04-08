@@ -100,4 +100,23 @@ describe('searchSkills', () => {
 			mode: 'skills'
 		});
 	});
+
+	it('sends containers mode to the API', async () => {
+		const mockFetch = vi.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({
+				results: [],
+				meta: { query: 'nurse', count: 0, limit: 10, mode: 'containers' }
+			})
+		});
+		global.fetch = mockFetch;
+
+		await searchSkills('nurse', { mode: 'containers', limit: 10 });
+
+		expect(JSON.parse(mockFetch.mock.calls[0][1].body as string)).toEqual({
+			query: 'nurse',
+			limit: 10,
+			mode: 'containers'
+		});
+	});
 });

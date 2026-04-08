@@ -97,7 +97,7 @@
 				<p class="mb-4 text-sm text-muted-foreground">
 					Search the Credential Registry for competencies by keyword.
 				</p>
-				<SkillSearch {selectedUrls} onToggle={handleToggleSkillFromSearch} />
+				<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkillFromSearch} />
 			</div>
 		</div>
 
