@@ -43,12 +43,12 @@
 		<div class="space-y-2">
 			{#each selectedSkills as skill (skill.url)}
 				<div
-					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 focus-within:outline-none hover:border-border @md:p-4"
+					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 focus-within:outline-none hover:border-border @md:p-4"
 				>
 					<SkillItem {skill} />
 					<button
 						type="button"
-						class="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:text-red-400"
+						class="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-red-50 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-offset-0 focus-visible:outline-none dark:text-red-400 dark:hover:bg-red-950/30"
 						onclick={() => onRemoveSkill(skill)}
 						aria-label="Remove {removeLabel(skill)}"
 					>

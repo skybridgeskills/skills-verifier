@@ -15,7 +15,7 @@
 
 <!-- Inert card: only internal buttons perform actions; focus ring when a control is focused -->
 <div
-	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 focus-within:outline-none {isSelected
+	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 focus-within:outline-none {isSelected
 		? 'border-green-600/30 bg-green-600/10'
 		: 'border-border bg-card hover:border-primary/50 hover:bg-accent/40'}"
 >
@@ -39,7 +39,7 @@
 			</div>
 			<button
 				type="button"
-				class="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:text-red-400"
+				class="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-red-50 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-offset-0 focus-visible:outline-none dark:text-red-400 dark:hover:bg-red-950/30"
 				onclick={onToggle}
 				aria-label="Remove {displayTitle}"
 			>
@@ -63,7 +63,7 @@
 	{:else}
 		<button
 			type="button"
-			class="shrink-0 rounded-md p-1 text-primary transition-colors focus-visible:z-10 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+			class="shrink-0 rounded-md p-1 text-primary transition-colors hover:bg-accent/60 hover:text-primary/80 focus-visible:z-10 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
 			onclick={onToggle}
 			aria-label="Add {displayTitle}"
 		>
