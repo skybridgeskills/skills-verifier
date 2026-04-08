@@ -15,7 +15,7 @@
 
 <!-- Inert card: only internal buttons perform actions; focus ring when a control is focused -->
 <div
-	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 focus-within:outline-none {isSelected
+	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-within:border-primary/50 focus-within:bg-accent/40 {isSelected
 		? 'border-green-600/30 bg-green-600/10'
 		: 'border-border bg-card hover:border-primary/50 hover:bg-accent/40'}"
 >
