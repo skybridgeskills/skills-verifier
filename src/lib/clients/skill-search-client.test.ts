@@ -87,16 +87,17 @@ describe('searchSkills', () => {
 			ok: true,
 			json: async () => ({
 				results: [],
-				meta: { query: 'test', count: 0, limit: 5 }
+				meta: { query: 'test', count: 0, limit: 5, mode: 'skills' }
 			})
 		});
 		global.fetch = mockFetch;
 
-		await searchSkills('test', 5);
+		await searchSkills('test', { limit: 5 });
 
 		expect(JSON.parse(mockFetch.mock.calls[0][1].body as string)).toEqual({
 			query: 'test',
-			limit: 5
+			limit: 5,
+			mode: 'skills'
 		});
 	});
 });

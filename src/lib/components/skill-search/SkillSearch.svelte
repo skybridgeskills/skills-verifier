@@ -37,7 +37,7 @@
 		loading = true;
 		error = null;
 		try {
-			results = await searchSkills(trimmed, MAX_RESULTS);
+			results = (await searchSkills(trimmed, { limit: MAX_RESULTS })) as Skill[];
 			lastSearchedQuery = trimmed;
 		} catch (err) {
 			results = [];
