@@ -43,7 +43,7 @@
 		<div class="space-y-2">
 			{#each selectedSkills as skill (skill.url)}
 				<div
-					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 focus-within:outline-none hover:border-border @md:p-4"
+					class="group flex w-full items-start justify-between gap-3 rounded-lg border border-green-600/30 bg-green-600/10 px-4 py-3 text-left transition-colors focus-within:border-primary/50 focus-within:bg-accent/40"
 				>
 					<SkillItem {skill} />
 					<button
