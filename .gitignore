@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 
 # Turbo
 .turbo
+
+# Vitest browser failure screenshots
+**/__screenshots__/
