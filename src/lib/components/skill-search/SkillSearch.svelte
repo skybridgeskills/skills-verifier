@@ -62,6 +62,12 @@
 	function isSelected(skill: Skill): boolean {
 		return selectedUrls.includes(skill.url);
 	}
+
+	function preventEnterSubmit(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+		}
+	}
 </script>
 
 <div class="space-y-4">
@@ -76,6 +82,7 @@
 				disabled={loading}
 				class="w-full pr-10"
 				autocomplete="off"
+				onkeydown={preventEnterSubmit}
 			/>
 			{#if loading}
 				<div

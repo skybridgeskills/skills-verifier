@@ -75,6 +75,12 @@
 	}
 
 	const fieldClass = 'mt-1';
+
+	function preventEnterSubmit(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+		}
+	}
 </script>
 
 {#if embedded}
@@ -91,6 +97,7 @@
 				required
 				class={cn(fieldClass, nameError ? 'border-destructive' : '')}
 				placeholder="e.g., Senior Software Engineer"
+				onkeydown={preventEnterSubmit}
 			/>
 			{#if nameError}
 				<p class="mt-1 text-sm text-destructive">{nameError}</p>
@@ -109,6 +116,7 @@
 				required
 				class={cn(fieldClass, companyError ? 'border-destructive' : '')}
 				placeholder="e.g., Acme Corporation"
+				onkeydown={preventEnterSubmit}
 			/>
 			{#if companyError}
 				<p class="mt-1 text-sm text-destructive">{companyError}</p>
@@ -127,6 +135,7 @@
 				rows={3}
 				class={cn(fieldClass, descriptionError ? 'border-destructive' : '')}
 				placeholder="One-sentence job description"
+				onkeydown={preventEnterSubmit}
 			/>
 			{#if descriptionError}
 				<p class="mt-1 text-sm text-destructive">{descriptionError}</p>
