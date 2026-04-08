@@ -44,7 +44,7 @@ export async function DevAppContext(env: Record<string, unknown>): Promise<AppCo
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
 		ce.useReal ? provideHttpFrameworkClient : provideFakeFrameworkClient,
-		StorageDatabaseCtx,
+		StorageDatabaseCtx(env),
 		ce.useReal
 			? () =>
 					provideCredentialEngineSkillSearchService({

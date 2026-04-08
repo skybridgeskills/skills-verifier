@@ -18,7 +18,7 @@
   - `husky` -- git hooks
 - Build Tools
   - `vite` -- build tool and dev server
-  - `@sveltejs/adapter-auto` -- deployment adapter (or adapter-node for Node.js)
+  - `@sveltejs/adapter-node` -- Node.js deployment (ECS/Fargate)
 - Framework
   - `sveltekit` -- main app framework, routing, ui, server framework
 - Frontend
@@ -132,21 +132,27 @@ SvelteKit server routes (`src/routes/api/*`):
   - Uses `skillSearchService` from app context
   - Input/output validated with ZodFactory
 
+Additional endpoints:
+
+- `GET /health` — ALB health (`200`, no external I/O).
+- `GET /version` — Deploy/version JSON (OSMT-style; includes optional `extra.sbsMonorepoVersion` when built from the monorepo wrapper).
+
 ## Storage
 
-- **Current**: In-memory database (`MemoryDatabase`) for all environments
-- **Future**: DynamoDB for AWS production (configuration stubbed, not wired)
+- **`CONTEXT=aws`**: **DynamoDB** (`DynamoStorageDatabase` + `createStorageDatabase`)
+- **`dev` / `test`**: **`MemoryDatabase`**
 
 Key files:
 
 - `src/lib/server/core/storage/memory-database.ts` -- In-memory implementation
-- `src/lib/server/core/storage/dynamo-client.ts` -- AWS SDK client (future use)
+- `src/lib/server/core/storage/dynamo-client.ts` -- AWS SDK client (region from env / arg)
+- `src/lib/server/core/storage/storage-database-factory.ts` -- selects memory vs Dynamo by `CONTEXT`
 
 ## Environment Configuration
 
 Explicit `CONTEXT`-based configuration per environment:
 
-- `CONTEXT=aws` -- Requires Credential Engine API credentials
+- `CONTEXT=aws` -- Requires Credential Engine + **DynamoDB** table name (`DYNAMODB_TABLE`)
 - `CONTEXT=dev` -- Optional CE credentials (falls back to fake)
 - `CONTEXT=test` -- Always uses fake implementations
 
