@@ -1,10 +1,14 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { fn } from 'storybook/test';
 
 	import { QUICK_PICKS } from '$lib/config/sample-entities';
 	import type { QuickPickItem } from '$lib/types/job-profile';
 
 	import QuickPickItemComponent from './QuickPickItem.svelte';
+
+	/** Storybook Actions: QuickPickItem invokes this with no arguments. */
+	const onClick = fn();
 
 	function pickKey(pick: QuickPickItem): string {
 		if (pick.type === 'Skill') return (pick.entity as { url: string }).url;
@@ -21,25 +25,25 @@
 </script>
 
 <Story name="Skill Type">
-	<QuickPickItemComponent pick={QUICK_PICKS[0]} isSelected={false} onClick={() => {}} />
+	<QuickPickItemComponent pick={QUICK_PICKS[0]} isSelected={false} {onClick} />
 </Story>
 
 <Story name="Occupation Type">
-	<QuickPickItemComponent pick={occupationPick} isSelected={false} onClick={() => {}} />
+	<QuickPickItemComponent pick={occupationPick} isSelected={false} {onClick} />
 </Story>
 
 <Story name="Job Type">
-	<QuickPickItemComponent pick={jobPick} isSelected={false} onClick={() => {}} />
+	<QuickPickItemComponent pick={jobPick} isSelected={false} {onClick} />
 </Story>
 
 <Story name="Selected">
-	<QuickPickItemComponent pick={QUICK_PICKS[0]} isSelected={true} onClick={() => {}} />
+	<QuickPickItemComponent pick={QUICK_PICKS[0]} isSelected={true} {onClick} />
 </Story>
 
 <Story name="All Types">
 	<div class="flex flex-wrap gap-2">
 		{#each QUICK_PICKS.slice(0, 6) as pick (pickKey(pick))}
-			<QuickPickItemComponent {pick} isSelected={false} onClick={() => {}} />
+			<QuickPickItemComponent {pick} isSelected={false} {onClick} />
 		{/each}
 	</div>
 </Story>

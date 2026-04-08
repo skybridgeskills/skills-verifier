@@ -1,9 +1,12 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { fn } from 'storybook/test';
 
 	import { QUICK_PICKS, SAMPLE_OCCUPATIONS } from '$lib/config/sample-entities';
 
 	import QuickPicks from './QuickPicks.svelte';
+
+	const onTogglePick = fn();
 
 	const mixedPicks = [
 		QUICK_PICKS[0],
@@ -21,7 +24,7 @@
 
 <Story name="Default">
 	<div class="max-w-xl">
-		<QuickPicks picks={QUICK_PICKS.slice(0, 6)} selectedUrls={[]} onTogglePick={() => {}} />
+		<QuickPicks picks={QUICK_PICKS.slice(0, 6)} selectedUrls={[]} {onTogglePick} />
 	</div>
 </Story>
 
@@ -33,19 +36,19 @@
 				'https://credentialengineregistry.org/resources/ce-07c260d5-9119-11e8-b852-782bcb5df6ac',
 				'https://credentialengineregistry.org/resources/ce-07c2613a-9119-11e8-b852-782bcb5df6ac'
 			]}
-			onTogglePick={() => {}}
+			{onTogglePick}
 		/>
 	</div>
 </Story>
 
 <Story name="Occupations Only">
 	<div class="max-w-xl">
-		<QuickPicks picks={SAMPLE_OCCUPATIONS} selectedUrls={[]} onTogglePick={() => {}} />
+		<QuickPicks picks={SAMPLE_OCCUPATIONS} selectedUrls={[]} {onTogglePick} />
 	</div>
 </Story>
 
 <Story name="Mixed Types">
 	<div class="max-w-xl">
-		<QuickPicks picks={mixedPicks} selectedUrls={[]} onTogglePick={() => {}} />
+		<QuickPicks picks={mixedPicks} selectedUrls={[]} {onTogglePick} />
 	</div>
 </Story>
