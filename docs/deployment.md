@@ -28,8 +28,9 @@ See `appMain` in `skybridgeskills-monorepo` (`sbs/packages/lib-backend/src/core/
 
 **Behavior on `aws`:**
 
-- Both CE variables are **required** via Zod validation at startup. The app fails fast if they are missing or empty.
-- Both framework client and skill search always use real implementations.
+- `CREDENTIAL_ENGINE_SEARCH_URL`, `CREDENTIAL_ENGINE_API_KEY`, and **`DYNAMODB_TABLE`** are **required** (Zod). The app fails fast if they are missing or empty.
+- **`AWS_REGION`** should be set for DynamoDB (Fargate usually provides it; otherwise set explicitly).
+- Framework client and skill search always use real CE implementations; storage uses **DynamoDB** (`createStorageDatabase`).
 
 **Behavior on `test`:**
 
@@ -53,4 +54,17 @@ The server client sends the same JSON envelope as the [Query Helper](https://cre
 
 ## Storage
 
-Currently, all environments use **in-memory storage**. DynamoDB support is stubbed but disabled until production persistence is required. When enabled, `aws` context will likely use DynamoDB while `dev` and `test` continue using memory storage.
+| `CONTEXT` | Storage                                                       |
+| --------- | ------------------------------------------------------------- |
+| `aws`     | **DynamoDB** (single-table; `DYNAMODB_TABLE` names the table) |
+| `dev`     | In-memory                                                     |
+| `test`    | In-memory                                                     |
+
+## Operations HTTP
+
+- **`GET /health`** — returns `200` for load balancer checks (no external calls).
+- **`GET /version`** — JSON deploy metadata. **`version`** is usually **`SKILLS_VERIFIER_VERSION`** or **`APP_VERSION`** from the image build; **`extra.sbsMonorepoVersion`** is set when built via **`skybridgeskills-monorepo`** (`wrappers/skills-verifier` / `docker-build.sh`).
+
+## Container runtime
+
+Production builds use **`@sveltejs/adapter-node`** (`pnpm build:svelte` → `node build`). Default listen address **`HOST=0.0.0.0`**, **`PORT=3000`** unless overridden.

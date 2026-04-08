@@ -11,11 +11,12 @@ import { RealTimeServiceCtx } from './services/time-service/real-time-service.js
 import { Providers } from './util/provider/providers.js';
 import { ZodFactory } from './util/zod-factory.js';
 
-/** AWS / production env: Credential Engine is required. */
+/** AWS / production env: Credential Engine + DynamoDB. */
 const AwsEnv = ZodFactory(
 	z.object({
 		CREDENTIAL_ENGINE_SEARCH_URL: z.string().trim().min(1),
-		CREDENTIAL_ENGINE_API_KEY: z.string().trim().min(1)
+		CREDENTIAL_ENGINE_API_KEY: z.string().trim().min(1),
+		DYNAMODB_TABLE: z.string().trim().min(1)
 	})
 );
 export type AwsEnv = ReturnType<typeof AwsEnv>;
@@ -25,11 +26,12 @@ export type AwsEnv = ReturnType<typeof AwsEnv>;
  * Framework client and skill search always use real CE (required env vars).
  */
 export async function AwsAppContext(env: Record<string, unknown>): Promise<AppContext> {
-	const ce = AwsEnv({
+	AwsEnv({
 		CREDENTIAL_ENGINE_SEARCH_URL:
 			typeof env.CREDENTIAL_ENGINE_SEARCH_URL === 'string' ? env.CREDENTIAL_ENGINE_SEARCH_URL : '',
 		CREDENTIAL_ENGINE_API_KEY:
-			typeof env.CREDENTIAL_ENGINE_API_KEY === 'string' ? env.CREDENTIAL_ENGINE_API_KEY : ''
+			typeof env.CREDENTIAL_ENGINE_API_KEY === 'string' ? env.CREDENTIAL_ENGINE_API_KEY : '',
+		DYNAMODB_TABLE: typeof env.DYNAMODB_TABLE === 'string' ? env.DYNAMODB_TABLE : ''
 	});
 
 	return (await Providers(
@@ -37,11 +39,11 @@ export async function AwsAppContext(env: Record<string, unknown>): Promise<AppCo
 		RealTimeServiceCtx,
 		RealIdServiceCtx,
 		provideHttpFrameworkClient,
-		StorageDatabaseCtx,
+		StorageDatabaseCtx(env),
 		() =>
 			provideCredentialEngineSkillSearchService({
-				searchUrl: ce.CREDENTIAL_ENGINE_SEARCH_URL,
-				apiKey: ce.CREDENTIAL_ENGINE_API_KEY
+				searchUrl: String(env.CREDENTIAL_ENGINE_SEARCH_URL ?? '').trim(),
+				apiKey: String(env.CREDENTIAL_ENGINE_API_KEY ?? '').trim()
 			})
 	)()) as AppContext;
 }
