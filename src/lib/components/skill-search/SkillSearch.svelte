@@ -19,6 +19,8 @@
 	let results = $state<Skill[]>([]);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
+	let hasSubmitted = $state(false);
+	let lastSearchedQuery = $state('');
 
 	const MIN_QUERY_LENGTH = 2;
 	const MAX_RESULTS = 20;
@@ -36,6 +38,7 @@
 		error = null;
 		try {
 			results = await searchSkills(trimmed, MAX_RESULTS);
+			lastSearchedQuery = trimmed;
 		} catch (err) {
 			results = [];
 			error = err instanceof Error ? err.message : 'Search failed. Please try again.';
@@ -48,12 +51,14 @@
 		event.preventDefault();
 		event.stopPropagation();
 		if (query.trim().length >= MIN_QUERY_LENGTH) {
+			hasSubmitted = true;
 			void performSearch(query);
 		}
 	}
 
 	function handleRetry() {
 		if (query.trim().length >= MIN_QUERY_LENGTH) {
+			hasSubmitted = true;
 			void performSearch(query);
 		}
 	}
@@ -64,7 +69,7 @@
 </script>
 
 <div class="space-y-4">
-	<form onsubmit={handleSearchSubmit} class="space-y-4">
+	<form onsubmit={handleSearchSubmit}>
 		<label for="skill-search-input" class="sr-only">Search for skills</label>
 		<div class="relative flex gap-2">
 			<Input
@@ -88,9 +93,6 @@
 				{/if}
 			</Button>
 		</div>
-		<p class="text-sm text-muted-foreground">
-			Type at least {MIN_QUERY_LENGTH} characters to search.
-		</p>
 	</form>
 
 	{#if error}
@@ -104,13 +106,13 @@
 	{/if}
 
 	<div aria-live="polite" aria-busy={loading}>
-		{#if loading && query.trim().length >= MIN_QUERY_LENGTH}
+		{#if loading}
 			<div class="space-y-3">
 				{#each [0, 1, 2] as i (i)}
 					<Skeleton class="h-20 w-full" />
 				{/each}
 			</div>
-		{:else if query.trim().length >= MIN_QUERY_LENGTH && !loading && !error}
+		{:else if hasSubmitted && query.trim() === lastSearchedQuery && !error}
 			{#if results.length === 0}
 				<div
 					class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
@@ -132,6 +134,12 @@
 					{/each}
 				</div>
 			{/if}
+		{:else if !hasSubmitted}
+			<div
+				class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
+			>
+				<p>Search for skills to add to the job</p>
+			</div>
 		{/if}
 	</div>
 </div>
