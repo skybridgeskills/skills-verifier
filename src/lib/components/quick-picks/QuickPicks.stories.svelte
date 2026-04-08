@@ -5,6 +5,14 @@
 
 	import QuickPicks from './QuickPicks.svelte';
 
+	const mixedPicks = [
+		QUICK_PICKS[0],
+		SAMPLE_OCCUPATIONS[0],
+		QUICK_PICKS[1],
+		SAMPLE_OCCUPATIONS[1],
+		QUICK_PICKS[2]
+	];
+
 	const { Story } = defineMeta({
 		title: 'components/QuickPicks/QuickPicks',
 		tags: ['autodocs']
@@ -37,13 +45,6 @@
 </Story>
 
 <Story name="Mixed Types">
-	{@const mixedPicks = [
-		QUICK_PICKS[0],
-		SAMPLE_OCCUPATIONS[0],
-		QUICK_PICKS[1],
-		SAMPLE_OCCUPATIONS[1],
-		QUICK_PICKS[2]
-	]}
 	<div class="max-w-xl">
 		<QuickPicks picks={mixedPicks} selectedUrls={[]} onTogglePick={() => {}} />
 	</div>
