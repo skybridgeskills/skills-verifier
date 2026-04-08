@@ -21,7 +21,12 @@
 		<ul class="divide-y divide-border rounded-lg border border-border bg-card">
 			{#each data.jobs as job (job.id)}
 				<li class="px-4 py-4">
-					<div class="font-medium text-foreground">{job.name}</div>
+					<a
+						href={resolve(`/jobs/${job.id}`)}
+						class="font-medium text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+					>
+						{job.name}
+					</a>
 					<div class="text-sm text-muted-foreground">{job.company}</div>
 					<p class="mt-2 text-sm text-foreground/90">{job.description}</p>
 					<div class="mt-2 text-xs text-muted-foreground">

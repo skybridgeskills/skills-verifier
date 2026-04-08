@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
@@ -41,19 +42,7 @@
 				<div
 					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:border-border @md:p-4"
 				>
-					<div class="flex-1">
-						{#if skill.label && skill.text}
-							<!-- Both label and text present -->
-							<div class="font-medium text-foreground">{skill.label}</div>
-							<div class="mt-1 text-sm text-muted-foreground">{skill.text}</div>
-						{:else if skill.label}
-							<!-- Label only -->
-							<div class="font-medium text-foreground">{skill.label}</div>
-						{:else}
-							<!-- Text only (fallback) -->
-							<div class="text-foreground">{skill.text}</div>
-						{/if}
-					</div>
+					<SkillItem {skill} />
 					<Button
 						type="button"
 						variant="ghost"
