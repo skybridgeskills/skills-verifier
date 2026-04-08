@@ -20,7 +20,6 @@
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 
-	const DEBOUNCE_MS = 300;
 	const MIN_QUERY_LENGTH = 2;
 	const MAX_RESULTS = 20;
 
@@ -45,13 +44,13 @@
 		}
 	}
 
-	$effect(() => {
-		const q = query;
-		const id = setTimeout(() => {
-			void performSearch(q);
-		}, DEBOUNCE_MS);
-		return () => clearTimeout(id);
-	});
+	function handleSearchSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		if (query.trim().length >= MIN_QUERY_LENGTH) {
+			void performSearch(query);
+		}
+	}
 
 	function handleRetry() {
 		if (query.trim().length >= MIN_QUERY_LENGTH) {
@@ -62,39 +61,37 @@
 	function isSelected(skill: Skill): boolean {
 		return selectedUrls.includes(skill.url);
 	}
-
-	function preventEnterSubmit(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-		}
-	}
 </script>
 
 <div class="space-y-4">
-	<div>
+	<form onsubmit={handleSearchSubmit} class="space-y-4">
 		<label for="skill-search-input" class="sr-only">Search for skills</label>
-		<div class="relative">
+		<div class="relative flex gap-2">
 			<Input
 				id="skill-search-input"
 				type="search"
 				bind:value={query}
 				placeholder="Search by keyword (e.g. JavaScript, nursing)…"
 				disabled={loading}
-				class="w-full pr-10"
+				class="w-full"
 				autocomplete="off"
-				onkeydown={preventEnterSubmit}
 			/>
-			{#if loading}
-				<div
-					class="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 animate-spin rounded-full border-2 border-muted border-t-primary"
-					aria-hidden="true"
-				></div>
-			{/if}
+			<Button type="submit" disabled={loading || query.trim().length < MIN_QUERY_LENGTH}>
+				{#if loading}
+					<span class="sr-only">Searching...</span>
+					<div
+						class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+						aria-hidden="true"
+					></div>
+				{:else}
+					Search
+				{/if}
+			</Button>
 		</div>
-		<p class="mt-1 text-sm text-muted-foreground">
+		<p class="text-sm text-muted-foreground">
 			Type at least {MIN_QUERY_LENGTH} characters to search.
 		</p>
-	</div>
+	</form>
 
 	{#if error}
 		<Alert variant="destructive">
