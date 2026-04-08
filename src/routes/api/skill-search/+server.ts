@@ -3,13 +3,17 @@ import { treeifyError, z } from 'zod';
 
 import { appContext } from '$lib/server/app-context.js';
 import { appLogger } from '$lib/server/services/logging/index.js';
-import { SkillSearchQuery } from '$lib/server/services/skill-search/skill-search-service.js';
+import {
+	SkillRegistrySearchMode,
+	SkillSearchQuery
+} from '$lib/server/services/skill-search/skill-search-service.js';
 
 import type { RequestHandler } from './$types';
 
 const PostBody = z.object({
 	query: z.string().min(1).max(200),
-	limit: z.coerce.number().int().min(1).max(100).optional().default(20)
+	limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+	mode: SkillRegistrySearchMode.optional().default('skills')
 });
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -34,14 +38,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	try {
 		appLogger().debug(
-			{ query: parsed.data.query, limit: parsed.data.limit, requestId: locals.requestId },
+			{
+				query: parsed.data.query,
+				limit: parsed.data.limit,
+				mode: parsed.data.mode,
+				requestId: locals.requestId
+			},
 			'Skill search started'
 		);
-		const results = await appContext().skillSearchService.search(
-			SkillSearchQuery({ query: parsed.data.query, limit: parsed.data.limit })
-		);
+
+		const searchQuery = SkillSearchQuery({
+			query: parsed.data.query,
+			limit: parsed.data.limit
+		});
+		const skillSearchService = appContext().skillSearchService;
+
+		const results =
+			parsed.data.mode === 'skills'
+				? await skillSearchService.search(searchQuery)
+				: parsed.data.mode === 'containers'
+					? await skillSearchService.searchContainers(searchQuery)
+					: await skillSearchService.searchFrameworks(searchQuery);
+
 		appLogger().debug(
-			{ count: results.length, requestId: locals.requestId },
+			{ count: results.length, mode: parsed.data.mode, requestId: locals.requestId },
 			'Skill search completed'
 		);
 		return json({
@@ -49,7 +69,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			meta: {
 				query: parsed.data.query,
 				count: results.length,
-				limit: parsed.data.limit
+				limit: parsed.data.limit,
+				mode: parsed.data.mode
 			}
 		});
 	} catch (error) {

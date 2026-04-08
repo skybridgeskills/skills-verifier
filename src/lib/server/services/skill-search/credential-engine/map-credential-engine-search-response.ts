@@ -10,7 +10,7 @@ interface CEResponseItem {
 	'schema:description'?: Record<string, string> | string;
 }
 
-function extractText(value: unknown): string | undefined {
+export function extractCeLanguageString(value: unknown): string | undefined {
 	if (typeof value === 'string') return value;
 	if (value && typeof value === 'object' && !Array.isArray(value)) {
 		const map = value as Record<string, string>;
@@ -19,7 +19,7 @@ function extractText(value: unknown): string | undefined {
 	return undefined;
 }
 
-function itemsFromResponse(ceResponse: unknown): CEResponseItem[] {
+export function ceSearchItemsFromResponse(ceResponse: unknown): CEResponseItem[] {
 	if (!ceResponse || typeof ceResponse !== 'object') return [];
 	const r = ceResponse as Record<string, unknown>;
 	if (Array.isArray(r.data)) return r.data as CEResponseItem[];
@@ -31,7 +31,7 @@ function itemsFromResponse(ceResponse: unknown): CEResponseItem[] {
 export function mapCredentialEngineSearchResponse(
 	ceResponse: unknown
 ): ReturnType<typeof SkillSearchResult>[] {
-	const items = itemsFromResponse(ceResponse).filter(
+	const items = ceSearchItemsFromResponse(ceResponse).filter(
 		(item): item is CEResponseItem & { '@id': string } =>
 			typeof item['@id'] === 'string' && item['@id'].length > 0
 	);
@@ -39,12 +39,13 @@ export function mapCredentialEngineSearchResponse(
 	return items.map((item) => {
 		const uri = item['@id'];
 		const name =
-			extractText(item['ceasn:competencyText']) ??
-			extractText(item['ceterms:name']) ??
-			extractText(item['schema:name']) ??
+			extractCeLanguageString(item['ceasn:competencyText']) ??
+			extractCeLanguageString(item['ceterms:name']) ??
+			extractCeLanguageString(item['schema:name']) ??
 			'Unnamed Skill';
 		const description =
-			extractText(item['ceterms:description']) ?? extractText(item['schema:description']);
+			extractCeLanguageString(item['ceterms:description']) ??
+			extractCeLanguageString(item['schema:description']);
 
 		return SkillSearchResult({
 			id: uri,

@@ -26,4 +26,16 @@ describe('FakeSkillSearchService', () => {
 		const results = await service.search(SkillSearchQuery({ query: 'a', limit: 2 }));
 		expect(results.length).toBeLessThanOrEqual(2);
 	});
+
+	it('returns matching fake occupations', async () => {
+		const results = await service.searchContainers(SkillSearchQuery({ query: 'nurse' }));
+		expect(results.length).toBeGreaterThan(0);
+		expect(results[0].name).toContain('Nurse');
+	});
+
+	it('returns matching fake frameworks', async () => {
+		const results = await service.searchFrameworks(SkillSearchQuery({ query: 'allied' }));
+		expect(results).toHaveLength(1);
+		expect(results[0].name).toContain('Allied');
+	});
 });

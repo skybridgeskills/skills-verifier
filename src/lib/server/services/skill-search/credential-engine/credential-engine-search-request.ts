@@ -41,3 +41,38 @@ export function buildCredentialEngineSearchRequest(
 		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
 	};
 }
+
+/**
+ * CE Assistant Search for CTDL Jobs, Occupations, WorkRoles, and Tasks by keyword.
+ * Uses `search:term` for broad text matching (name/description), per Registry Search API patterns.
+ */
+export function buildCredentialEngineContainerSearchRequest(
+	query: SkillSearchQuery,
+	searchUrl: string
+): unknown {
+	return {
+		Query: {
+			'@type': ['ceterms:Job', 'ceterms:Occupation', 'ceterms:WorkRole', 'ceterms:Task'],
+			'search:term': query.query
+		},
+		Skip: 0,
+		Take: query.limit,
+		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
+	};
+}
+
+/** CE Assistant Search for competency frameworks by keyword. */
+export function buildCredentialEngineFrameworkSearchRequest(
+	query: SkillSearchQuery,
+	searchUrl: string
+): unknown {
+	return {
+		Query: {
+			'@type': ['ceasn:CompetencyFramework'],
+			'search:term': query.query
+		},
+		Skip: 0,
+		Take: query.limit,
+		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
+	};
+}
