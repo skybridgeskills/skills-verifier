@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
 	import type { Skill } from '$lib/types/job-profile';
 
@@ -14,6 +13,10 @@
 
 	const skillCount = $derived(selectedSkills.length);
 	const showWarning = $derived(skillCount > 10);
+
+	function removeLabel(skill: Skill): string {
+		return skill.label?.trim() || skill.text?.trim() || skill.ctid;
+	}
 </script>
 
 <div class="space-y-4">
@@ -40,18 +43,22 @@
 		<div class="space-y-2">
 			{#each selectedSkills as skill (skill.url)}
 				<div
-					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:border-border @md:p-4"
+					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 focus-within:outline-none hover:border-border @md:p-4"
 				>
 					<SkillItem {skill} />
-					<Button
+					<button
 						type="button"
-						variant="ghost"
-						size="icon"
-						class="opacity-0 transition-opacity group-hover:opacity-100"
+						class="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:text-red-400"
 						onclick={() => onRemoveSkill(skill)}
-						aria-label="Remove {skill.label?.trim() || skill.text?.trim() || skill.ctid}"
+						aria-label="Remove {removeLabel(skill)}"
 					>
-						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<svg
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							aria-hidden="true"
+						>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -59,7 +66,8 @@
 								d="M6 18L18 6M6 6l12 12"
 							/>
 						</svg>
-					</Button>
+						<span>Remove</span>
+					</button>
 				</div>
 			{/each}
 		</div>

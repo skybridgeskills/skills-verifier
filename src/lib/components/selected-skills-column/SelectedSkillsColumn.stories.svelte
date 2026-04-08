@@ -9,7 +9,15 @@
 		title: 'components/SelectedSkillsColumn',
 		tags: ['autodocs'],
 		argTypes: {},
-		args: {}
+		args: {},
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Each row is inert except the Remove control (shown on hover or when focused). The row shows a focus-within ring when Remove is focused.'
+				}
+			}
+		}
 	});
 
 	const mockSkills: Skill[] = [

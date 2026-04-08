@@ -5,7 +5,15 @@
 
 	const { Story } = defineMeta({
 		title: 'components/SkillSearch/SkillSearchResultItem',
-		tags: ['autodocs']
+		tags: ['autodocs'],
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Card is inert. Use the Add or Remove control (focusable) to change selection; the card shows a focus-within ring when a control is focused.'
+				}
+			}
+		}
 	});
 </script>
 
