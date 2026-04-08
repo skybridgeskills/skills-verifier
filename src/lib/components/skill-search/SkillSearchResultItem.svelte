@@ -22,7 +22,7 @@
 
 <button
 	type="button"
-	class="flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none {isSelected
+	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none {isSelected
 		? 'border-green-600/30 bg-green-600/10'
 		: 'border-border bg-card hover:border-primary/50 hover:bg-accent/40'}"
 	onclick={onToggle}
@@ -31,7 +31,24 @@
 >
 	<SkillItem {skill} />
 	{#if isSelected}
-		<div class="flex shrink-0 items-center gap-1 text-red-600 dark:text-red-400" aria-hidden="true">
+		<!-- Default: show Added; on hover: show Remove -->
+		<div
+			class="flex shrink-0 items-center gap-1 text-green-700 transition-opacity group-hover:opacity-0 dark:text-green-400"
+			aria-hidden="true"
+		>
+			<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+				<path
+					fill-rule="evenodd"
+					d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+					clip-rule="evenodd"
+				/>
+			</svg>
+			<span class="text-sm font-medium">Added</span>
+		</div>
+		<div
+			class="flex shrink-0 items-center gap-1 text-red-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-red-400"
+			aria-hidden="true"
+		>
 			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path
 					stroke-linecap="round"
