@@ -23,3 +23,9 @@
 		/>
 	</div>
 </Story>
+
+<Story name="Narrow width (mobile add-skills entry)">
+	<div class="max-w-[380px] border border-dashed border-border p-2">
+		<CreateJobPage />
+	</div>
+</Story>

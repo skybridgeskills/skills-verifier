@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
-	import type { Skill } from '$lib/types/job-profile';
+	import type { Skill, SkillWithSource } from '$lib/types/job-profile';
 
 	import SelectedSkillsColumn from './SelectedSkillsColumn.svelte';
 
@@ -50,6 +50,24 @@
 		}
 	];
 
+	const mockSkillsWithSource: SkillWithSource[] = [
+		{
+			...mockSkills[0],
+			sourceCtdlContainer: {
+				name: 'Registered Nurse',
+				'@id': 'https://example.com/occupation/1',
+				'@type': 'Occupation'
+			}
+		},
+		{
+			...mockSkills[1],
+			sourceCtdlFramework: {
+				name: 'Allied Health Framework',
+				'@id': 'https://example.com/fw/1'
+			}
+		}
+	];
+
 	// Generate more skills for testing
 	const generateSkills = (count: number): Skill[] => {
 		return Array.from({ length: count }, (_, i) => ({
@@ -91,6 +109,16 @@
 <Story name="With Mixed Label and Text">
 	<div class="max-w-md">
 		<SelectedSkillsColumn selectedSkills={mockSkills} onRemoveSkill={handleRemove} />
+	</div>
+</Story>
+
+<Story name="With source labels">
+	<div class="max-w-md">
+		<SelectedSkillsColumn
+			selectedSkills={mockSkillsWithSource}
+			onRemoveSkill={handleRemove}
+			showSource={true}
+		/>
 	</div>
 </Story>
 
