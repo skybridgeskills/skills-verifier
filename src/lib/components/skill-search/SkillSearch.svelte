@@ -203,7 +203,7 @@
 	const emptyHint = $derived(uiForSearchMode(currentMode).emptyHint);
 </script>
 
-<div class="space-y-4 rounded-xl bg-secondary p-4">
+<div class="space-y-4">
 	<div class="flex flex-wrap gap-1 rounded-lg bg-accent p-1">
 		{#each modes as mode (mode.id)}
 			<button

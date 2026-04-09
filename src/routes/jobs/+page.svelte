@@ -18,7 +18,7 @@
 	{#if data.jobs.length === 0}
 		<p class="text-body-md text-muted-foreground">No active jobs yet.</p>
 	{:else}
-		<ul class="space-y-3 rounded-xl bg-secondary p-4">
+		<ul class="space-y-3 rounded-xl">
 			{#each data.jobs as job (job.id)}
 				<li class="rounded-xl bg-card px-4 py-4 shadow-ambient">
 					<a

@@ -69,15 +69,13 @@
 		{#if job.skills.length === 0}
 			<p class="mt-2 text-body-md text-muted-foreground">No skills listed.</p>
 		{:else}
-			<div class="mt-3 rounded-xl bg-secondary p-6">
-				<ul class="space-y-3">
-					{#each job.skills as skill (skill.url)}
-						<li class="rounded-xl bg-card px-4 py-3 shadow-ambient">
-							<SkillItem {skill} />
-						</li>
-					{/each}
-				</ul>
-			</div>
+			<ul class="mt-3 space-y-3">
+				{#each job.skills as skill (skill.url)}
+					<li class="rounded-xl bg-card px-4 py-3 shadow-ambient">
+						<SkillItem {skill} />
+					</li>
+				{/each}
+			</ul>
 		{/if}
 	</div>
 </div>
