@@ -27,7 +27,7 @@
 </script>
 
 <Story name="Initial State (desktop width)">
-	<ResponsivePreview width={1100} fluid label="Desktop — sidebar visible @5xl">
+	<ResponsivePreview width={1100} fluid label="Desktop — sidebar visible @4xl">
 		<CreateJobPage />
 	</ResponsivePreview>
 </Story>

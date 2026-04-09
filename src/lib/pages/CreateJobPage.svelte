@@ -102,7 +102,7 @@
 	{/if}
 
 	<Dialog.Root bind:open={addSkillsOpen}>
-		<div class="grid gap-8 @5xl:grid-cols-[1fr_400px]">
+		<div class="grid gap-8 @4xl:grid-cols-[1fr_400px]">
 			<div class="min-w-0 space-y-8">
 				<form
 					method="POST"
@@ -130,7 +130,7 @@
 						/>
 					</div>
 
-					<div class="@5xl:hidden">
+					<div class="@4xl:hidden">
 						<Dialog.Trigger
 							type="button"
 							class={cn(buttonVariants({ variant: 'outline' }), 'w-full gap-2')}
@@ -157,7 +157,7 @@
 				</form>
 			</div>
 
-			<div class="hidden @5xl:block">
+			<div class="hidden @4xl:block">
 				<div class="rounded-xl border border-border bg-card p-6 shadow-lg">
 					<h2 class="mb-4 text-xs font-bold tracking-widest text-muted-foreground uppercase">
 						Search
