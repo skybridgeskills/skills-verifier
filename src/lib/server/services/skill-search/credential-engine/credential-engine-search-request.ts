@@ -78,8 +78,8 @@ export function buildCredentialEngineFrameworkSearchRequest(
 ): unknown {
 	return {
 		Query: {
-			'@type': ['ceasn:CompetencyFramework'],
-			'search:term': query.query
+			'@type': 'ceasn:CompetencyFramework',
+			'ceasn:name': query.query
 		},
 		Skip: 0,
 		Take: query.limit,
