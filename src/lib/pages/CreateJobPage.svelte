@@ -14,12 +14,24 @@
 	import { enhance } from '$app/forms';
 
 	interface Props {
-		form?: { error?: string; values?: { name?: string; company?: string; description?: string } };
+		form?: {
+			error?: string;
+			values?: {
+				name?: string;
+				company?: string;
+				description?: string;
+				externalUrl?: string;
+			};
+		};
 		/** Storybook / tests: start with skills already selected */
 		initialSelectedSkills?: SkillWithSource[];
 	}
 
 	let { form, initialSelectedSkills = [] }: Props = $props();
+
+	let jobProfileForm = $state<{ validateEmbedded: () => boolean } | null>(null);
+
+	const profileFormInitialData = $derived(form?.values ?? {});
 
 	// svelte-ignore state_referenced_locally
 	let selectedSkills = $state<SkillWithSource[]>([...initialSelectedSkills]);
@@ -108,6 +120,11 @@
 					method="POST"
 					action="?/createJob"
 					use:enhance={({ cancel }) => {
+						const profileOk = jobProfileForm?.validateEmbedded() ?? false;
+						if (!profileOk) {
+							cancel();
+							return;
+						}
 						if (!validateClient()) {
 							cancel();
 						}
@@ -119,7 +136,11 @@
 
 					<div>
 						<h2 class="mb-4 text-title-lg font-semibold text-foreground">Job information</h2>
-						<JobProfileForm embedded />
+						<JobProfileForm
+							bind:this={jobProfileForm}
+							embedded
+							initialData={profileFormInitialData}
+						/>
 					</div>
 
 					<div class="mt-8 rounded-xl bg-secondary p-6">

@@ -11,11 +11,17 @@
 		args: {}
 	});
 
-	function handleSubmit(data: { name: string; description: string; company: string }) {
+	function handleSubmit(data: {
+		name: string;
+		description: string;
+		company: string;
+		externalUrl?: string;
+	}) {
 		// Storybook runs in the browser; server `appLogger()` is not available here.
 		console.info('Form submitted:', data);
+		const apply = data.externalUrl ? `\nApply URL: ${data.externalUrl}` : '';
 		alert(
-			`Form submitted:\nName: ${data.name}\nCompany: ${data.company}\nDescription: ${data.description}`
+			`Form submitted:\nName: ${data.name}\nCompany: ${data.company}\nDescription: ${data.description}${apply}`
 		);
 	}
 </script>
