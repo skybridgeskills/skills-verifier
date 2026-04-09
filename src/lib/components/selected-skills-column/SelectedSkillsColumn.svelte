@@ -2,14 +2,15 @@
 	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
-	import type { Skill } from '$lib/types/job-profile';
+	import type { Skill, SkillWithSource } from '$lib/types/job-profile';
 
 	interface Props {
-		selectedSkills: Skill[];
+		selectedSkills: SkillWithSource[];
 		onRemoveSkill: (skill: Skill) => void;
+		showSource?: boolean;
 	}
 
-	let { selectedSkills, onRemoveSkill }: Props = $props();
+	let { selectedSkills, onRemoveSkill, showSource = false }: Props = $props();
 
 	const skillCount = $derived(selectedSkills.length);
 	const showWarning = $derived(skillCount > 10);
@@ -45,7 +46,18 @@
 				<div
 					class="group flex w-full items-start justify-between gap-3 rounded-lg border border-green-600/30 bg-green-600/10 px-4 py-3 text-left transition-colors focus-within:border-primary/50 focus-within:bg-accent/40"
 				>
-					<SkillItem {skill} />
+					<div class="min-w-0 flex-1">
+						<SkillItem {skill} />
+						{#if showSource && skill.sourceCtdlContainer}
+							<p class="mt-1 text-xs text-muted-foreground">
+								From {skill.sourceCtdlContainer['@type']}: {skill.sourceCtdlContainer.name}
+							</p>
+						{:else if showSource && skill.sourceCtdlFramework}
+							<p class="mt-1 text-xs text-muted-foreground">
+								From framework: {skill.sourceCtdlFramework.name}
+							</p>
+						{/if}
+					</div>
 					<button
 						type="button"
 						class="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-red-50 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-offset-0 focus-visible:outline-none dark:text-red-400 dark:hover:bg-red-950/30"
@@ -89,7 +101,13 @@
 					/>
 				</svg>
 				<p class="mt-2 text-sm text-muted-foreground">No skills selected yet</p>
-				<p class="mt-1 text-xs text-muted-foreground">Add skills using quick picks or search.</p>
+				<p class="mt-1 text-xs text-muted-foreground">Use quick picks or search to add skills.</p>
+				<p class="mt-1 text-xs text-muted-foreground @lg:hidden">
+					Tap <strong class="font-medium">Add skills</strong> below.
+				</p>
+				<p class="mt-1 hidden text-xs text-muted-foreground @lg:block">
+					Use the <strong class="font-medium">Add skills</strong> panel on the right.
+				</p>
 			</CardContent>
 		</Card>
 	{/if}

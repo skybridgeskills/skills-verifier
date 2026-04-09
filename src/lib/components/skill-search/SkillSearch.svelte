@@ -9,14 +9,15 @@
 	import type {
 		CtdlFrameworkSearchResult,
 		CtdlSkillContainerSearchResult,
-		Skill
+		Skill,
+		SkillSearchSource
 	} from '$lib/types/job-profile';
 
 	import SkillSearchResultItem from './SkillSearchResultItem.svelte';
 
 	interface Props {
 		selectedUrls: string[];
-		onToggleSkill: (skill: Skill, add: boolean) => void;
+		onToggleSkill: (skill: Skill, add: boolean, source?: SkillSearchSource) => void;
 	}
 
 	let { selectedUrls, onToggleSkill }: Props = $props();
@@ -102,12 +103,31 @@
 		drillDownEntity = null;
 	}
 
-	function handleAddAllFromDrillDown(skills: Skill[]) {
-		for (const skill of skills) {
+	function drillDownSource(): SkillSearchSource | undefined {
+		const e = drillDownEntity;
+		if (!e) return undefined;
+		if (e['@type'] === 'CompetencyFramework') {
+			return { kind: 'framework', name: e.name, '@id': e['@id'] };
+		}
+		return {
+			kind: 'container',
+			name: e.name,
+			'@id': e['@id'],
+			'@type': e['@type']
+		};
+	}
+
+	function handleAddAllFromDrillDown(skillsToAdd: Skill[]) {
+		const src = drillDownSource();
+		for (const skill of skillsToAdd) {
 			if (!selectedUrls.includes(skill.url)) {
-				onToggleSkill(skill, true);
+				onToggleSkill(skill, true, src);
 			}
 		}
+	}
+
+	function handleToggleFromDrillDown(skill: Skill, add: boolean) {
+		onToggleSkill(skill, add, add ? drillDownSource() : undefined);
 	}
 
 	function handleSearchKeydown(event: KeyboardEvent) {
@@ -138,10 +158,10 @@
 
 	const emptyHint = $derived(
 		currentMode === 'skills'
-			? 'skills'
+			? 'skills to add to the job'
 			: currentMode === 'containers'
-				? 'jobs & occupations'
-				: 'frameworks'
+				? 'jobs & occupations with associated skills'
+				: 'frameworks that contain skills'
 	);
 </script>
 
@@ -211,7 +231,7 @@
 				entityResult={drillDownEntity}
 				{selectedUrls}
 				onBack={handleBackFromDrillDown}
-				{onToggleSkill}
+				onToggleSkill={handleToggleFromDrillDown}
 				onAddAll={handleAddAllFromDrillDown}
 			/>
 		{:else if loading}
@@ -282,7 +302,7 @@
 			<div
 				class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
 			>
-				<p>Search to find {emptyHint} to add to the job</p>
+				<p>Search to find {emptyHint}</p>
 			</div>
 		{/if}
 	</div>

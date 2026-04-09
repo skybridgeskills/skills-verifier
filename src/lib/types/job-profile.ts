@@ -191,6 +191,18 @@ export interface SkillWithSource extends Skill {
 }
 
 /**
+ * Provenance when adding a skill from container/framework drill-down in search.
+ */
+export type SkillSearchSource =
+	| {
+			kind: 'container';
+			name: string;
+			'@id': string;
+			'@type': CtdlSkillContainerType;
+	  }
+	| { kind: 'framework'; name: string; '@id': string };
+
+/**
  * Quick pick item for the quick picks component.
  */
 export interface QuickPickItem {
