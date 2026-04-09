@@ -18,9 +18,11 @@
 	interface Props {
 		selectedUrls: string[];
 		onToggleSkill: (skill: Skill, add: boolean, source?: SkillSearchSource) => void;
+		/** Storybook: which tab is active initially */
+		initialMode?: SearchMode;
 	}
 
-	let { selectedUrls, onToggleSkill }: Props = $props();
+	let { selectedUrls, onToggleSkill, initialMode = 'skills' }: Props = $props();
 
 	const modes: { id: SearchMode; label: string; mobileLabel?: string }[] = [
 		{ id: 'skills', label: 'Individual Skills' },
@@ -28,13 +30,15 @@
 		{ id: 'frameworks', label: 'Skill Frameworks', mobileLabel: 'Frameworks' }
 	];
 
-	let currentMode = $state<SearchMode>('skills');
+	// svelte-ignore state_referenced_locally
+	let currentMode = $state<SearchMode>(initialMode);
 	let query = $state('');
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 	let hasSubmitted = $state(false);
 	let lastSearchedQuery = $state('');
-	let lastSearchedMode = $state<SearchMode>('skills');
+	// svelte-ignore state_referenced_locally
+	let lastSearchedMode = $state<SearchMode>(initialMode);
 
 	let skillResults = $state<Skill[]>([]);
 	let containerResults = $state<CtdlSkillContainerSearchResult[]>([]);

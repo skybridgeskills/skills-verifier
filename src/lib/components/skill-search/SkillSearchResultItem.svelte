@@ -6,9 +6,11 @@
 		skill: Skill;
 		isSelected: boolean;
 		onToggle: () => void;
+		/** Optional provenance (e.g. when showing context from a container search). */
+		sourceNote?: string;
 	}
 
-	let { skill, isSelected, onToggle }: Props = $props();
+	let { skill, isSelected, onToggle, sourceNote }: Props = $props();
 
 	const displayTitle = $derived(skill.label?.trim() || skill.text?.trim() || skill.ctid);
 </script>
@@ -19,7 +21,12 @@
 		? 'border-green-600/30 bg-green-600/10'
 		: 'border-border bg-card hover:border-primary/50 hover:bg-accent/40'}"
 >
-	<SkillItem {skill} />
+	<div class="min-w-0 flex-1">
+		<SkillItem {skill} />
+		{#if sourceNote}
+			<p class="mt-1 text-xs text-muted-foreground">{sourceNote}</p>
+		{/if}
+	</div>
 	{#if isSelected}
 		<div
 			class="relative grid shrink-0 place-items-end justify-items-end [&>*]:col-start-1 [&>*]:row-start-1"

@@ -23,11 +23,14 @@
 
 	interface Props {
 		form?: { error?: string; values?: { name?: string; company?: string; description?: string } };
+		/** Storybook / tests: start with skills already selected */
+		initialSelectedSkills?: SkillWithSource[];
 	}
 
-	let { form }: Props = $props();
+	let { form, initialSelectedSkills = [] }: Props = $props();
 
-	let selectedSkills = $state<SkillWithSource[]>([]);
+	// svelte-ignore state_referenced_locally
+	let selectedSkills = $state<SkillWithSource[]>([...initialSelectedSkills]);
 	let clientError = $state<string | null>(null);
 	let addSkillsOpen = $state(false);
 
