@@ -84,7 +84,7 @@
 
 		<div class="space-y-4">
 			<span
-				class="text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-60"
+				class="mb-2 text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-60"
 			>
 				Proficiency level
 			</span>
