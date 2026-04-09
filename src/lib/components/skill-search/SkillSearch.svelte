@@ -29,9 +29,9 @@
 	let { selectedUrls, onToggleSkill, initialMode = 'skills', picks = [] }: Props = $props();
 
 	const modes: { id: SearchMode; label: string; mobileLabel?: string }[] = [
-		{ id: 'skills', label: 'Individual Skills' },
-		{ id: 'containers', label: 'Jobs & Occupations', mobileLabel: 'Jobs' },
-		{ id: 'frameworks', label: 'Skill Frameworks', mobileLabel: 'Frameworks' }
+		{ id: 'skills', label: 'Skills' },
+		{ id: 'containers', label: 'Occupations', mobileLabel: 'Jobs' },
+		{ id: 'frameworks', label: 'Frameworks', mobileLabel: 'Frameworks' }
 	];
 
 	// svelte-ignore state_referenced_locally
