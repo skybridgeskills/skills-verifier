@@ -83,11 +83,11 @@
 		<p class="text-body-md leading-relaxed text-muted-foreground">{description}</p>
 
 		<div class="space-y-4">
-			<span
+			<p
 				class="mb-2 text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-60"
 			>
 				Proficiency level
-			</span>
+			</p>
 			<div class="flex gap-2">
 				<button
 					type="button"

@@ -21,7 +21,7 @@
 	const typeBadgeClasses: Record<string, string> = {
 		Job: 'border-transparent bg-primary-fixed text-primary dark:bg-primary-fixed dark:text-primary',
 		Occupation:
-			'border-transparent bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',
+			'border-transparent bg-warmth-muted text-warmth-end dark:bg-warmth-muted dark:text-warmth-end',
 		WorkRole:
 			'border-transparent bg-flame-muted text-flame dark:bg-flame-muted dark:text-flame-foreground',
 		Task: 'border-transparent bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',

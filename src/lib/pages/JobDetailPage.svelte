@@ -55,7 +55,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						Open posting
+						View job posting
 					</Button>
 				</dd>
 			</div>
