@@ -27,13 +27,13 @@
 </script>
 
 <Story name="Initial State (desktop width)">
-	<ResponsivePreview width={1100} label="Desktop — sidebar visible @lg">
+	<ResponsivePreview width={1100} fluid label="Desktop — sidebar visible @5xl">
 		<CreateJobPage />
 	</ResponsivePreview>
 </Story>
 
 <Story name="With form error">
-	<ResponsivePreview width={1100}>
+	<ResponsivePreview width={1100} fluid>
 		<CreateJobPage
 			form={{ error: 'Example server validation message', values: { name: '', company: '' } }}
 		/>
@@ -41,7 +41,7 @@
 </Story>
 
 <Story name="With selections">
-	<ResponsivePreview width={1100}>
+	<ResponsivePreview width={1100} fluid>
 		<CreateJobPage initialSelectedSkills={withSelections} />
 	</ResponsivePreview>
 </Story>

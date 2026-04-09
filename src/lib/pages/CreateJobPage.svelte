@@ -2,21 +2,13 @@
 	import { Dialog } from 'bits-ui';
 
 	import JobProfileForm from '$lib/components/job-profile-form/JobProfileForm.svelte';
-	import { QuickPicks } from '$lib/components/quick-picks';
 	import SelectedSkillsColumn from '$lib/components/selected-skills-column/SelectedSkillsColumn.svelte';
 	import { SkillSearch } from '$lib/components/skill-search';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/button.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { QUICK_PICKS } from '$lib/config/sample-entities';
-	import type {
-		CtdlFrameworkSearchResult,
-		CtdlSkillContainerSearchResult,
-		QuickPickItem,
-		Skill,
-		SkillSearchSource,
-		SkillWithSource
-	} from '$lib/types/job-profile';
+	import type { Skill, SkillSearchSource, SkillWithSource } from '$lib/types/job-profile';
 	import { cn } from '$lib/utils.js';
 
 	import { enhance } from '$app/forms';
@@ -72,46 +64,6 @@
 		clientError = null;
 	}
 
-	function handleToggleQuickPick(pick: QuickPickItem, skills: Skill[]) {
-		if (skills.length === 0) {
-			return;
-		}
-		const removeUrls = skills.map((s) => s.url);
-		const allSelected = skills.every((sk) => selectedSkills.some((s) => s.url === sk.url));
-		if (allSelected) {
-			selectedSkills = selectedSkills.filter((s) => !removeUrls.includes(s.url));
-		} else {
-			const source: SkillSearchSource | undefined =
-				pick.type === 'Skill'
-					? undefined
-					: pick.type === 'Framework'
-						? {
-								kind: 'framework',
-								name: (pick.entity as CtdlFrameworkSearchResult).name,
-								'@id': (pick.entity as CtdlFrameworkSearchResult)['@id']
-							}
-						: {
-								kind: 'container',
-								name: (pick.entity as CtdlSkillContainerSearchResult).name,
-								'@id': (pick.entity as CtdlSkillContainerSearchResult)['@id'],
-								'@type': (pick.entity as CtdlSkillContainerSearchResult)['@type']
-							};
-			const existingUrls = selectedSkills.map((s) => s.url);
-			const additions: SkillWithSource[] = [];
-			for (const skill of skills) {
-				if (existingUrls.includes(skill.url)) {
-					continue;
-				}
-				existingUrls.push(skill.url);
-				additions.push(skillWithSearchSource(skill, source));
-			}
-			if (additions.length > 0) {
-				selectedSkills = [...selectedSkills, ...additions];
-			}
-		}
-		clientError = null;
-	}
-
 	function handleRemoveSkill(skill: Skill) {
 		selectedSkills = selectedSkills.filter((s) => s.url !== skill.url);
 		clientError = null;
@@ -150,7 +102,7 @@
 	{/if}
 
 	<Dialog.Root bind:open={addSkillsOpen}>
-		<div class="grid gap-6 @lg:grid-cols-[1fr_340px]">
+		<div class="grid gap-8 @5xl:grid-cols-[1fr_400px]">
 			<div class="min-w-0 space-y-8">
 				<form
 					method="POST"
@@ -178,8 +130,11 @@
 						/>
 					</div>
 
-					<div class="@lg:hidden">
-						<Dialog.Trigger class={cn(buttonVariants({ variant: 'outline' }), 'w-full gap-2')}>
+					<div class="@5xl:hidden">
+						<Dialog.Trigger
+							type="button"
+							class={cn(buttonVariants({ variant: 'outline' }), 'w-full gap-2')}
+						>
 							<svg
 								class="h-4 w-4 shrink-0"
 								fill="none"
@@ -202,15 +157,12 @@
 				</form>
 			</div>
 
-			<div class="hidden space-y-6 @lg:block">
-				<div class="rounded-lg border border-border bg-card p-4">
-					<h2 class="mb-3 text-sm font-semibold text-foreground">Quick picks</h2>
-					<QuickPicks picks={QUICK_PICKS} {selectedUrls} onTogglePick={handleToggleQuickPick} />
-				</div>
-
-				<div class="rounded-lg border border-border bg-card p-4">
-					<h2 class="mb-3 text-sm font-semibold text-foreground">Search</h2>
-					<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkill} />
+			<div class="hidden @5xl:block">
+				<div class="rounded-xl border border-border bg-card p-6 shadow-lg">
+					<h2 class="mb-4 text-xs font-bold tracking-widest text-muted-foreground uppercase">
+						Search
+					</h2>
+					<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkill} picks={QUICK_PICKS} />
 				</div>
 			</div>
 		</div>
@@ -225,15 +177,8 @@
 				<Dialog.Title class="text-lg leading-none font-semibold tracking-tight">
 					Add skills
 				</Dialog.Title>
-				<div class="mt-2 space-y-6">
-					<div>
-						<h3 class="mb-3 text-sm font-semibold text-foreground">Quick picks</h3>
-						<QuickPicks picks={QUICK_PICKS} {selectedUrls} onTogglePick={handleToggleQuickPick} />
-					</div>
-					<div class="border-t border-border pt-4">
-						<h3 class="mb-3 text-sm font-semibold text-foreground">Search</h3>
-						<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkill} />
-					</div>
+				<div class="mt-2">
+					<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkill} picks={QUICK_PICKS} />
 				</div>
 				<div class="flex justify-end gap-2 pt-2">
 					<Button type="button" onclick={() => (addSkillsOpen = false)}>Done</Button>

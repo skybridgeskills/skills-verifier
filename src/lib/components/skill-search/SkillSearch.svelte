@@ -2,6 +2,7 @@
 	import { searchSkills, type SearchMode } from '$lib/clients/skill-search-client';
 	import { CtdlSkillContainerView } from '$lib/components/ctdl-skill-container-view';
 	import { EntityResultItem } from '$lib/components/entity-result-item';
+	import { QuickPicks } from '$lib/components/quick-picks';
 	import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -9,6 +10,7 @@
 	import type {
 		CtdlFrameworkSearchResult,
 		CtdlSkillContainerSearchResult,
+		QuickPickItem,
 		Skill,
 		SkillSearchSource
 	} from '$lib/types/job-profile';
@@ -20,9 +22,11 @@
 		onToggleSkill: (skill: Skill, add: boolean, source?: SkillSearchSource) => void;
 		/** Storybook: which tab is active initially */
 		initialMode?: SearchMode;
+		/** Quick picks shown in the empty state, filtered by current mode tab. */
+		picks?: QuickPickItem[];
 	}
 
-	let { selectedUrls, onToggleSkill, initialMode = 'skills' }: Props = $props();
+	let { selectedUrls, onToggleSkill, initialMode = 'skills', picks = [] }: Props = $props();
 
 	const modes: { id: SearchMode; label: string; mobileLabel?: string }[] = [
 		{ id: 'skills', label: 'Individual Skills' },
@@ -70,6 +74,28 @@
 
 	function uiForSearchMode(mode: SearchMode) {
 		return MODE_UI_COPY[mode] ?? MODE_UI_COPY[DEFAULT_SEARCH_MODE];
+	}
+
+	const CONTAINER_PICK_TYPES = new Set(['Job', 'Occupation', 'WorkRole', 'Task']);
+
+	function picksForMode(mode: SearchMode, allPicks: QuickPickItem[]): QuickPickItem[] {
+		if (mode === 'skills') return allPicks.filter((p) => p.type === 'Skill');
+		if (mode === 'containers') return allPicks.filter((p) => CONTAINER_PICK_TYPES.has(p.type));
+		if (mode === 'frameworks') return allPicks.filter((p) => p.type === 'Framework');
+		return [];
+	}
+
+	const filteredPicks = $derived(picksForMode(currentMode, picks));
+
+	function handleQuickPickClick(pick: QuickPickItem, _skills: Skill[]) {
+		if (pick.type === 'Skill') {
+			const skill = pick.entity as Skill;
+			onToggleSkill(skill, !selectedUrls.includes(skill.url));
+		} else {
+			handleContainerSelect(
+				pick.entity as CtdlSkillContainerSearchResult | CtdlFrameworkSearchResult
+			);
+		}
 	}
 
 	async function performSearch(q: string, mode: SearchMode) {
@@ -310,7 +336,14 @@
 					</div>
 				{/if}
 			{/if}
-		{:else if !hasSubmitted}
+		{:else if filteredPicks.length > 0}
+			<div>
+				<p class="mb-3 text-xs font-bold tracking-widest text-muted-foreground uppercase">
+					Quick picks
+				</p>
+				<QuickPicks picks={filteredPicks} {selectedUrls} onTogglePick={handleQuickPickClick} />
+			</div>
+		{:else}
 			<div
 				class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
 			>

@@ -102,10 +102,10 @@
 				</svg>
 				<p class="mt-2 text-sm text-muted-foreground">No skills selected yet</p>
 				<p class="mt-1 text-xs text-muted-foreground">Use quick picks or search to add skills.</p>
-				<p class="mt-1 text-xs text-muted-foreground @lg:hidden">
+				<p class="mt-1 text-xs text-muted-foreground @5xl:hidden">
 					Tap <strong class="font-medium">Add skills</strong> below.
 				</p>
-				<p class="mt-1 hidden text-xs text-muted-foreground @lg:block">
+				<p class="mt-1 hidden text-xs text-muted-foreground @5xl:block">
 					Use the <strong class="font-medium">Add skills</strong> panel on the right.
 				</p>
 			</CardContent>
