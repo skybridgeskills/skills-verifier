@@ -79,10 +79,10 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="space-y-8">
 	<div>
-		<h1 class="text-2xl font-bold text-foreground">Create job</h1>
-		<p class="mt-1 text-sm text-muted-foreground">
+		<h1 class="text-headline-md text-foreground">Create job</h1>
+		<p class="mt-2 text-body-md text-muted-foreground">
 			Define the job, then add required skills from the Credential Registry.
 		</p>
 	</div>
@@ -118,11 +118,11 @@
 					<input type="hidden" name="frameworksJson" value={frameworksJson} />
 
 					<div>
-						<h2 class="mb-4 text-lg font-semibold text-foreground">Job information</h2>
+						<h2 class="mb-4 text-title-lg font-semibold text-foreground">Job information</h2>
 						<JobProfileForm embedded />
 					</div>
 
-					<div class="border-t border-border pt-6">
+					<div class="mt-8 rounded-xl bg-secondary p-6">
 						<SelectedSkillsColumn
 							{selectedSkills}
 							onRemoveSkill={handleRemoveSkill}
@@ -158,10 +158,8 @@
 			</div>
 
 			<div class="hidden @4xl:block">
-				<div class="rounded-xl border border-border bg-card p-6 shadow-lg">
-					<h2 class="mb-4 text-xs font-bold tracking-widest text-muted-foreground uppercase">
-						Search
-					</h2>
+				<div class="rounded-xl bg-card p-6 shadow-ambient">
+					<h2 class="mb-4 text-label-md tracking-wider text-muted-foreground uppercase">Search</h2>
 					<SkillSearch {selectedUrls} onToggleSkill={handleToggleSkill} picks={QUICK_PICKS} />
 				</div>
 			</div>
@@ -171,10 +169,10 @@
 			<Dialog.Overlay class="fixed inset-0 z-50 bg-black/80" />
 			<Dialog.Content
 				class={cn(
-					'fixed top-1/2 left-1/2 z-50 grid max-h-[90vh] w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-lg border bg-background p-6 shadow-lg outline-none'
+					'fixed top-1/2 left-1/2 z-50 grid max-h-[90vh] w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-xl border border-border/15 bg-background p-6 shadow-ambient outline-none'
 				)}
 			>
-				<Dialog.Title class="text-lg leading-none font-semibold tracking-tight">
+				<Dialog.Title class="text-title-lg leading-none font-semibold tracking-tight">
 					Add skills
 				</Dialog.Title>
 				<div class="mt-2">
