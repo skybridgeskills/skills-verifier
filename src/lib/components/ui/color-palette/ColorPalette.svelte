@@ -99,6 +99,12 @@
 			label: 'Warmth'
 		},
 		{
+			name: 'warmth-muted',
+			swatchClass: 'bg-warmth-muted',
+			textClass: 'text-warmth dark:text-warmth',
+			label: 'Warmth Muted'
+		},
+		{
 			name: 'warmth-subtle',
 			swatchClass: 'bg-warmth-subtle',
 			textClass: 'text-warmth dark:text-warmth',

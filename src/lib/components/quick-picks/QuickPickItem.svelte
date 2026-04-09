@@ -12,7 +12,7 @@
 	const typeBadgeClasses: Record<string, string> = {
 		Skill: 'bg-flame-subtle text-flame dark:bg-flame-subtle dark:text-flame',
 		Job: 'bg-primary-fixed text-primary dark:bg-primary-fixed dark:text-primary',
-		Occupation: 'bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',
+		Occupation: 'bg-warmth-muted text-warmth dark:bg-warmth-muted dark:text-warmth',
 		WorkRole: 'bg-flame-muted text-flame dark:bg-flame-muted dark:text-flame-foreground',
 		Task: 'bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',
 		Framework: 'bg-primary-fixed text-primary dark:bg-primary-fixed dark:text-primary'
