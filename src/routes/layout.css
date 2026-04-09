@@ -37,6 +37,7 @@
 
 	/* User Skill — warmth */
 	--warmth: hsl(45 100% 49%);
+	--warmth-end: hsl(42 100% 35%);
 	--warmth-muted: hsl(42 100% 72%);
 	--warmth-subtle: hsl(42 100% 81%);
 
@@ -86,6 +87,7 @@
 
 	/* User Skill — warmth */
 	--warmth: hsl(45 100% 49%);
+	--warmth-end: hsl(45 100% 55%);
 	--warmth-muted: hsl(42 40% 25%);
 	--warmth-subtle: hsl(42 40% 18%);
 
@@ -129,6 +131,7 @@
 	--color-flame-muted: var(--flame-muted);
 	--color-flame-subtle: var(--flame-subtle);
 	--color-warmth: var(--warmth);
+	--color-warmth-end: var(--warmth-end);
 	--color-warmth-muted: var(--warmth-muted);
 	--color-warmth-subtle: var(--warmth-subtle);
 	--color-primary-container: var(--primary-container);

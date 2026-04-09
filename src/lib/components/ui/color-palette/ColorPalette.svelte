@@ -99,6 +99,12 @@
 			label: 'Warmth'
 		},
 		{
+			name: 'warmth-end',
+			swatchClass: 'bg-warmth-end',
+			textClass: 'text-primary-foreground dark:text-foreground',
+			label: 'Warmth gradient end'
+		},
+		{
 			name: 'warmth-muted',
 			swatchClass: 'bg-warmth-muted',
 			textClass: 'text-warmth dark:text-warmth',
