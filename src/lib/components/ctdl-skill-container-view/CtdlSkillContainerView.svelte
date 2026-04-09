@@ -136,14 +136,16 @@
 			</Button>
 		</div>
 
-		<div class="space-y-2">
-			{#each skills as skill (skill.url)}
-				<SkillSearchResultItem
-					{skill}
-					isSelected={isSelected(skill)}
-					onToggle={() => onToggleSkill(skill, !isSelected(skill))}
-				/>
-			{/each}
+		<div class="rounded-xl bg-secondary p-3">
+			<div class="space-y-3">
+				{#each skills as skill (skill.url)}
+					<SkillSearchResultItem
+						{skill}
+						isSelected={isSelected(skill)}
+						onToggle={() => onToggleSkill(skill, !isSelected(skill))}
+					/>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>

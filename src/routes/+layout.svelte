@@ -53,4 +53,4 @@
 </svelte:head>
 
 <AppHeader />
-<main class="@container mx-auto max-w-7xl px-4 py-8">{@render children()}</main>
+<main class="@container mx-auto max-w-7xl px-4 py-12">{@render children()}</main>

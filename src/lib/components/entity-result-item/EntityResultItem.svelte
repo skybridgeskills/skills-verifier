@@ -17,24 +17,31 @@
 			['Job', 'Occupation', 'WorkRole', 'Task'].includes(entity['@type'])
 	);
 
-	const typeColors: Record<string, string> = {
-		Job: 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
-		Occupation: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200',
-		WorkRole: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-200',
-		Task: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200',
-		CompetencyFramework: 'bg-pink-100 text-pink-800 dark:bg-pink-900/40 dark:text-pink-200'
+	/** Aligns with quick-pick entity semantics (job / warmth / flame layers). */
+	const typeBadgeClasses: Record<string, string> = {
+		Job: 'border-transparent bg-primary-fixed text-primary dark:bg-primary-fixed dark:text-primary',
+		Occupation:
+			'border-transparent bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',
+		WorkRole:
+			'border-transparent bg-flame-muted text-flame dark:bg-flame-muted dark:text-flame-foreground',
+		Task: 'border-transparent bg-warmth-subtle text-warmth dark:bg-warmth-subtle dark:text-warmth',
+		CompetencyFramework:
+			'border-transparent bg-primary-fixed text-primary dark:bg-primary-fixed dark:text-primary'
 	};
 </script>
 
 <button
 	type="button"
-	class="group w-full rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-primary/50 hover:bg-accent/40"
+	class="group w-full rounded-xl bg-card p-4 text-left shadow-ambient transition-colors hover:bg-secondary"
 	onclick={onSelect}
 >
 	<div class="flex items-start justify-between gap-3">
 		<div class="min-w-0 flex-1">
 			<div class="mb-1 flex flex-wrap items-center gap-2">
-				<Badge variant="outline" class={typeColors[entity['@type']] ?? ''}>
+				<Badge
+					variant="outline"
+					class={typeBadgeClasses[entity['@type']] ?? 'border-transparent bg-muted text-foreground'}
+				>
 					{entity['@type']}
 				</Badge>
 				{#if isContainer}
@@ -43,9 +50,9 @@
 					<span class="text-xs text-muted-foreground">{entity.skillCount} competencies</span>
 				{/if}
 			</div>
-			<h4 class="truncate font-medium text-foreground">{entity.name}</h4>
+			<h4 class="truncate text-title-lg font-semibold text-foreground">{entity.name}</h4>
 			{#if entity.description}
-				<p class="mt-1 line-clamp-2 text-sm text-muted-foreground">{entity.description}</p>
+				<p class="mt-1 line-clamp-2 text-body-md text-muted-foreground">{entity.description}</p>
 			{/if}
 		</div>
 		<svg

@@ -17,9 +17,9 @@
 
 <!-- Inert card: only internal buttons perform actions; focus ring when a control is focused -->
 <div
-	class="group flex w-full items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus-within:border-primary/50 focus-within:bg-accent/40 {isSelected
-		? 'border-green-600/30 bg-green-600/10'
-		: 'border-border bg-card hover:border-primary/50 hover:bg-accent/40'}"
+	class="group flex w-full items-start justify-between gap-3 rounded-xl px-4 py-3 text-left shadow-ambient transition-colors focus-within:ring-2 focus-within:ring-ring/25 {isSelected
+		? 'bg-primary-fixed ring-2 ring-primary/20'
+		: 'bg-card hover:bg-secondary'}"
 >
 	<div class="min-w-0 flex-1">
 		<SkillItem {skill} />
@@ -32,7 +32,7 @@
 			class="relative grid shrink-0 place-items-end justify-items-end [&>*]:col-start-1 [&>*]:row-start-1"
 		>
 			<div
-				class="pointer-events-none flex items-center gap-1 text-green-700 transition-opacity group-focus-within:opacity-0 group-hover:opacity-0 dark:text-green-400"
+				class="pointer-events-none flex items-center gap-1 text-primary transition-opacity group-focus-within:opacity-0 group-hover:opacity-0"
 				aria-hidden="true"
 			>
 				<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -46,7 +46,7 @@
 			</div>
 			<button
 				type="button"
-				class="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-red-50 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-offset-0 focus-visible:outline-none dark:text-red-400 dark:hover:bg-red-950/30"
+				class="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-destructive opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-destructive/10 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-destructive/25 focus-visible:ring-offset-0 focus-visible:outline-none dark:hover:bg-destructive/20"
 				onclick={onToggle}
 				aria-label="Remove {displayTitle}"
 			>

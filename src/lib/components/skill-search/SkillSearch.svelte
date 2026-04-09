@@ -203,15 +203,15 @@
 	const emptyHint = $derived(uiForSearchMode(currentMode).emptyHint);
 </script>
 
-<div class="space-y-4">
-	<div class="flex border-b border-border">
+<div class="space-y-4 rounded-xl bg-secondary p-4">
+	<div class="flex flex-wrap gap-1 rounded-lg bg-accent p-1">
 		{#each modes as mode (mode.id)}
 			<button
 				type="button"
-				class="border-b-2 px-3 py-2 text-sm font-medium transition-colors @md:px-4 {currentMode ===
+				class="rounded-md px-3 py-2 text-sm font-medium transition-colors @md:px-4 {currentMode ===
 				mode.id
-					? 'border-primary text-primary'
-					: 'border-transparent text-muted-foreground hover:text-foreground'}"
+					? 'bg-primary text-primary-foreground shadow-xs'
+					: 'text-muted-foreground hover:bg-muted'}"
 				onclick={() => handleModeChange(mode.id)}
 			>
 				<span class="hidden @md:inline">{mode.label}</span>
@@ -282,7 +282,7 @@
 			{#if currentMode === 'skills'}
 				{#if skillResults.length === 0}
 					<div
-						class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
+						class="rounded-xl border border-dashed border-border/30 bg-muted/40 p-8 text-center text-muted-foreground"
 					>
 						<p>No skills found for “{query.trim()}”.</p>
 						<p class="mt-1 text-sm">Try a different search term.</p>
@@ -304,7 +304,7 @@
 			{:else if currentMode === 'containers'}
 				{#if containerResults.length === 0}
 					<div
-						class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
+						class="rounded-xl border border-dashed border-border/30 bg-muted/40 p-8 text-center text-muted-foreground"
 					>
 						<p>No jobs or occupations found for “{query.trim()}”.</p>
 					</div>
@@ -321,7 +321,7 @@
 			{:else if currentMode === 'frameworks'}
 				{#if frameworkResults.length === 0}
 					<div
-						class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
+						class="rounded-xl border border-dashed border-border/30 bg-muted/40 p-8 text-center text-muted-foreground"
 					>
 						<p>No frameworks found for “{query.trim()}”.</p>
 					</div>
@@ -338,14 +338,12 @@
 			{/if}
 		{:else if filteredPicks.length > 0}
 			<div>
-				<p class="mb-3 text-xs font-bold tracking-widest text-muted-foreground uppercase">
-					Quick picks
-				</p>
+				<p class="mb-3 text-label-md tracking-wider text-muted-foreground uppercase">Quick picks</p>
 				<QuickPicks picks={filteredPicks} {selectedUrls} onTogglePick={handleQuickPickClick} />
 			</div>
 		{:else}
 			<div
-				class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center text-muted-foreground"
+				class="rounded-xl border border-dashed border-border/30 bg-muted/40 p-8 text-center text-muted-foreground"
 			>
 				<p>Search to find {emptyHint}</p>
 			</div>
