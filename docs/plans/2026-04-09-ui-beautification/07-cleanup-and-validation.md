@@ -46,13 +46,39 @@ pnpm format:check
 
 If issues, run `pnpm format` to fix.
 
+## Design system documentation
+
+### 1. `docs/design-system.md`
+
+Create a concise design-system reference at `docs/design-system.md` covering:
+
+- **Color layers** — surfaces (purple-tinted neutrals), Job Role (deep purple primary),
+  User Skill flame (orange/red) and warmth (gold) tokens. Light + dark mode pairs.
+- **Typography** — Inter font, editorial type scale (`text-display-lg` through
+  `text-label-md`), when to use each level.
+- **Surfaces & layering** — tonal backgrounds (`bg-background` → `bg-card` →
+  `bg-secondary` → `bg-accent`) instead of hard borders; `shadow-ambient` for lift.
+  Use stacked layers only when anchored by a heading/label.
+- **Component patterns** — gradient primary button, `flame`/`warmth` badge variants,
+  ghost-border inputs (`bg-accent`, `border-input/15`), borderless cards.
+- **Container queries** — `@md:`, `@lg:` etc. instead of viewport breakpoints.
+
+Keep it factual and short (aim for ~60–80 lines of markdown).
+
+### 2. Storybook overview page
+
+Create a Storybook page under **Design System/Overview** with 2–3 short paragraphs
+summarizing the most important points from the design system doc. Use a simple Svelte
+component at `src/lib/components/ui/design-system-overview/DesignSystemOverview.svelte`
+with its story file alongside.
+
 ## Plan cleanup
 
-### 1. Summary
+### 3. Summary
 
 Create `docs/plans/2026-04-09-ui-beautification/summary.md` with a summary of completed work.
 
-### 2. Move plan
+### 4. Move plan
 
 Move the plan directory to `docs/plans-done/`:
 
