@@ -30,6 +30,7 @@
 
 	/* User Skill — flame */
 	--flame: hsl(14 100% 57%);
+	--flame-end: hsl(14 80% 40%);
 	--flame-foreground: hsl(0 0% 100%);
 	--flame-muted: hsl(14 100% 82%);
 	--flame-subtle: hsl(14 100% 91%);
@@ -77,6 +78,7 @@
 
 	/* User Skill — flame */
 	--flame: hsl(14 100% 57%);
+	--flame-end: hsl(14 72% 48%);
 	--flame-foreground: hsl(0 0% 100%);
 	--flame-muted: hsl(14 100% 82%);
 	--flame-subtle: hsl(14 40% 18%);
@@ -120,6 +122,7 @@
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-flame: var(--flame);
+	--color-flame-end: var(--flame-end);
 	--color-flame-foreground: var(--flame-foreground);
 	--color-flame-muted: var(--flame-muted);
 	--color-flame-subtle: var(--flame-subtle);

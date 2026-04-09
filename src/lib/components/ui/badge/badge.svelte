@@ -10,7 +10,14 @@
 					'bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 border-transparent',
 				destructive:
 					'bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/70 border-transparent text-white',
-				outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground'
+				outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+				flame: 'border-transparent bg-flame text-flame-foreground [a&]:hover:bg-flame/90',
+				'flame-subtle':
+					'border-transparent bg-flame-subtle text-flame [a&]:hover:bg-flame-muted/30 dark:text-flame-muted',
+				warmth:
+					'border-transparent bg-warmth text-foreground [a&]:hover:bg-warmth/90 dark:text-warmth-subtle',
+				'warmth-subtle':
+					'border-transparent bg-warmth-subtle text-warmth [a&]:hover:bg-warmth-subtle/80 dark:text-warmth'
 			}
 		},
 		defaultVariants: {
