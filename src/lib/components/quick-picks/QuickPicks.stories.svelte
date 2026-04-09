@@ -3,6 +3,7 @@
 	import { fn } from 'storybook/test';
 
 	import { QUICK_PICKS, SAMPLE_OCCUPATIONS } from '$lib/config/sample-entities';
+	import { ResponsivePreview } from '$lib/storybook';
 
 	import QuickPicks from './QuickPicks.svelte';
 
@@ -51,4 +52,10 @@
 	<div class="max-w-xl">
 		<QuickPicks picks={mixedPicks} selectedUrls={[]} {onTogglePick} />
 	</div>
+</Story>
+
+<Story name="Mobile (375px container)">
+	<ResponsivePreview width={375} label="Mobile width — container queries">
+		<QuickPicks picks={QUICK_PICKS.slice(0, 6)} selectedUrls={[]} {onTogglePick} />
+	</ResponsivePreview>
 </Story>

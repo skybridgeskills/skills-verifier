@@ -39,6 +39,22 @@
 	</div>
 </Story>
 
+<Story name="Job">
+	<div class="max-w-md">
+		<EntityResultItem
+			entity={{
+				'@id': 'https://example.org/jobs/staff-nurse',
+				'@type': 'Job',
+				'ceterms:ctid': 'ce-job-staff-nurse',
+				name: 'Staff Nurse — Community Hospital',
+				description: 'Inpatient nursing role with rotating shifts.',
+				skillCount: 18
+			}}
+			onSelect={() => {}}
+		/>
+	</div>
+</Story>
+
 <Story name="Without description">
 	<div class="max-w-md">
 		<EntityResultItem

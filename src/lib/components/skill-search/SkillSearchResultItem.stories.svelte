@@ -74,3 +74,19 @@
 		/>
 	</div>
 </Story>
+
+<Story name="With source note">
+	<div class="max-w-md">
+		<SkillSearchResultItem
+			skill={{
+				url: 'https://example.com/skills/js',
+				label: 'JavaScript Programming',
+				text: 'Writing and maintaining JavaScript code for web applications.',
+				ctid: 'ce-js-prog'
+			}}
+			isSelected={false}
+			sourceNote="From Occupation: Software Developers"
+			onToggle={() => {}}
+		/>
+	</div>
+</Story>

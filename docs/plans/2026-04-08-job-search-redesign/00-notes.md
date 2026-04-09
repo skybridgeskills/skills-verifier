@@ -43,8 +43,9 @@ src/lib/components/
 │   ├── SkillSearch.svelte           # Current keyword search
 │   ├── SkillSearchResultItem.svelte # Individual skill result
 │   └── *.stories.svelte
-├── quick-skill-picks/
-│   └── QuickSkillPicks.svelte       # Current quick picks (skills only)
+├── quick-picks/
+│   ├── QuickPicks.svelte             # Multi-type quick picks (replaces QuickSkillPicks)
+│   └── QuickPickItem.svelte
 ├── selected-skills-column/
 │   └── SelectedSkillsColumn.svelte  # Selected skills display
 ├── job-profile-form/

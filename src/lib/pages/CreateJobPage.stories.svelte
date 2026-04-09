@@ -1,7 +1,23 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 
+	import { QUICK_PICKS } from '$lib/config/sample-entities';
+	import { ResponsivePreview } from '$lib/storybook';
+	import type { Skill, SkillWithSource } from '$lib/types/job-profile';
+
 	import CreateJobPage from './CreateJobPage.svelte';
+
+	const sampleSkill = QUICK_PICKS[0].entity as Skill;
+	const withSelections: SkillWithSource[] = [
+		{
+			...sampleSkill,
+			sourceCtdlContainer: {
+				name: 'Acute Care Nurses',
+				'@id': 'urn:demo:oc',
+				'@type': 'Occupation'
+			}
+		}
+	];
 
 	const { Story } = defineMeta({
 		title: 'pages/CreateJobPage',
@@ -10,22 +26,28 @@
 	});
 </script>
 
-<Story name="Initial State">
-	<div class="max-w-6xl">
+<Story name="Initial State (desktop width)">
+	<ResponsivePreview width={1100} label="Desktop — sidebar visible @lg">
 		<CreateJobPage />
-	</div>
+	</ResponsivePreview>
 </Story>
 
 <Story name="With form error">
-	<div class="max-w-6xl">
+	<ResponsivePreview width={1100}>
 		<CreateJobPage
 			form={{ error: 'Example server validation message', values: { name: '', company: '' } }}
 		/>
-	</div>
+	</ResponsivePreview>
 </Story>
 
-<Story name="Narrow width (mobile add-skills entry)">
-	<div class="max-w-[380px] border border-dashed border-border p-2">
+<Story name="With selections">
+	<ResponsivePreview width={1100}>
+		<CreateJobPage initialSelectedSkills={withSelections} />
+	</ResponsivePreview>
+</Story>
+
+<Story name="Mobile (add-skills entry)">
+	<ResponsivePreview width={375} label="Mobile — Add skills opens dialog">
 		<CreateJobPage />
-	</div>
+	</ResponsivePreview>
 </Story>

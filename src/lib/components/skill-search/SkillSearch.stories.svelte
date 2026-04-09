@@ -8,7 +8,15 @@
 
 	const { Story } = defineMeta({
 		title: 'components/SkillSearch/SkillSearch',
-		tags: ['autodocs']
+		tags: ['autodocs'],
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Drill-down after picking a job, occupation, or framework is covered in **CtdlSkillContainerView** stories (SkillSearch uses the same view once a result is selected).'
+				}
+			}
+		}
 	});
 </script>
 
@@ -26,5 +34,17 @@
 			]}
 			{onToggleSkill}
 		/>
+	</div>
+</Story>
+
+<Story name="Containers mode (initial tab)">
+	<div class="max-w-xl">
+		<SkillSearch selectedUrls={[]} initialMode="containers" {onToggleSkill} />
+	</div>
+</Story>
+
+<Story name="Frameworks mode (initial tab)">
+	<div class="max-w-xl">
+		<SkillSearch selectedUrls={[]} initialMode="frameworks" {onToggleSkill} />
 	</div>
 </Story>

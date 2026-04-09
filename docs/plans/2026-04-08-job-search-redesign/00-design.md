@@ -41,8 +41,13 @@ src/lib/
 │   │   ├── EntityResultItem.svelte     # NEW - Job/Occ/Framework result row
 │   │   ├── index.ts                    # NEW
 │   │   └── *.stories.svelte            # NEW
-│   └── ui/
-│       └── dialog/                     # EXISTING (for mobile search dialog)
+│   └── ui/                             # EXISTING primitives (button, alert, …)
+├── pages/
+│   ├── CreateJobPage.svelte            # UPDATE - sidebar + mobile dialog
+│   └── *.stories.svelte
+├── storybook/
+│   ├── responsive-preview.svelte       # Storybook: fixed-width @container wrapper
+│   └── index.ts
 ├── types/
 │   └── job-profile.ts                  # UPDATE - add Container, Framework types
 └── clients/
@@ -358,3 +363,9 @@ Response: Full JSON-LD entity (Job, Occupation, etc.)
    - Desktop layout
    - Mobile with dialog open
    - With selected skills
+
+## Implementation status (April 2026)
+
+- **Mobile search**: `CreateJobPage` uses **bits-ui** `Dialog` (there is no shadcn `src/lib/components/ui/dialog` in this app).
+- **Quick picks**: `quick-skill-picks/QuickSkillPicks` was removed; use `quick-picks/QuickPicks`.
+- **Storybook**: `src/lib/storybook/responsive-preview.svelte` is a local fixed-width `@container` wrapper (this package does not depend on `@repo/lib-ui`).

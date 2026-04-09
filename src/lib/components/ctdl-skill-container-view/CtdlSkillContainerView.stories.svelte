@@ -50,6 +50,19 @@
 	];
 </script>
 
+<Story name="Loading (indefinite)">
+	<div class="max-w-lg">
+		<CtdlSkillContainerView
+			{entityResult}
+			selectedUrls={[]}
+			onBack={() => {}}
+			onToggleSkill={() => {}}
+			onAddAll={() => {}}
+			loadDetail={() => new Promise(() => {})}
+		/>
+	</div>
+</Story>
+
 <Story name="With mock load (no network)">
 	<div class="max-w-lg">
 		<CtdlSkillContainerView
