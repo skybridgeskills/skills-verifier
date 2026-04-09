@@ -47,6 +47,27 @@
 	const MIN_QUERY_LENGTH = 2;
 	const MAX_RESULTS = 20;
 
+	const DEFAULT_SEARCH_MODE: SearchMode = 'skills';
+
+	const MODE_UI_COPY = {
+		skills: {
+			searchPlaceholder: 'Search skills by keyword (e.g. JavaScript, nursing)…',
+			emptyHint: 'skills to add to the job'
+		},
+		containers: {
+			searchPlaceholder: 'Search jobs & occupations…',
+			emptyHint: 'jobs & occupations with associated skills'
+		},
+		frameworks: {
+			searchPlaceholder: 'Search competency frameworks…',
+			emptyHint: 'frameworks that contain skills'
+		}
+	} satisfies Record<SearchMode, { searchPlaceholder: string; emptyHint: string }>;
+
+	function uiForSearchMode(mode: SearchMode) {
+		return MODE_UI_COPY[mode] ?? MODE_UI_COPY[DEFAULT_SEARCH_MODE];
+	}
+
 	async function performSearch(q: string, mode: SearchMode) {
 		const trimmed = q.trim();
 		if (trimmed.length < MIN_QUERY_LENGTH) {
@@ -148,21 +169,8 @@
 		return selectedUrls.includes(skill.url);
 	}
 
-	const searchPlaceholder = $derived(
-		currentMode === 'skills'
-			? 'Search skills by keyword (e.g. JavaScript, nursing)…'
-			: currentMode === 'containers'
-				? 'Search jobs & occupations…'
-				: 'Search competency frameworks…'
-	);
-
-	const emptyHint = $derived(
-		currentMode === 'skills'
-			? 'skills to add to the job'
-			: currentMode === 'containers'
-				? 'jobs & occupations with associated skills'
-				: 'frameworks that contain skills'
-	);
+	const searchPlaceholder = $derived(uiForSearchMode(currentMode).searchPlaceholder);
+	const emptyHint = $derived(uiForSearchMode(currentMode).emptyHint);
 </script>
 
 <div class="space-y-4">
