@@ -6,9 +6,13 @@ import { searchSkills } from '$lib/clients/skill-search-client';
 
 import SkillSearch from './SkillSearch.svelte';
 
-vi.mock('$lib/clients/skill-search-client', () => ({
-	searchSkills: vi.fn()
-}));
+vi.mock('$lib/clients/skill-search-client', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('$lib/clients/skill-search-client.js')>();
+	return {
+		...actual,
+		searchSkills: vi.fn()
+	};
+});
 
 describe('SkillSearch', () => {
 	beforeEach(() => {
