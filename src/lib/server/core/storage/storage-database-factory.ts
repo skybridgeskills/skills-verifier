@@ -1,23 +1,35 @@
-import { appLoggerSafe } from '$lib/server/services/logging/logger-service.js';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
+import { parseBaseEnv } from '$lib/server/app-env.js';
+
+import { createDynamoDbClient } from './dynamo-client.js';
 import { MemoryDatabase } from './memory-database.js';
 import type { StorageDatabase } from './types.js';
 
 /**
- * Builds in-memory storage for all environments for now.
- *
- * DynamoDB-backed storage is intentionally disabled until production persistence
- * is required. Query modules still implement `dynamo` branches; restoring cloud
- * storage is mainly: branch here on `DYNAMODB_TABLE` presence (or `CONTEXT=aws`),
- * wire `DynamoDBDocumentClient`, and validate against the single-table design.
+ * Builds storage: in-memory for `dev`/`test`, DynamoDB for `aws`.
  */
-export function createStorageDatabase(): StorageDatabase {
-	if (process.env.DYNAMODB_TABLE?.trim()) {
-		const log = appLoggerSafe();
-		const msg =
-			'[storage] DYNAMODB_TABLE is set but DynamoDB is not enabled in this build; using MemoryDatabase.';
-		if (log) log.warn(msg);
-		else console.warn(msg);
+export function createStorageDatabase(env: Record<string, unknown>): StorageDatabase {
+	const { CONTEXT } = parseBaseEnv(env);
+	if (CONTEXT === 'dev' || CONTEXT === 'test') {
+		return new MemoryDatabase();
 	}
-	return new MemoryDatabase();
+
+	const table = typeof env.DYNAMODB_TABLE === 'string' ? env.DYNAMODB_TABLE.trim() : '';
+	if (!table) {
+		throw new Error('DYNAMODB_TABLE is required when CONTEXT=aws');
+	}
+
+	const region =
+		typeof env.AWS_REGION === 'string' && env.AWS_REGION.trim()
+			? env.AWS_REGION.trim()
+			: typeof env.AWS_DEFAULT_REGION === 'string' && env.AWS_DEFAULT_REGION.trim()
+				? env.AWS_DEFAULT_REGION.trim()
+				: undefined;
+
+	const docClient = DynamoDBDocumentClient.from(createDynamoDbClient(region), {
+		marshallOptions: { removeUndefinedValues: true }
+	});
+
+	return { $type: 'dynamo', docClient, tableName: table };
 }

@@ -1,0 +1,48 @@
+name: Trigger Monorepo Version Bump
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Skills Verifier version tag to bump to (e.g., v2026.04.08-1). Defaults to latest tag.'
+        required: false
+        type: string
+
+jobs:
+  trigger-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version to use
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            # Get the latest tag
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "main")
+            echo "version=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.MONOREPO_APP_ID }}
+          private-key: ${{ secrets.MONOREPO_APP_PRIVATE_KEY }}
+          owner: skybridgeskills
+          repositories: skybridgeskills-monorepo
+
+      - name: Trigger Skills Verifier version bump
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          VERSION_TAG: ${{ steps.version.outputs.version }}
+        run: |
+          gh workflow run skills-verifier-bump-version.yml \
+            --repo skybridgeskills/skybridgeskills-monorepo \
+            --ref main \
+            -f version="${VERSION_TAG}"
+          echo "✅ Triggered skills-verifier-bump-version.yml in monorepo with version ${VERSION_TAG}"
