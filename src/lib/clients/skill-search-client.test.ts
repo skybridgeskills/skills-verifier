@@ -13,7 +13,6 @@ describe('mapApiSkillToSkill', () => {
 		).toEqual({
 			url: 'https://ce.example/js',
 			label: 'JavaScript',
-			text: 'JavaScript',
 			ctid: 'ce-fallback'
 		});
 	});
@@ -66,10 +65,9 @@ describe('searchSkills', () => {
 			text: 'JS programming',
 			ctid: 'ce-js'
 		});
-		expect(skills[1]).toMatchObject({
+		expect(skills[1]).toEqual({
 			url: 'https://ce.com/ts',
 			label: 'TypeScript',
-			text: 'TypeScript',
 			ctid: '2'
 		});
 	});

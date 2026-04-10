@@ -36,9 +36,13 @@
 		clientError = null;
 	}
 
-	function handleAddSkillFromSearch(skill: Skill) {
-		if (!selectedUrls.includes(skill.url)) {
-			selectedSkills = [...selectedSkills, skill];
+	function handleToggleSkillFromSearch(skill: Skill, add: boolean) {
+		if (add) {
+			if (!selectedUrls.includes(skill.url)) {
+				selectedSkills = [...selectedSkills, skill];
+			}
+		} else {
+			selectedSkills = selectedSkills.filter((s) => s.url !== skill.url);
 		}
 		clientError = null;
 	}
@@ -62,7 +66,7 @@
 	<div>
 		<h1 class="text-2xl font-bold text-foreground">Create job</h1>
 		<p class="mt-1 text-sm text-muted-foreground">
-			Add required skills. Search Credential Engine or use quick suggestions.
+			Add required skills. Search the Credential Registry or use quick suggestions.
 		</p>
 	</div>
 
@@ -113,9 +117,9 @@
 				<div>
 					<h2 class="mb-2 text-lg font-semibold text-foreground">Search for skills</h2>
 					<p class="mb-4 text-sm text-muted-foreground">
-						Search Credential Engine for competencies by keyword.
+						Search the Credential Registry for competencies by keyword.
 					</p>
-					<SkillSearch {selectedUrls} onSelect={handleAddSkillFromSearch} />
+					<SkillSearch {selectedUrls} onToggle={handleToggleSkillFromSearch} />
 				</div>
 			</div>
 

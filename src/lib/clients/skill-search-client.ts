@@ -19,13 +19,15 @@ interface SkillSearchApiResponse {
 }
 
 /**
- * Map API row to persisted {@link Skill} shape (`text`/`label`/`ctid` required by job actions).
+ * Map API row to {@link Skill} for UI / form submission.
+ * Omits `text` when there is no separate description (avoids duplicate title/subtitle).
  */
 export function mapApiSkillToSkill(result: SkillSearchApiResult): Skill {
+	const description = result.description?.trim();
 	return {
 		url: result.uri,
 		label: result.name,
-		text: result.description?.trim() ? result.description : result.name,
+		...(description ? { text: description } : {}),
 		ctid: result.ctid?.trim() ? result.ctid : result.id
 	};
 }

@@ -3,7 +3,7 @@
 ## Setup
 
 Decide on a name for the plan. This should be a short, descriptive name that
-captures the purpose of the plan. This will be refered to as `<plan-name>` in this
+captures the purpose of the plan. This will be referred to as `<plan-name>` in this
 document.
 
 Create a new plan directory at `docs/plans/<YYYY-MM-dd>-<plan-name>/`.
@@ -12,11 +12,8 @@ Use `date +%Y-%m-%d` to get the current date.
 
 This directory will contain the plan files for the plan.
 
-**Note**: Development work may happen in different subdirectories (e.g., `sbs/`,
-`wrappers/osmt/`).
-Commands should be run from the appropriate subdirectory based on where the work
-is happening. If unsure, check the plan or ask which directory contains the
-relevant code.
+**Note:** Run pnpm and Turbo commands from the skills-verifier repository root
+unless a phase file specifies a different working directory.
 
 ## Analysis
 
@@ -184,8 +181,8 @@ Include tests to write to verify the work in the phase.
 ## Validate
 
 Specify exactly which commands should be run to validate the phase. Generally,
-this will
-be `turbo check test` or similar.
+this will be `pnpm turbo check` and `pnpm turbo test`, or `pnpm turbo validate`
+for checks, tests, and build (see README and `turbo.jsonc`).
 
 We want to keep the code compiling and passing tests as we go.
 
@@ -204,7 +201,8 @@ The final phase of all plans should be a cleanup phase:
 
 Grep the git diff for any temporary code, TODOs, debug prints, etc. Remove them.
 
-Specify the exact validation command to run `turbo check test` or similar.
+Specify the exact validation commands to run (typically `pnpm turbo check` and
+`pnpm turbo test`, or `pnpm turbo validate`; see README).
 
 Fix all warnings, errors, and formatting issues.
 
@@ -217,9 +215,9 @@ Move the plan files to the `docs/plans-done/` directory.
 ## Commit
 
 Once the plan is complete, and everything compiles and passes tests, it's time
-to commit the changes.
-commit the changes with a message following
-the [Conventional Commits](https://www.conventionalcommits.org/) format
+to commit the changes. STOP FOR HUMAN REVIEW before committing with a proposed
+commit message. The message should follow the
+[Conventional Commits](https://www.conventionalcommits.org/) format
 
 ```
 <type>(<scope>): <description>
@@ -238,3 +236,5 @@ Where:
 It should be a bulleted list of the changes made. Each item should be a single
 line.
 Be clear, concise, and to the point.
+
+After human approval, commit the changes.

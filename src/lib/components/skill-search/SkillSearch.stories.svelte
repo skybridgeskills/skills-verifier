@@ -11,7 +11,7 @@
 
 <Story name="Default">
 	<div class="max-w-xl">
-		<SkillSearch selectedUrls={[]} onSelect={() => {}} />
+		<SkillSearch selectedUrls={[]} onToggle={() => {}} />
 	</div>
 </Story>
 
@@ -21,7 +21,7 @@
 			selectedUrls={[
 				'https://credentialengineregistry.org/resources/ce-777ff155-e07f-4843-9274-6a78783f6641'
 			]}
-			onSelect={() => {}}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>

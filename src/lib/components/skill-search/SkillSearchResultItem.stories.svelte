@@ -5,7 +5,15 @@
 
 	const { Story } = defineMeta({
 		title: 'components/SkillSearch/SkillSearchResultItem',
-		tags: ['autodocs']
+		tags: ['autodocs'],
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Card is inert. Use the Add or Remove control (focusable) to change selection; the card shows a focus-within ring when a control is focused.'
+				}
+			}
+		}
 	});
 </script>
 
@@ -19,7 +27,7 @@
 				ctid: 'ce-js-prog'
 			}}
 			isSelected={false}
-			onSelect={() => {}}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>
@@ -34,7 +42,7 @@
 				ctid: 'ce-js-prog'
 			}}
 			isSelected={true}
-			onSelect={() => {}}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>
@@ -48,7 +56,21 @@
 				ctid: 'ce-react'
 			}}
 			isSelected={false}
-			onSelect={() => {}}
+			onToggle={() => {}}
+		/>
+	</div>
+</Story>
+
+<Story name="Label only (search without description)">
+	<div class="max-w-md">
+		<SkillSearchResultItem
+			skill={{
+				url: 'https://example.com/skills/ce-only',
+				label: 'Perform patient intake assessments',
+				ctid: 'ce-intake'
+			}}
+			isSelected={false}
+			onToggle={() => {}}
 		/>
 	</div>
 </Story>

@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Alert, AlertTitle, AlertDescription } from '$lib/components/ui/alert/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
 	import type { Skill } from '$lib/types/job-profile';
 
@@ -13,6 +13,10 @@
 
 	const skillCount = $derived(selectedSkills.length);
 	const showWarning = $derived(skillCount > 10);
+
+	function removeLabel(skill: Skill): string {
+		return skill.label?.trim() || skill.text?.trim() || skill.ctid;
+	}
 </script>
 
 <div class="space-y-4">
@@ -39,30 +43,22 @@
 		<div class="space-y-2">
 			{#each selectedSkills as skill (skill.url)}
 				<div
-					class="group flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:border-border @md:p-4"
+					class="group flex w-full items-start justify-between gap-3 rounded-lg border border-green-600/30 bg-green-600/10 px-4 py-3 text-left transition-colors focus-within:border-primary/50 focus-within:bg-accent/40"
 				>
-					<div class="flex-1">
-						{#if skill.label && skill.text}
-							<!-- Both label and text present -->
-							<div class="font-medium text-foreground">{skill.label}</div>
-							<div class="mt-1 text-sm text-muted-foreground">{skill.text}</div>
-						{:else if skill.label}
-							<!-- Label only -->
-							<div class="font-medium text-foreground">{skill.label}</div>
-						{:else}
-							<!-- Text only (fallback) -->
-							<div class="text-foreground">{skill.text}</div>
-						{/if}
-					</div>
-					<Button
+					<SkillItem {skill} />
+					<button
 						type="button"
-						variant="ghost"
-						size="icon"
-						class="opacity-0 transition-opacity group-hover:opacity-100"
+						class="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-red-600 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-red-50 focus-visible:z-10 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-offset-0 focus-visible:outline-none dark:text-red-400 dark:hover:bg-red-950/30"
 						onclick={() => onRemoveSkill(skill)}
-						aria-label="Remove skill"
+						aria-label="Remove {removeLabel(skill)}"
 					>
-						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<svg
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							aria-hidden="true"
+						>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -70,7 +66,8 @@
 								d="M6 18L18 6M6 6l12 12"
 							/>
 						</svg>
-					</Button>
+						<span>Remove</span>
+					</button>
 				</div>
 			{/each}
 		</div>
