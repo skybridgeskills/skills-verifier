@@ -36,6 +36,16 @@ export type SkillResource = ReturnType<typeof SkillResource>;
 export const JobStatus = ZodFactory(z.enum(['active', 'closed', 'draft']));
 export type JobStatus = ReturnType<typeof JobStatus>;
 
+/** Absolute http(s) URL for an external apply / posting link. */
+const applyUrlSchema = z.string().refine((href) => {
+	try {
+		const p = new URL(href).protocol;
+		return p === 'http:' || p === 'https:';
+	} catch {
+		return false;
+	}
+}, 'Enter a valid URL starting with http:// or https://');
+
 /**
  * JobResource represents a job posting with required skills and frameworks.
  * This is the domain/DTO layer (Resource) - extends AppResource pattern.
@@ -48,7 +58,7 @@ export const JobResource = ZodFactory(
 
 		// Job-specific fields
 		externalId: z.string(),
-		externalUrl: z.string().optional(),
+		externalUrl: applyUrlSchema.optional(),
 		name: z.string(),
 		description: z.string(),
 		company: z.string(),

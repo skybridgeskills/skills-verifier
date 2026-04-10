@@ -9,6 +9,7 @@
 		name: string;
 		description: string;
 		company: string;
+		externalUrl?: string;
 	}
 
 	interface Props {
@@ -28,10 +29,12 @@
 	let name = $state(getInitialValue('name'));
 	let description = $state(getInitialValue('description'));
 	let company = $state(getInitialValue('company'));
+	let externalUrl = $state(getInitialValue('externalUrl'));
 
 	let nameError = $state('');
 	let descriptionError = $state('');
 	let companyError = $state('');
+	let externalUrlError = $state('');
 
 	function validate(): boolean {
 		let isValid = true;
@@ -40,6 +43,7 @@
 		nameError = '';
 		descriptionError = '';
 		companyError = '';
+		externalUrlError = '';
 
 		// Validate name
 		if (!name.trim()) {
@@ -59,17 +63,38 @@
 			isValid = false;
 		}
 
+		const trimmedUrl = externalUrl.trim();
+		if (trimmedUrl) {
+			try {
+				const url = new URL(trimmedUrl);
+				if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+					externalUrlError = 'URL must start with http:// or https://';
+					isValid = false;
+				}
+			} catch {
+				externalUrlError = 'Please enter a valid URL';
+				isValid = false;
+			}
+		}
+
 		return isValid;
+	}
+
+	/** Called by a parent form when `embedded` is true so submit runs full validation. */
+	export function validateEmbedded(): boolean {
+		return validate();
 	}
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 
 		if (validate()) {
+			const trimmedUrl = externalUrl.trim();
 			onSubmit?.({
 				name: name.trim(),
 				description: description.trim(),
-				company: company.trim()
+				company: company.trim(),
+				externalUrl: trimmedUrl || undefined
 			});
 		}
 	}
@@ -141,6 +166,24 @@
 				<p class="mt-1 text-sm text-destructive">{descriptionError}</p>
 			{/if}
 		</div>
+
+		<div>
+			<Label for="external-url">Apply URL</Label>
+			<Input
+				id="external-url"
+				name="externalUrl"
+				type="url"
+				inputmode="url"
+				autocomplete="url"
+				bind:value={externalUrl}
+				class={cn(fieldClass, externalUrlError ? 'border-destructive' : '')}
+				placeholder="https://example.com/jobs/apply"
+				onkeydown={preventEnterSubmit}
+			/>
+			{#if externalUrlError}
+				<p class="mt-1 text-sm text-destructive">{externalUrlError}</p>
+			{/if}
+		</div>
 	</div>
 {:else}
 	<form onsubmit={handleSubmit} class="space-y-4">
@@ -192,6 +235,22 @@
 			/>
 			{#if descriptionError}
 				<p class="mt-1 text-sm text-destructive">{descriptionError}</p>
+			{/if}
+		</div>
+
+		<div>
+			<Label for="external-url-standalone">Apply URL</Label>
+			<Input
+				id="external-url-standalone"
+				type="url"
+				inputmode="url"
+				autocomplete="url"
+				bind:value={externalUrl}
+				class={cn(fieldClass, externalUrlError ? 'border-destructive' : '')}
+				placeholder="https://example.com/jobs/apply"
+			/>
+			{#if externalUrlError}
+				<p class="mt-1 text-sm text-destructive">{externalUrlError}</p>
 			{/if}
 		</div>
 

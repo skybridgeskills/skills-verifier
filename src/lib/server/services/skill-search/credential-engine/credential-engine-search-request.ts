@@ -41,3 +41,48 @@ export function buildCredentialEngineSearchRequest(
 		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
 	};
 }
+
+/** Nested term group for "has any embodied skill / target competency OR name match" style queries. */
+const CONTAINER_SEARCH_TERM_GROUP = {
+	'search:operator': 'search:orTerms',
+	'ceasn:abilityEmbodied': 'search:anyValue',
+	'ceasn:knowledgeEmbodied': 'search:anyValue',
+	'ceasn:skillEmbodied': 'search:anyValue',
+	'ceterms:targetCompetency': 'search:anyValue'
+} as const;
+
+/**
+ * CE Assistant Search for CTDL Jobs, Occupations, WorkRoles, and Tasks.
+ * Matches by `ceterms:name` and broadens via `search:termGroup` (embodied competencies, etc.).
+ */
+export function buildCredentialEngineContainerSearchRequest(
+	query: SkillSearchQuery,
+	searchUrl: string
+): unknown {
+	return {
+		Query: {
+			'@type': ['ceterms:Job', 'ceterms:Occupation', 'ceterms:Task', 'ceterms:WorkRole'],
+			'ceterms:name': query.query,
+			'search:termGroup': CONTAINER_SEARCH_TERM_GROUP
+		},
+		Skip: 0,
+		Take: query.limit,
+		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
+	};
+}
+
+/** CE Assistant Search for competency frameworks by keyword. */
+export function buildCredentialEngineFrameworkSearchRequest(
+	query: SkillSearchQuery,
+	searchUrl: string
+): unknown {
+	return {
+		Query: {
+			'@type': 'ceasn:CompetencyFramework',
+			'ceasn:name': query.query
+		},
+		Skip: 0,
+		Take: query.limit,
+		Environment: ceAssistantEnvironmentFromSearchUrl(searchUrl)
+	};
+}

@@ -92,3 +92,122 @@ export interface SkillJsonLd {
 	'ceasn:creator'?: string[];
 	'ceasn:inLanguage'?: string[];
 }
+
+/**
+ * CTDL (Credential Transparency Description Language) aligned types.
+ * These mirror structures from Credential Engine Registry JSON-LD responses.
+ */
+
+/**
+ * CTDL Types that act as skill containers.
+ * Maps to ceterms:Job, ceterms:Occupation, ceterms:WorkRole, ceterms:Task
+ */
+export type CtdlSkillContainerType = 'Job' | 'Occupation' | 'WorkRole' | 'Task';
+
+/**
+ * CTDL-aligned skill container (Job, Occupation, WorkRole, Task).
+ * Mirrors structure from ceterms:Occupation, ceterms:Job, etc.
+ */
+export interface CtdlSkillContainer {
+	'@id': string;
+	'@type': CtdlSkillContainerType;
+	'ceterms:ctid': string;
+	'ceterms:name': LanguageString;
+	'ceterms:description'?: LanguageString;
+	/** Skill relationship properties (arrays of competency URLs) */
+	'ceasn:skillEmbodied'?: string[];
+	'ceasn:knowledgeEmbodied'?: string[];
+	'ceasn:abilityEmbodied'?: string[];
+	/** UI-computed field: total skills across all three properties */
+	skillCount: number;
+	/** UI-computed field: flattened unique URLs for batch fetching */
+	skillUrls: string[];
+}
+
+/**
+ * CTDL-aligned competency framework.
+ * Mirrors ceasn:CompetencyFramework structure.
+ */
+export interface CtdlCompetencyFramework {
+	'@id': string;
+	'@type': 'CompetencyFramework';
+	'ceterms:ctid': string;
+	'ceasn:name': LanguageString;
+	'ceasn:description'?: LanguageString;
+	'ceasn:publisherName'?: LanguageString;
+	/** URLs to competencies in the framework */
+	'ceasn:hasTopChild': string[];
+	/** UI-computed field: number of competencies */
+	skillCount: number;
+	/** UI-computed field: competency URLs */
+	skillUrls: string[];
+}
+
+/**
+ * Simplified search result for CTDL skill containers.
+ */
+export interface CtdlSkillContainerSearchResult {
+	'@id': string;
+	'@type': CtdlSkillContainerType;
+	'ceterms:ctid': string;
+	/** Extracted from ceterms:name['en-US'] */
+	name: string;
+	/** Extracted from ceterms:description['en-US'] */
+	description?: string;
+	/** Pre-computed from embodied arrays */
+	skillCount: number;
+}
+
+/**
+ * Simplified search result for CTDL competency frameworks.
+ */
+export interface CtdlFrameworkSearchResult {
+	'@id': string;
+	'@type': 'CompetencyFramework';
+	'ceterms:ctid': string;
+	/** Extracted from ceasn:name['en-US'] */
+	name: string;
+	/** Extracted from ceasn:description['en-US'] */
+	description?: string;
+	/** Extracted from ceasn:publisherName['en-US'] */
+	publisher?: string;
+	/** Pre-computed from hasTopChild length */
+	skillCount: number;
+}
+
+/**
+ * Skill with CTDL source tracking.
+ */
+export interface SkillWithSource extends Skill {
+	sourceCtdlContainer?: {
+		name: string;
+		'@id': string;
+		'@type': CtdlSkillContainerType;
+	};
+	sourceCtdlFramework?: {
+		name: string;
+		'@id': string;
+	};
+}
+
+/**
+ * Provenance when adding a skill from container/framework drill-down in search.
+ */
+export type SkillSearchSource =
+	| {
+			kind: 'container';
+			name: string;
+			'@id': string;
+			'@type': CtdlSkillContainerType;
+	  }
+	| { kind: 'framework'; name: string; '@id': string };
+
+/**
+ * Quick pick item for the quick picks component.
+ */
+export interface QuickPickItem {
+	type: 'Skill' | CtdlSkillContainerType | 'Framework';
+	entity: Skill | CtdlSkillContainerSearchResult | CtdlFrameworkSearchResult;
+	/** Pre-fetched skills for containers/frameworks */
+	skills?: Skill[];
+}

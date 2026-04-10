@@ -87,16 +87,36 @@ describe('searchSkills', () => {
 			ok: true,
 			json: async () => ({
 				results: [],
-				meta: { query: 'test', count: 0, limit: 5 }
+				meta: { query: 'test', count: 0, limit: 5, mode: 'skills' }
 			})
 		});
 		global.fetch = mockFetch;
 
-		await searchSkills('test', 5);
+		await searchSkills('test', { limit: 5 });
 
 		expect(JSON.parse(mockFetch.mock.calls[0][1].body as string)).toEqual({
 			query: 'test',
-			limit: 5
+			limit: 5,
+			mode: 'skills'
+		});
+	});
+
+	it('sends containers mode to the API', async () => {
+		const mockFetch = vi.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({
+				results: [],
+				meta: { query: 'nurse', count: 0, limit: 10, mode: 'containers' }
+			})
+		});
+		global.fetch = mockFetch;
+
+		await searchSkills('nurse', { mode: 'containers', limit: 10 });
+
+		expect(JSON.parse(mockFetch.mock.calls[0][1].body as string)).toEqual({
+			query: 'nurse',
+			limit: 10,
+			mode: 'containers'
 		});
 	});
 });

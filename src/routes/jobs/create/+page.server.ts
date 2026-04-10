@@ -36,6 +36,7 @@ export const actions: Actions = {
 		const name = String(fd.get('name') ?? '').trim();
 		const company = String(fd.get('company') ?? '').trim();
 		const description = String(fd.get('description') ?? '').trim();
+		const externalUrl = String(fd.get('externalUrl') ?? '').trim() || undefined;
 		const skillsRaw = String(fd.get('skillsJson') ?? '');
 		const frameworksRaw = String(fd.get('frameworksJson') ?? '');
 
@@ -46,7 +47,7 @@ export const actions: Actions = {
 		} catch {
 			return fail(400, {
 				error: 'Invalid skills payload',
-				values: { name, company, description }
+				values: { name, company, description, externalUrl }
 			});
 		}
 		try {
@@ -54,7 +55,7 @@ export const actions: Actions = {
 		} catch {
 			return fail(400, {
 				error: 'Invalid frameworks payload',
-				values: { name, company, description }
+				values: { name, company, description, externalUrl }
 			});
 		}
 
@@ -63,18 +64,19 @@ export const actions: Actions = {
 		if (!skillsList.success) {
 			return fail(400, {
 				error: 'Skills must be a valid list',
-				values: { name, company, description }
+				values: { name, company, description, externalUrl }
 			});
 		}
 		if (!frameworksList.success) {
 			return fail(400, {
 				error: 'Frameworks must be a valid list',
-				values: { name, company, description }
+				values: { name, company, description, externalUrl }
 			});
 		}
 
 		const parsed = CreateJobParams.safeParse({
 			externalId: `ext-${randomUUID()}`,
+			externalUrl,
 			name,
 			company,
 			description,
@@ -87,7 +89,7 @@ export const actions: Actions = {
 			const first = parsed.error.issues[0];
 			return fail(400, {
 				error: first?.message ?? 'Invalid job data',
-				values: { name, company, description }
+				values: { name, company, description, externalUrl }
 			});
 		}
 

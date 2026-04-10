@@ -16,11 +16,11 @@
 </script>
 
 <div class="min-w-0 flex-1">
-	<div class="leading-tight font-medium text-foreground">{title}</div>
+	<div class="text-title-lg leading-tight font-semibold text-foreground">{title}</div>
 	{#if subtitle}
-		<p class="mt-1 text-sm leading-tight text-muted-foreground">{subtitle}</p>
+		<p class="mt-1 text-body-md leading-tight text-muted-foreground">{subtitle}</p>
 	{/if}
 	{#if skill.ctid}
-		<p class="mt-1 text-xs text-muted-foreground">{skill.ctid}</p>
+		<p class="mt-1 font-mono text-label-md text-muted-foreground">{skill.ctid}</p>
 	{/if}
 </div>

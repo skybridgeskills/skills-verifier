@@ -1,8 +1,39 @@
 import {
+	RegistryContainerSearchResult,
+	RegistryFrameworkSearchResult,
 	SkillSearchResult,
 	type SkillSearchQuery,
 	type SkillSearchService
 } from './skill-search-service.js';
+
+const FAKE_CONTAINERS: RegistryContainerSearchResult[] = [
+	RegistryContainerSearchResult({
+		'@id': 'https://credentialengineregistry.org/resources/ce-fake-occ-1',
+		'@type': 'Occupation',
+		'ceterms:ctid': 'ce-fake-occ-1',
+		name: 'Acute Care Nurses',
+		description: 'Nursing occupation for tests.',
+		skillCount: 3
+	}),
+	RegistryContainerSearchResult({
+		'@id': 'https://credentialengineregistry.org/resources/ce-fake-job-1',
+		'@type': 'Job',
+		'ceterms:ctid': 'ce-fake-job-1',
+		name: 'Clinical Nurse Specialist',
+		skillCount: 2
+	})
+];
+
+const FAKE_FRAMEWORKS: RegistryFrameworkSearchResult[] = [
+	RegistryFrameworkSearchResult({
+		'@id': 'https://credentialengineregistry.org/resources/ce-fake-fw-1',
+		'@type': 'CompetencyFramework',
+		'ceterms:ctid': 'ce-fake-fw-1',
+		name: 'Allied Health Competencies',
+		publisher: 'Example Publisher',
+		skillCount: 12
+	})
+];
 
 const FAKE_SKILLS = [
 	{
@@ -73,6 +104,21 @@ export function FakeSkillSearchService(): SkillSearchService {
 					description: skill.description
 				})
 			);
+		},
+
+		async searchContainers(query: SkillSearchQuery): Promise<RegistryContainerSearchResult[]> {
+			const q = query.query.toLowerCase();
+			return FAKE_CONTAINERS.filter(
+				(c) =>
+					c.name.toLowerCase().includes(q) || (c.description?.toLowerCase().includes(q) ?? false)
+			).slice(0, query.limit);
+		},
+
+		async searchFrameworks(query: SkillSearchQuery): Promise<RegistryFrameworkSearchResult[]> {
+			const q = query.query.toLowerCase();
+			return FAKE_FRAMEWORKS.filter(
+				(f) => f.name.toLowerCase().includes(q) || (f.publisher?.toLowerCase().includes(q) ?? false)
+			).slice(0, query.limit);
 		}
 	};
 }

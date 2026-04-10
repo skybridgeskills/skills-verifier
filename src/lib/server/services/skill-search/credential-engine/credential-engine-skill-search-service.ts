@@ -1,12 +1,22 @@
 import { appLoggerSafe } from '$lib/server/services/logging/logger-service.js';
 
 import type {
+	RegistryContainerSearchResult,
+	RegistryFrameworkSearchResult,
 	SkillSearchQuery,
 	SkillSearchResult,
 	SkillSearchService
 } from '../skill-search-service.js';
 
-import { buildCredentialEngineSearchRequest } from './credential-engine-search-request.js';
+import {
+	buildCredentialEngineContainerSearchRequest,
+	buildCredentialEngineFrameworkSearchRequest,
+	buildCredentialEngineSearchRequest
+} from './credential-engine-search-request.js';
+import {
+	mapCredentialEngineContainerSearchResponse,
+	mapCredentialEngineFrameworkSearchResponse
+} from './map-credential-engine-registry-search-response.js';
 import { mapCredentialEngineSearchResponse } from './map-credential-engine-search-response.js';
 
 export interface CredentialEngineSkillSearchConfig {
@@ -15,39 +25,64 @@ export interface CredentialEngineSkillSearchConfig {
 }
 
 /** Credential Registry Search API client (server-only). */
+async function postCredentialEngineSearch(
+	config: CredentialEngineSkillSearchConfig,
+	requestBody: unknown,
+	logLabel: string
+): Promise<unknown> {
+	const log = appLoggerSafe();
+	if (log) {
+		log.debug({ requestBody, searchUrl: config.searchUrl }, logLabel);
+	}
+
+	const response = await fetch(config.searchUrl, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${config.apiKey}`
+		},
+		body: JSON.stringify(requestBody)
+	});
+
+	if (!response.ok) {
+		const errorBody = await response.text().catch(() => 'Unable to read error body');
+		if (log) {
+			log.debug({ status: response.status, errorBody }, 'CE search error response');
+		}
+		throw new Error(`CE search failed: ${response.status} ${response.statusText} - ${errorBody}`);
+	}
+
+	return response.json();
+}
+
 export function CredentialEngineSkillSearchService(
 	config: CredentialEngineSkillSearchConfig
 ): SkillSearchService {
 	return {
 		async search(query: SkillSearchQuery): Promise<SkillSearchResult[]> {
 			const requestBody = buildCredentialEngineSearchRequest(query, config.searchUrl);
-
-			const log = appLoggerSafe();
-			if (log) {
-				log.debug({ requestBody, searchUrl: config.searchUrl }, 'CE search request');
-			}
-
-			const response = await fetch(config.searchUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${config.apiKey}`
-				},
-				body: JSON.stringify(requestBody)
-			});
-
-			if (!response.ok) {
-				const errorBody = await response.text().catch(() => 'Unable to read error body');
-				if (log) {
-					log.debug({ status: response.status, errorBody }, 'CE search error response');
-				}
-				throw new Error(
-					`CE search failed: ${response.status} ${response.statusText} - ${errorBody}`
-				);
-			}
-
-			const ceResponse: unknown = await response.json();
+			const ceResponse = await postCredentialEngineSearch(config, requestBody, 'CE skill search');
 			return mapCredentialEngineSearchResponse(ceResponse);
+		},
+
+		async searchContainers(query: SkillSearchQuery): Promise<RegistryContainerSearchResult[]> {
+			const requestBody = buildCredentialEngineContainerSearchRequest(query, config.searchUrl);
+			const ceResponse = await postCredentialEngineSearch(
+				config,
+				requestBody,
+				'CE container search'
+			);
+			return mapCredentialEngineContainerSearchResponse(ceResponse);
+		},
+
+		async searchFrameworks(query: SkillSearchQuery): Promise<RegistryFrameworkSearchResult[]> {
+			const requestBody = buildCredentialEngineFrameworkSearchRequest(query, config.searchUrl);
+			const ceResponse = await postCredentialEngineSearch(
+				config,
+				requestBody,
+				'CE framework search'
+			);
+			return mapCredentialEngineFrameworkSearchResponse(ceResponse);
 		}
 	};
 }

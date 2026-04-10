@@ -1,0 +1,601 @@
+<!doctype html>
+
+<html class="light" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>Kinetic LER | Job Detail Match</title>
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: 'class',
+				theme: {
+					extend: {
+						colors: {
+							'on-background': '#1b1b24',
+							'surface-container-lowest': '#ffffff',
+							'on-secondary-fixed': '#3b0900',
+							'surface-variant': '#e4e0ee',
+							error: '#ba1a1a',
+							primary: '#3211cd',
+							'on-secondary-container': '#541100',
+							'surface-container': '#f0ecfa',
+							'secondary-fixed': '#ffdbd1',
+							'tertiary-fixed': '#ffdf9e',
+							'on-surface-variant': '#474555',
+							'on-surface': '#1b1b24',
+							'outline-variant': '#c8c4d8',
+							'on-error': '#ffffff',
+							'surface-dim': '#dcd8e6',
+							'surface-container-high': '#eae6f4',
+							'surface-bright': '#fcf8ff',
+							'tertiary-fixed-dim': '#fabd00',
+							'inverse-on-surface': '#f3effd',
+							'on-primary-container': '#d0ccff',
+							'secondary-fixed-dim': '#ffb5a0',
+							tertiary: '#563f00',
+							'on-primary-fixed': '#120068',
+							'on-primary': '#ffffff',
+							'on-primary-fixed-variant': '#371cd1',
+							secondary: '#b02f00',
+							background: '#fcf8ff',
+							'surface-container-highest': '#e4e0ee',
+							'secondary-container': '#ff5722',
+							'on-secondary': '#ffffff',
+							'tertiary-container': '#735500',
+							'inverse-surface': '#302f39',
+							outline: '#777587',
+							'on-tertiary': '#ffffff',
+							'on-tertiary-container': '#ffca4c',
+							'inverse-primary': '#c4c0ff',
+							'error-container': '#ffdad6',
+							'primary-fixed': '#e3dfff',
+							'on-error-container': '#93000a',
+							'on-secondary-fixed-variant': '#862200',
+							'surface-tint': '#5140e8',
+							'on-tertiary-fixed': '#261a00',
+							'primary-container': '#4c3ae3',
+							'on-tertiary-fixed-variant': '#5b4300',
+							'primary-fixed-dim': '#c4c0ff',
+							'surface-container-low': '#f6f2ff',
+							surface: '#fcf8ff'
+						},
+						fontFamily: {
+							headline: ['Inter'],
+							body: ['Inter'],
+							label: ['Inter']
+						},
+						borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' }
+					}
+				}
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					'FILL' 0,
+					'wght' 400,
+					'GRAD' 0,
+					'opsz' 24;
+			}
+			.skill-flame-gradient {
+				background: linear-gradient(180deg, transparent 0%, rgba(255, 87, 34, 0.05) 100%);
+			}
+			.scrollbar-hide::-webkit-scrollbar {
+				display: none;
+			}
+			.scrollbar-hide {
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
+		</style>
+	</head>
+	<body
+		class="text-on-background font-body selection:bg-tertiary-fixed selection:text-on-tertiary-fixed overflow-hidden bg-background"
+	>
+		<!-- TopAppBar -->
+		<header
+			class="border-outline-variant/30 fixed top-0 z-50 flex h-20 w-full max-w-none items-center justify-between border-b bg-[#fcf8ff]/80 px-8 backdrop-blur-md dark:bg-slate-950"
+		>
+			<div class="text-xl font-black tracking-tighter text-[#3211cd] dark:text-[#4c3ae3]">
+				Skills Verifier
+			</div>
+			<nav class="hidden items-center space-x-8 md:flex">
+				<a
+					class="font-medium text-[#474555] transition-colors duration-200 hover:text-[#4c3ae3] dark:text-slate-400"
+					href="#"
+					>My Skills</a
+				>
+				<a
+					class="font-medium text-[#474555] transition-colors duration-200 hover:text-[#4c3ae3] dark:text-slate-400"
+					href="#"
+					>Add Credentials</a
+				>
+				<a
+					class="border-b-2 border-[#3211cd] pb-1 font-bold text-[#3211cd] transition-colors duration-200 hover:text-[#4c3ae3] dark:text-[#4c3ae3]"
+					href="#"
+					>Jobs</a
+				>
+			</nav>
+			<div class="flex items-center space-x-4">
+				<button class="material-symbols-outlined text-on-surface-variant p-2">notifications</button>
+				<button class="material-symbols-outlined text-on-surface-variant p-2">
+					account_circle
+				</button>
+			</div>
+		</header>
+		<div class="flex h-screen overflow-hidden pt-20">
+			<!-- Main Content Area -->
+			<main class="flex-1 overflow-y-auto px-4 pb-32 md:px-8">
+				<div class="mx-auto max-w-5xl py-12">
+					<!-- Header Section -->
+					<section class="mb-12">
+						<div class="flex flex-col justify-between gap-6 md:flex-row md:items-start">
+							<div>
+								<span
+									class="text-on-primary-container mb-4 inline-block rounded-full bg-primary-container px-3 py-1 text-[10px] font-bold tracking-widest uppercase"
+									>Role Analysis</span
+								>
+								<h1 class="text-5xl leading-none font-black tracking-tighter text-primary">
+									Senior Cloud Architect
+								</h1>
+								<p class="text-on-surface-variant mt-4 max-w-xl text-lg">
+									Interactive matching mode enabled. Verify expertise levels and attach LER
+									credentials to improve your score.
+								</p>
+							</div>
+							<div class="flex shrink-0 flex-col items-end gap-4">
+								<div
+									class="bg-surface-container-high border-outline-variant/30 flex items-center gap-4 rounded-2xl border px-6 py-5 shadow-sm"
+								>
+									<div class="flex flex-col">
+										<span
+											class="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase opacity-60"
+											>Match Strength</span
+										>
+										<div class="flex items-center gap-3">
+											<div class="bg-outline-variant h-2.5 w-32 overflow-hidden rounded-full">
+												<div
+													class="from-tertiary-fixed to-secondary-container h-full w-[72%] bg-gradient-to-r"
+												></div>
+											</div>
+											<span class="text-2xl font-black text-secondary">72%</span>
+										</div>
+									</div>
+								</div>
+								<!-- Review Match CTA -->
+								<button
+									class="from-secondary-container flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r to-secondary px-8 py-4 font-bold tracking-tight text-white shadow-lg shadow-secondary/20 transition-transform active:scale-95"
+								>
+									<span>Review Match</span>
+									<span class="material-symbols-outlined text-sm">rocket_launch</span>
+								</button>
+							</div>
+						</div>
+					</section>
+					<!-- Skills Grid: 2 Columns -->
+					<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<!-- Skill Card 1: Expert State -->
+						<div
+							class="bg-surface-container-lowest group hover:border-outline-variant relative overflow-hidden rounded-xl border border-transparent p-8 shadow-sm transition-all duration-300"
+						>
+							<div
+								class="skill-flame-gradient pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-bl-full opacity-50"
+							></div>
+							<div class="relative z-10">
+								<div class="mb-6 flex items-start justify-between">
+									<h3 class="text-2xl font-bold tracking-tight text-primary">
+										Kubernetes Orchestration
+									</h3>
+									<span
+										class="material-symbols-outlined text-secondary"
+										style="font-variation-settings: 'FILL' 1"
+										>local_fire_department</span
+									>
+								</div>
+								<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">
+									Designing scalable microservices infrastructure and multi-cluster management.
+								</p>
+								<!-- Self Rating -->
+								<div class="mb-8 space-y-4">
+									<label
+										class="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Proficiency Level</label
+									>
+									<div class="flex justify-between gap-2">
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Novice
+										</button>
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Proficient
+										</button>
+										<button
+											class="bg-secondary-container flex-1 scale-105 rounded-lg py-2 text-[10px] font-bold text-white shadow-md"
+										>
+											Expert
+										</button>
+									</div>
+								</div>
+								<!-- Flame Indicator -->
+								<div class="mb-8">
+									<div class="mb-2 flex items-center justify-between">
+										<span
+											class="text-on-surface-variant text-[10px] font-bold tracking-wider uppercase"
+											>Heat Intensity</span
+										>
+										<span class="text-[10px] font-black text-secondary uppercase">High</span>
+									</div>
+									<div class="bg-surface-container-high flex h-1.5 w-full gap-1 rounded-full">
+										<div class="bg-tertiary-fixed h-full w-1/3 rounded-l-full"></div>
+										<div class="bg-secondary-fixed-dim h-full w-1/3"></div>
+										<div class="bg-secondary-container h-full w-1/3 rounded-r-full"></div>
+									</div>
+								</div>
+								<!-- Experience Box -->
+								<div class="mb-8">
+									<label
+										class="text-on-surface-variant mb-2 block text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Experience Context</label
+									>
+									<textarea
+										class="bg-surface-container-low h-20 w-full resize-none rounded-xl border-none p-4 text-xs focus:ring-2 focus:ring-primary"
+									>
+Led migration of 400+ nodes to managed EKS with zero downtime.</textarea
+									>
+								</div>
+								<!-- Credential Attached -->
+								<div
+									class="bg-surface-container-low border-outline-variant/10 flex items-center gap-3 rounded-xl border p-3"
+								>
+									<div
+										class="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-primary shadow-sm"
+									>
+										<span
+											class="material-symbols-outlined text-xl"
+											style="font-variation-settings: 'FILL' 1"
+											>workspace_premium</span
+										>
+									</div>
+									<div class="flex-1">
+										<div class="mb-1 text-[10px] leading-none font-black text-primary uppercase">
+											CKA Certified
+										</div>
+										<div class="text-on-surface-variant text-[9px] font-medium">
+											Verified via Linux Foundation
+										</div>
+									</div>
+									<span
+										class="material-symbols-outlined text-sm text-secondary"
+										style="font-variation-settings: 'FILL' 1"
+										>verified</span
+									>
+								</div>
+							</div>
+						</div>
+						<!-- Skill Card 2: Intermediate State -->
+						<div
+							class="bg-surface-container-lowest group hover:border-outline-variant relative overflow-hidden rounded-xl border border-transparent p-8 shadow-sm transition-all duration-300"
+						>
+							<div class="relative z-10">
+								<div class="mb-6 flex items-start justify-between">
+									<h3 class="text-2xl font-bold tracking-tight text-primary">Terraform IaC</h3>
+									<span
+										class="material-symbols-outlined text-tertiary-fixed-dim"
+										style="font-variation-settings: 'FILL' 1"
+										>local_fire_department</span
+									>
+								</div>
+								<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">
+									Automating hybrid cloud deployments using provider-agnostic modules.
+								</p>
+								<div class="mb-8 space-y-4">
+									<label
+										class="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Proficiency Level</label
+									>
+									<div class="flex justify-between gap-2">
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Novice
+										</button>
+										<button
+											class="bg-tertiary-fixed text-on-tertiary-fixed flex-1 scale-105 rounded-lg py-2 text-[10px] font-bold shadow-md"
+										>
+											Proficient
+										</button>
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Expert
+										</button>
+									</div>
+								</div>
+								<div class="mb-8">
+									<div class="mb-2 flex items-center justify-between">
+										<span
+											class="text-on-surface-variant text-[10px] font-bold tracking-wider uppercase"
+											>Heat Intensity</span
+										>
+										<span class="text-tertiary-fixed-dim text-[10px] font-black uppercase"
+											>Steady</span
+										>
+									</div>
+									<div class="bg-surface-container-high flex h-1.5 w-full gap-1 rounded-full">
+										<div class="bg-tertiary-fixed h-full w-1/3 rounded-l-full"></div>
+										<div class="bg-tertiary-fixed-dim h-full w-1/3"></div>
+										<div class="bg-surface-container-high h-full w-1/3 rounded-r-full"></div>
+									</div>
+								</div>
+								<div class="mb-8">
+									<label
+										class="text-on-surface-variant mb-2 block text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Experience Context</label
+									>
+									<textarea
+										class="bg-surface-container-low h-20 w-full resize-none rounded-xl border-none p-4 text-xs focus:ring-2 focus:ring-primary"
+										placeholder="Briefly describe your practical application..."
+									></textarea>
+								</div>
+								<div
+									class="border-outline-variant/30 text-on-surface-variant group/add flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 opacity-40 transition-all hover:border-primary/30 hover:opacity-100"
+								>
+									<span
+										class="material-symbols-outlined mb-1 transition-colors group-hover/add:text-primary"
+										>add_circle</span
+									>
+									<span
+										class="text-[10px] font-bold tracking-widest uppercase transition-colors group-hover/add:text-primary"
+										>Drop Badge to Verify</span
+									>
+								</div>
+							</div>
+						</div>
+						<!-- Skill Card 3: Learning State -->
+						<div
+							class="bg-surface-container-lowest group hover:border-outline-variant relative overflow-hidden rounded-xl border border-transparent p-8 shadow-sm transition-all duration-300"
+						>
+							<div class="relative z-10">
+								<div class="mb-6 flex items-start justify-between">
+									<h3 class="text-2xl font-bold tracking-tight text-primary">AWS Lambda</h3>
+									<span class="material-symbols-outlined text-outline-variant"
+										>local_fire_department</span
+									>
+								</div>
+								<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">
+									Serverless function orchestration and event-driven architecture design.
+								</p>
+								<div class="mb-8 space-y-4">
+									<label
+										class="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Proficiency Level</label
+									>
+									<div class="flex justify-between gap-2">
+										<button
+											class="flex-1 scale-105 rounded-lg bg-primary-fixed py-2 text-[10px] font-bold text-primary shadow-md"
+										>
+											Novice
+										</button>
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Proficient
+										</button>
+										<button
+											class="bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest flex-1 rounded-lg py-2 text-[10px] font-bold transition-colors"
+										>
+											Expert
+										</button>
+									</div>
+								</div>
+								<div class="mb-8">
+									<div class="mb-2 flex items-center justify-between">
+										<span
+											class="text-on-surface-variant text-[10px] font-bold tracking-wider uppercase"
+											>Heat Intensity</span
+										>
+										<span class="text-outline-variant text-[10px] font-black uppercase">Low</span>
+									</div>
+									<div class="bg-surface-container-high flex h-1.5 w-full gap-1 rounded-full">
+										<div class="bg-outline-variant h-full w-1/3 rounded-l-full"></div>
+										<div class="bg-surface-container-high h-full w-1/3"></div>
+										<div class="bg-surface-container-high h-full w-1/3 rounded-r-full"></div>
+									</div>
+								</div>
+								<div class="mb-8">
+									<label
+										class="text-on-surface-variant mb-2 block text-[10px] font-bold tracking-widest uppercase opacity-60"
+										>Experience Context</label
+									>
+									<textarea
+										class="bg-surface-container-low h-20 w-full resize-none rounded-xl border-none p-4 text-xs focus:ring-2 focus:ring-primary"
+										placeholder="Briefly describe your practical application..."
+									></textarea>
+								</div>
+								<div
+									class="border-outline-variant/30 text-on-surface-variant flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 opacity-40 transition-all hover:opacity-100"
+								>
+									<span class="material-symbols-outlined mb-1">add_circle</span>
+									<span class="text-[10px] font-bold tracking-widest uppercase"
+										>Drop Badge to Verify</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+			<!-- Right Sidebar: Credential Tray -->
+			<aside
+				class="bg-surface-container-low border-outline-variant/20 z-40 flex h-full w-80 flex-col border-l"
+			>
+				<!-- Sidebar Header -->
+				<div class="border-outline-variant/10 space-y-6 border-b p-6">
+					<div class="flex items-center gap-2">
+						<span
+							class="material-symbols-outlined text-primary"
+							style="font-variation-settings: 'FILL' 1"
+							>badge</span
+						>
+						<h2 class="text-[11px] font-black tracking-widest text-primary uppercase">
+							Credential Library
+						</h2>
+					</div>
+					<button
+						class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs font-bold tracking-tight text-white shadow-lg shadow-primary/20 transition-transform active:scale-95"
+					>
+						<span class="material-symbols-outlined text-sm">add</span>
+						<span>Add Credentials</span>
+					</button>
+					<!-- Search Bar -->
+					<div class="relative">
+						<span
+							class="material-symbols-outlined text-on-surface-variant absolute top-1/2 left-3 -translate-y-1/2 text-sm opacity-60"
+							>search</span
+						>
+						<input
+							class="bg-surface-container-lowest border-outline-variant/15 placeholder:text-on-surface-variant/50 w-full rounded-lg py-2 pr-4 pl-9 text-[11px] font-medium focus:ring-1 focus:ring-primary"
+							placeholder="Filter credentials..."
+							type="text"
+						/>
+					</div>
+				</div>
+				<!-- Scrollable Badges List -->
+				<div class="scrollbar-hide flex-1 space-y-4 overflow-y-auto p-4">
+					<h3
+						class="text-on-surface-variant/60 px-2 text-[9px] font-bold tracking-widest uppercase"
+					>
+						Recently Earned
+					</h3>
+					<!-- Badge Item 1 -->
+					<div
+						class="bg-surface-container-lowest border-outline-variant/10 group flex cursor-grab items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
+					>
+						<div
+							class="bg-secondary-fixed group-hover:bg-secondary-container flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+						>
+							<span class="material-symbols-outlined text-xl text-secondary">cloud_done</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-on-surface truncate text-[11px] font-black">AWS Architect</div>
+							<div class="text-on-surface-variant truncate text-[9px] font-medium">
+								Credential #823
+							</div>
+						</div>
+						<span class="material-symbols-outlined text-outline-variant/40 text-sm"
+							>drag_indicator</span
+						>
+					</div>
+					<!-- Badge Item 2 -->
+					<div
+						class="bg-surface-container-lowest border-outline-variant/10 group flex cursor-grab items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
+					>
+						<div
+							class="bg-tertiary-fixed group-hover:bg-tertiary-fixed-dim flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+						>
+							<span class="material-symbols-outlined text-tertiary text-xl">terminal</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-on-surface truncate text-[11px] font-black">Terraform Assoc</div>
+							<div class="text-on-surface-variant truncate text-[9px] font-medium">
+								HashiCorp LER
+							</div>
+						</div>
+						<span class="material-symbols-outlined text-outline-variant/40 text-sm"
+							>drag_indicator</span
+						>
+					</div>
+					<!-- Badge Item 3 -->
+					<div
+						class="bg-surface-container-lowest border-outline-variant/10 group flex cursor-grab items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
+					>
+						<div
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-fixed transition-colors group-hover:bg-primary-container group-hover:text-white"
+						>
+							<span class="material-symbols-outlined text-xl text-primary">security</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-on-surface truncate text-[11px] font-black">Security+</div>
+							<div class="text-on-surface-variant truncate text-[9px] font-medium">CompTIA LER</div>
+						</div>
+						<span class="material-symbols-outlined text-outline-variant/40 text-sm"
+							>drag_indicator</span
+						>
+					</div>
+					<h3
+						class="text-on-surface-variant/60 px-2 pt-4 text-[9px] font-bold tracking-widest uppercase"
+					>
+						Other LERs
+					</h3>
+					<!-- Badge Item 4 -->
+					<div
+						class="bg-surface-container-lowest border-outline-variant/10 group flex cursor-grab items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
+					>
+						<div
+							class="bg-secondary-fixed group-hover:bg-secondary-container flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+						>
+							<span class="material-symbols-outlined text-xl text-secondary">database</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-on-surface truncate text-[11px] font-black">MongoDB Expert</div>
+							<div class="text-on-surface-variant truncate text-[9px] font-medium">
+								Open Badge v2
+							</div>
+						</div>
+						<span class="material-symbols-outlined text-outline-variant/40 text-sm"
+							>drag_indicator</span
+						>
+					</div>
+					<!-- Badge Item 5 -->
+					<div
+						class="bg-surface-container-lowest border-outline-variant/10 group flex cursor-grab items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
+					>
+						<div
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-fixed transition-colors group-hover:bg-primary-container group-hover:text-white"
+						>
+							<span class="material-symbols-outlined text-xl text-primary">settings_ethernet</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-on-surface truncate text-[11px] font-black">Network Spec</div>
+							<div class="text-on-surface-variant truncate text-[9px] font-medium">Cisco LER</div>
+						</div>
+						<span class="material-symbols-outlined text-outline-variant/40 text-sm"
+							>drag_indicator</span
+						>
+					</div>
+				</div>
+			</aside>
+		</div>
+		<!-- Mobile Bottom Nav -->
+		<nav
+			class="border-outline-variant/20 fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t bg-white/95 px-6 pt-3 pb-4 backdrop-blur-xl md:hidden"
+		>
+			<div class="flex flex-col items-center justify-center text-primary">
+				<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1"
+					>dashboard</span
+				>
+				<span class="mt-1 text-[9px] font-bold tracking-widest uppercase">Dashboard</span>
+			</div>
+			<div class="text-on-surface-variant flex flex-col items-center justify-center opacity-60">
+				<span class="material-symbols-outlined">work</span>
+				<span class="mt-1 text-[9px] font-bold tracking-widest uppercase">Jobs</span>
+			</div>
+			<div class="text-on-surface-variant flex flex-col items-center justify-center opacity-60">
+				<span class="material-symbols-outlined">workspace_premium</span>
+				<span class="mt-1 text-[9px] font-bold tracking-widest uppercase">Skills</span>
+			</div>
+		</nav>
+	</body>
+</html>
