@@ -1,3 +1,5 @@
+import { HttpHealthCheck } from '$lib/server/health/checks/http-health-check.js';
+import { HealthCheckSym, type HealthCheck } from '$lib/server/health/health-check.js';
 import { appLoggerSafe } from '$lib/server/services/logging/logger-service.js';
 
 import type {
@@ -55,9 +57,21 @@ async function postCredentialEngineSearch(
 	return response.json();
 }
 
+function ceBaseUrl(searchUrl: string): string {
+	try {
+		return new URL(searchUrl).origin;
+	} catch {
+		return searchUrl.replace(/\/assistant\/search.*$/, '').replace(/\/$/, '') || 'invalid-url';
+	}
+}
+
+export type CredentialEngineSkillSearchServiceWithHealth = SkillSearchService & {
+	[HealthCheckSym]: HealthCheck;
+};
+
 export function CredentialEngineSkillSearchService(
 	config: CredentialEngineSkillSearchConfig
-): SkillSearchService {
+): CredentialEngineSkillSearchServiceWithHealth {
 	return {
 		async search(query: SkillSearchQuery): Promise<SkillSearchResult[]> {
 			const requestBody = buildCredentialEngineSearchRequest(query, config.searchUrl);
@@ -83,6 +97,13 @@ export function CredentialEngineSkillSearchService(
 				'CE framework search'
 			);
 			return mapCredentialEngineFrameworkSearchResponse(ceResponse);
-		}
+		},
+
+		[HealthCheckSym]: HttpHealthCheck({
+			name: 'credential-engine',
+			baseUrl: ceBaseUrl(config.searchUrl),
+			path: '/health',
+			apiKey: config.apiKey
+		})
 	};
 }

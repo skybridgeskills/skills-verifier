@@ -1,6 +1,7 @@
 import type { FrameworkClient } from '$lib/clients/framework-client/framework-client.js';
 
 import type { StorageDatabase } from './core/storage/types.js';
+import type { HealthRegistry } from './health/health-registry.js';
 import type { IdService } from './services/id-service/id-service.js';
 import type { LoggerService } from './services/logging/logger-service.js';
 import type { SkillSearchService } from './services/skill-search/skill-search-service.js';
@@ -18,6 +19,7 @@ export interface AppContext {
 	frameworkClient: FrameworkClient;
 	database: StorageDatabase;
 	skillSearchService: SkillSearchService;
+	healthRegistry: HealthRegistry;
 }
 
 /**

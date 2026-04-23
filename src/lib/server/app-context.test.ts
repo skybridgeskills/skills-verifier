@@ -5,6 +5,7 @@ import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framewor
 import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
+import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeLoggerService } from './services/logging/fake-logger-service.js';
 import { FakeSkillSearchService } from './services/skill-search/fake-skill-search-service.js';
@@ -13,7 +14,7 @@ import { runInContext, runWithExtraContext } from './util/provider/provider-ctx.
 
 describe('app-context', () => {
 	function createTestContext(): AppContext {
-		return {
+		const base = {
 			logger: FakeLoggerService(),
 			...FakeTimeServiceCtx(),
 			...FakeIdServiceCtx(),
@@ -21,6 +22,7 @@ describe('app-context', () => {
 			database: new MemoryDatabase(),
 			skillSearchService: FakeSkillSearchService()
 		};
+		return { ...base, ...provideHealthRegistry(base) };
 	}
 
 	describe('runInContext', () => {
@@ -92,14 +94,17 @@ describe('app-context', () => {
 			const newIdService = FakeIdService();
 
 			runWithExtraContext(
-				{
-					logger: FakeLoggerService(),
-					timeService: newTimeService,
-					idService: newIdService,
-					frameworkClient: new FakeFrameworkClient(),
-					database: new MemoryDatabase(),
-					skillSearchService: FakeSkillSearchService()
-				},
+				(() => {
+					const base = {
+						logger: FakeLoggerService(),
+						timeService: newTimeService,
+						idService: newIdService,
+						frameworkClient: new FakeFrameworkClient(),
+						database: new MemoryDatabase(),
+						skillSearchService: FakeSkillSearchService()
+					};
+					return { ...base, ...provideHealthRegistry(base) };
+				})(),
 				() => {
 					const ctx = appContext();
 					expect(ctx.timeService).toBe(newTimeService);
