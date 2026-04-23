@@ -2,6 +2,7 @@ import { provideFakeFrameworkClient } from '$lib/clients/framework-client/framew
 
 import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
+import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeLoggerServiceCtx } from './services/logging/fake-logger-service.js';
 import { provideFakeSkillSearchService } from './services/skill-search/provide-fake-skill-search-service.js';
@@ -26,6 +27,7 @@ export async function TestAppContext(_env: Record<string, unknown> = {}): Promis
 		FakeIdServiceCtx,
 		provideFakeFrameworkClient,
 		TestStorageDatabaseCtx,
-		provideFakeSkillSearchService
+		provideFakeSkillSearchService,
+		provideHealthRegistry
 	)()) as AppContext;
 }

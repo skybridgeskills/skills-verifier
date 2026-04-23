@@ -5,6 +5,7 @@ import {
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
+import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
 import { RealLoggerServiceCtx } from './services/logging/real-logger-service.js';
 import { provideCredentialEngineSkillSearchService } from './services/skill-search/credential-engine/provide-credential-engine-skill-search-service.js';
@@ -51,6 +52,7 @@ export async function DevAppContext(env: Record<string, unknown>): Promise<AppCo
 						searchUrl: ce.searchUrl,
 						apiKey: ce.apiKey
 					})
-			: provideFakeSkillSearchService
+			: provideFakeSkillSearchService,
+		provideHealthRegistry
 	)()) as AppContext;
 }
