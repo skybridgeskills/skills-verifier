@@ -5,6 +5,7 @@ import {
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
+import { provideHealthLogging } from './health/provide-health-logging.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
 import { RealLoggerServiceCtx } from './services/logging/real-logger-service.js';
@@ -53,6 +54,7 @@ export async function DevAppContext(env: Record<string, unknown>): Promise<AppCo
 						apiKey: ce.apiKey
 					})
 			: provideFakeSkillSearchService,
-		provideHealthRegistry
+		provideHealthRegistry,
+		provideHealthLogging
 	)()) as AppContext;
 }
