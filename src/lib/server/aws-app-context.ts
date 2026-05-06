@@ -4,6 +4,7 @@ import { provideHttpFrameworkClient } from '$lib/clients/framework-client/framew
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
+import { provideHealthLogging } from './health/provide-health-logging.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
 import { RealLoggerServiceCtx } from './services/logging/real-logger-service.js';
@@ -46,6 +47,7 @@ export async function AwsAppContext(env: Record<string, unknown>): Promise<AppCo
 				searchUrl: String(env.CREDENTIAL_ENGINE_SEARCH_URL ?? '').trim(),
 				apiKey: String(env.CREDENTIAL_ENGINE_API_KEY ?? '').trim()
 			}),
-		provideHealthRegistry
+		provideHealthRegistry,
+		provideHealthLogging
 	)()) as AppContext;
 }
