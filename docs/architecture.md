@@ -137,6 +137,55 @@ Additional endpoints:
 - `GET /health` — ALB health (`200`, no external I/O).
 - `GET /version` — Deploy/version JSON (OSMT-style; includes optional `extra.sbsMonorepoVersion` when built from the monorepo wrapper).
 
+## Skills match + credential verification
+
+A **match** pairs a job's required skills with a candidate's verified credentials. The flow lives at
+`/jobs/{jobId}/match/{matchId}` and is identified by that **capability URL alone** (no auth yet — see
+[design/open-questions.md](design/open-questions.md); the `// IDENTITY (fast-follow)` seams mark where
+ownership/session will attach).
+
+### Match domain entity
+
+Location: `src/lib/server/domain/match/`
+
+A `MatchResource` (`match-resource.ts`) holds the job id, the verify-exchange handle
+(`exchangeId`/`vcapi`/`exchangeState`), `verifiedCredentials`, and skill→credential `assignments`.
+
+Single-table key pattern (`match-row.ts`, `matchMetaKeys()`):
+
+- `PK = MATCH#{id}`, `SK = META` — the match meta item (`MATCH#{id}/META`).
+- `GSI1PK = JOB#{jobId}`, `GSI1SK = MATCH#{createdAtIso}#{id}` — list a job's matches by recency.
+
+Queries: `create-match-query.ts`, `match-by-id-query.ts`, `list-matches-by-job-query.ts`,
+`save-match-credentials-query.ts`, `save-match-assignments-query.ts`.
+
+### Verification-exchange provider (port + adapters)
+
+Location: `src/lib/server/domain/verification/`
+
+**Port** (`verification-exchange.ts`): `VerificationExchange` with `createVerifyExchange()` and
+`getExchangeStatus()`, plus `ExchangeProtocols`/`ExchangeStatus` types.
+
+**Adapters**:
+
+- **Http** (`http-verification-exchange.ts`): backs the DCC `dcc-transaction-service` verify workflow
+  (VC-API + QueryByExample scoped to Open Badges v3). Sends Basic auth only when
+  `TRANSACTION_SERVICE_TOKEN` is set; the token is never logged and never returned to the client.
+- **Fake** (`fake-verification-exchange.ts`): in-memory exchange for dev/tests with no network.
+
+**Selection** (by `CONTEXT` + config, `verification-config.ts`): `aws` always uses Http; `dev` uses
+Http when `TRANSACTION_SERVICE_BASEURI` is set, otherwise Fake; `test` always uses Fake.
+
+### QR / interact-URL + server-proxied polling
+
+1. `startExchange` (match `+page.server.ts`) creates an exchange, persists `exchangeId`/`vcapi`, and
+   renders the interact URL (`iu`) as a **QR code** for the wallet.
+2. The browser polls `GET /jobs/{jobId}/match/{matchId}/status` every few seconds. That endpoint reads
+   `exchangeId`/`vcapi` from the **persisted match** (never trusted from the client) and proxies the
+   VC-API status. **Poll-only** — OID4VP / push completion is not supported upstream.
+3. On `complete`, verified credentials are persisted to the match; the board then lets the user assign
+   credentials to skills and write a narrative per assignment (`components/match-board/`).
+
 ## Storage
 
 - **`CONTEXT=aws`**: **DynamoDB** (`DynamoStorageDatabase` + `createStorageDatabase`)

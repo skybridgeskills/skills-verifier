@@ -1,0 +1,62 @@
+import { json } from '@sveltejs/kit';
+
+import { appContext } from '$lib/server/app-context.js';
+import { matchByIdQuery } from '$lib/server/domain/match/match-by-id-query.js';
+import { saveMatchCredentialsQuery } from '$lib/server/domain/match/save-match-credentials-query.js';
+import { appLogger } from '$lib/server/services/logging/index.js';
+
+import type { RequestHandler } from './$types';
+
+/**
+ * Poll the verify-exchange status for a match. The browser hits this every ~2-3s (P4).
+ * `exchangeId`/`vcapi` are read from the persisted match (server-trusted), never from
+ * client-supplied values. On `complete`/`invalid` the new state is persisted.
+ */
+export const GET: RequestHandler = async ({ params, locals }) => {
+	const match = await matchByIdQuery({ id: params.matchId });
+	if (!match || match.jobId !== params.id) {
+		return json({ error: 'Match not found' }, { status: 404 });
+	}
+
+	if (!match.exchangeId || !match.vcapi) {
+		return json({ state: 'none' });
+	}
+
+	const { verificationExchange } = appContext();
+	let status;
+	try {
+		status = await verificationExchange.getExchangeStatus({
+			exchangeId: match.exchangeId,
+			vcapi: match.vcapi
+		});
+	} catch (err) {
+		appLogger().error(
+			{ err, matchId: params.matchId, requestId: locals.requestId },
+			'status: failed to poll exchange status'
+		);
+		return json({ error: 'Could not poll exchange status' }, { status: 502 });
+	}
+
+	if (status.state === 'complete') {
+		await saveMatchCredentialsQuery({
+			id: match.id,
+			exchangeId: match.exchangeId,
+			vcapi: match.vcapi,
+			exchangeState: 'complete',
+			verifiedCredentials: status.verifiedCredentials
+		});
+		return json({ state: 'complete', verifiedCredentials: status.verifiedCredentials });
+	}
+
+	if (status.state === 'invalid') {
+		await saveMatchCredentialsQuery({
+			id: match.id,
+			exchangeId: match.exchangeId,
+			vcapi: match.vcapi,
+			exchangeState: 'invalid'
+		});
+		return json({ state: 'invalid' });
+	}
+
+	return json({ state: status.state });
+};

@@ -5,6 +5,7 @@ import { FakeFrameworkClient } from '$lib/clients/framework-client/fake-framewor
 import { appContext } from './app-context.js';
 import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
+import { FakeVerificationExchange } from './domain/verification/fake-verification-exchange.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeLoggerService } from './services/logging/fake-logger-service.js';
@@ -20,7 +21,8 @@ describe('app-context', () => {
 			...FakeIdServiceCtx(),
 			frameworkClient: new FakeFrameworkClient(),
 			database: new MemoryDatabase(),
-			skillSearchService: FakeSkillSearchService()
+			skillSearchService: FakeSkillSearchService(),
+			verificationExchange: FakeVerificationExchange()
 		};
 		return { ...base, ...provideHealthRegistry(base) };
 	}

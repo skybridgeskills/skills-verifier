@@ -37,6 +37,10 @@
 		</Badge>
 	</div>
 
+	<form method="POST" action="?/createMatch">
+		<Button type="submit" variant="default">Create a skills match</Button>
+	</form>
+
 	<p class="text-body-md text-muted-foreground">{job.description}</p>
 
 	<dl class="grid gap-3 text-body-md">

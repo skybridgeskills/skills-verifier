@@ -71,3 +71,38 @@ export {
 export { createJobAppQuery } from '../../domain/job-app/create-job-app-query.js';
 export { jobAppByIdQuery } from '../../domain/job-app/job-app-by-id-query.js';
 export { listJobAppsByJobQuery } from '../../domain/job-app/list-job-apps-by-job-query.js';
+
+/** Match domain */
+export {
+	MatchExchangeState,
+	VerifiedCredential,
+	MatchAssignment,
+	MatchResource,
+	CreateMatchParams,
+	UpdateMatchExchangeParams,
+	SaveAssignmentsParams,
+	type MatchExchangeState as MatchExchangeStateType,
+	type VerifiedCredential as VerifiedCredentialType,
+	type MatchAssignment as MatchAssignmentType,
+	type MatchResource as MatchResourceType,
+	type CreateMatchParams as CreateMatchParamsType,
+	type UpdateMatchExchangeParams as UpdateMatchExchangeParamsType,
+	type SaveAssignmentsParams as SaveAssignmentsParamsType
+} from '../../domain/match/match-resource.js';
+
+/** Match row (database layer) */
+export {
+	MatchRow,
+	matchMetaKeys,
+	matchToRow,
+	rowToMatchResource,
+	parseMatchRow,
+	type MatchRow as MatchRowType
+} from '../../domain/match/match-row.js';
+
+/** Match queries */
+export { createMatchQuery } from '../../domain/match/create-match-query.js';
+export { matchByIdQuery } from '../../domain/match/match-by-id-query.js';
+export { listMatchesByJobQuery } from '../../domain/match/list-matches-by-job-query.js';
+export { saveMatchCredentialsQuery } from '../../domain/match/save-match-credentials-query.js';
+export { saveMatchAssignmentsQuery } from '../../domain/match/save-match-assignments-query.js';

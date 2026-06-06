@@ -5,6 +5,9 @@ import {
 
 import type { AppContext } from './app-context.js';
 import { StorageDatabaseCtx } from './core/storage/storage-database-ctx.js';
+import { provideFakeVerificationExchange } from './domain/verification/provide-fake-verification-exchange.js';
+import { provideHttpVerificationExchange } from './domain/verification/provide-http-verification-exchange.js';
+import { readVerificationConfig } from './domain/verification/verification-config.js';
 import { provideHealthLogging } from './health/provide-health-logging.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
 import { RealIdServiceCtx } from './services/id-service/real-id-service.js';
@@ -36,6 +39,8 @@ function devCredentialEngineConfig(env: Record<string, unknown>): {
  */
 export async function DevAppContext(env: Record<string, unknown>): Promise<AppContext> {
 	const ce = devCredentialEngineConfig(env);
+	const verificationConfig = readVerificationConfig(env);
+	const verificationUseReal = verificationConfig.url.length > 0;
 	const logLevel =
 		typeof env.LOG_LEVEL === 'string' && env.LOG_LEVEL.trim().length > 0
 			? env.LOG_LEVEL.trim()
@@ -54,6 +59,9 @@ export async function DevAppContext(env: Record<string, unknown>): Promise<AppCo
 						apiKey: ce.apiKey
 					})
 			: provideFakeSkillSearchService,
+		verificationUseReal
+			? () => provideHttpVerificationExchange(verificationConfig)
+			: provideFakeVerificationExchange,
 		provideHealthRegistry,
 		provideHealthLogging
 	)()) as AppContext;
