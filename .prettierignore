@@ -9,3 +9,7 @@ bun.lockb
 /terraform/
 /static/
 .turbo/
+
+# Playwright
+/test-results/
+/playwright-report/

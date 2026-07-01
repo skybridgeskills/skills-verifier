@@ -1,6 +1,7 @@
 import type { FrameworkClient } from '$lib/clients/framework-client/framework-client.js';
 
 import type { StorageDatabase } from './core/storage/types.js';
+import type { VerificationExchange } from './domain/verification/verification-exchange.js';
 import type { HealthRegistry } from './health/health-registry.js';
 import type { IdService } from './services/id-service/id-service.js';
 import type { LoggerService } from './services/logging/logger-service.js';
@@ -19,6 +20,7 @@ export interface AppContext {
 	frameworkClient: FrameworkClient;
 	database: StorageDatabase;
 	skillSearchService: SkillSearchService;
+	verificationExchange: VerificationExchange;
 	healthRegistry: HealthRegistry;
 }
 

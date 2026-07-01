@@ -1,5 +1,6 @@
 import type { JobResource } from '../../domain/job/job-resource.js';
 import type { JobAppResource } from '../../domain/job-app/job-app-resource.js';
+import type { MatchResource } from '../../domain/match/match-resource.js';
 
 /**
  * In-memory tables for tests and local development.
@@ -10,4 +11,6 @@ export class MemoryDatabase {
 	readonly jobsById = new Map<string, JobResource>();
 
 	readonly jobAppsById = new Map<string, JobAppResource>();
+
+	readonly matchesById = new Map<string, MatchResource>();
 }
