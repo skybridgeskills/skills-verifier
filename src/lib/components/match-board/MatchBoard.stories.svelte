@@ -55,13 +55,13 @@
 </script>
 
 <Story name="Empty (no assignments)">
-	<MatchBoard {skills} {credentials} />
+	<MatchBoard {skills} {credentials} editToken="story-token" />
 </Story>
 
 <Story name="With pre-assigned credentials">
-	<MatchBoard {skills} {credentials} initialAssignments={preAssigned} />
+	<MatchBoard {skills} {credentials} initialAssignments={preAssigned} editToken="story-token" />
 </Story>
 
 <Story name="No credentials">
-	<MatchBoard {skills} credentials={[]} />
+	<MatchBoard {skills} credentials={[]} editToken="story-token" />
 </Story>

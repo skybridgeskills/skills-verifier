@@ -3,17 +3,20 @@ import { describe, expect, it } from 'vitest';
 import { CreateMatchParams, MatchResource } from './match-resource.js';
 
 describe('MatchResource', () => {
-	it('applies defaults for exchange state and arrays', () => {
+	it('applies defaults for exchange state, arrays, and capability token', () => {
 		const match = MatchResource({
 			id: 'm1',
 			createdAt: new Date(),
-			jobId: 'job-1'
+			jobId: 'job-1',
+			archiveAfter: new Date()
 		});
 		expect(match.exchangeState).toBe('none');
 		expect(match.verifiedCredentials).toEqual([]);
 		expect(match.assignments).toEqual([]);
 		expect(match.exchangeId).toBeUndefined();
 		expect(match.vcapi).toBeUndefined();
+		// Absent capability token defaults to '' → the match is read-only (never matches a token).
+		expect(match.capabilityToken).toBe('');
 	});
 
 	it('preserves provided exchange and credential fields', () => {
@@ -21,6 +24,7 @@ describe('MatchResource', () => {
 			id: 'm2',
 			createdAt: new Date(),
 			jobId: 'job-2',
+			archiveAfter: new Date(),
 			exchangeId: 'ex-1',
 			vcapi: 'https://dcc.test/exchanges/ex-1',
 			exchangeState: 'active',

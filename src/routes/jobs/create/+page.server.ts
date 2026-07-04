@@ -93,7 +93,8 @@ export const actions: Actions = {
 			});
 		}
 
-		await createJobQuery(parsed.data);
-		redirect(303, '/jobs');
+		const job = await createJobQuery(parsed.data);
+		// Land on the new job with a one-shot flag so the share dialog auto-opens once.
+		redirect(303, `/jobs/${job.id}?created=1`);
 	}
 };

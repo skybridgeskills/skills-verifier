@@ -16,9 +16,16 @@
 		credentials: ClientCredential[];
 		/** Persisted assignments from the match load. */
 		initialAssignments?: ClientAssignment[];
+		/** Capability token re-posted with the save so the server can re-authorize the edit. */
+		editToken: string;
+		/** Called once a save succeeds (so the page can reveal the capability + share links). */
+		onSaved?: () => void;
 	}
 
-	let { skills, credentials, initialAssignments = [] }: Props = $props();
+	let { skills, credentials, initialAssignments = [], editToken, onSaved }: Props = $props();
+
+	// "Keep this match for" expiry preset, posted as `expiryDays` (default 30) and refreshed on save.
+	let expiryDays = $state<30 | 60 | 90>(30);
 
 	// svelte-ignore state_referenced_locally
 	let assignments = $state<ClientAssignment[]>(initialAssignments.map((a) => ({ ...a })));
@@ -79,6 +86,7 @@
 			return async ({ result, update }) => {
 				if (result.type === 'success') {
 					saveState = 'saved';
+					onSaved?.();
 				} else if (result.type === 'failure') {
 					saveState = 'error';
 					saveError = (result.data?.error as string | undefined) ?? 'Could not save assignments.';
@@ -91,17 +99,36 @@
 		}}
 	>
 		<input type="hidden" name="assignmentsJson" value={JSON.stringify(validAssignments)} />
+		<input type="hidden" name="editToken" value={editToken} />
 
-		<div class="flex items-center justify-between gap-4">
+		<div class="flex flex-wrap items-end justify-between gap-4">
 			<div>
 				<h1 class="text-headline-md text-foreground">Match skills to credentials</h1>
 				<p class="mt-1 text-body-md text-muted-foreground">
 					Assign verified credentials to job skills and explain each match.
 				</p>
 			</div>
-			<Button type="submit" data-testid="save-assignments" disabled={saveState === 'saving'}>
-				{saveState === 'saving' ? 'Saving…' : 'Save assignments'}
-			</Button>
+			<div class="flex items-end gap-4">
+				<div class="flex flex-col gap-1">
+					<label for="expiryDays" class="text-body-sm font-medium text-foreground">
+						Keep this match for
+					</label>
+					<select
+						id="expiryDays"
+						name="expiryDays"
+						bind:value={expiryDays}
+						class="h-9 rounded-lg border border-border/15 bg-background px-3 text-sm text-foreground shadow-xs focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+						data-testid="expiry-select"
+					>
+						<option value={30}>30 days</option>
+						<option value={60}>60 days</option>
+						<option value={90}>90 days</option>
+					</select>
+				</div>
+				<Button type="submit" data-testid="save-assignments" disabled={saveState === 'saving'}>
+					{saveState === 'saving' ? 'Saving…' : 'Save assignments'}
+				</Button>
+			</div>
 		</div>
 	</form>
 

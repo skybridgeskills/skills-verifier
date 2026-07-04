@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { JobShareDialog } from '$lib/components/job-share-dialog/index.js';
 	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { JobResource } from '$lib/server/domain/job/job-resource.js';
 
+	import { replaceState } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 
 	interface Props {
 		job: JobResource;
@@ -15,6 +18,18 @@
 	const statusVariant = $derived(
 		job.status === 'active' ? 'default' : job.status === 'closed' ? 'secondary' : 'outline'
 	);
+
+	let shareOpen = $state(false);
+
+	// Auto-open the share dialog once, right after a job is created
+	// (`/jobs/create` redirects here with `?created=1`). Clear the flag via
+	// replaceState so a refresh or back-navigation doesn't reopen it.
+	$effect(() => {
+		if (page.url.searchParams.get('created') === '1') {
+			shareOpen = true;
+			replaceState(resolve('/jobs/[id]', { id: job.id }), page.state);
+		}
+	});
 </script>
 
 <div class="space-y-8">
@@ -37,9 +52,16 @@
 		</Badge>
 	</div>
 
-	<form method="POST" action="?/createMatch">
-		<Button type="submit" variant="default">Create a skills match</Button>
-	</form>
+	<div class="flex flex-wrap gap-3">
+		<form method="POST" action="?/createMatch">
+			<Button type="submit" variant="default">Create a skills match</Button>
+		</form>
+		<Button type="button" variant="secondary" onclick={() => (shareOpen = true)}>
+			Hire for this Job
+		</Button>
+	</div>
+
+	<JobShareDialog {job} bind:open={shareOpen} />
 
 	<p class="text-body-md text-muted-foreground">{job.description}</p>
 

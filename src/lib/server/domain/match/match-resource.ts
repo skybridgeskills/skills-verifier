@@ -45,13 +45,37 @@ export const MatchResource = ZodFactory(
 		vcapi: z.string().optional(),
 		exchangeState: MatchExchangeState.schema.default('none'),
 		verifiedCredentials: z.array(VerifiedCredential.schema).default([]),
-		assignments: z.array(MatchAssignment.schema).default([])
+		assignments: z.array(MatchAssignment.schema).default([]),
+
+		// Secret capability token (128-bit base-62 `secureUid`) that unlocks edit + delete via a
+		// `?edit=<token>` query param. Empty on legacy matches minted before capability tokens
+		// existed → those are effectively read-only (no token ever equals '', see verifyMatchCapability).
+		capabilityToken: z.string().default(''),
+		// Soft-archive date: after this passes the share/edit URLs return 410 and the record is
+		// hidden but retained. Set to `createdAt + 30d` at creation; extendable to 90d on edit.
+		archiveAfter: z.date()
 	})
 );
 export type MatchResource = ReturnType<typeof MatchResource>;
 
 export const CreateMatchParams = z.object({ jobId: MatchResource.schema.shape.jobId });
 export type CreateMatchParams = z.infer<typeof CreateMatchParams>;
+
+/** Expiry presets the UI offers ("keep this match for N days"); the server clamps to <= 90. */
+export const ExpiryDays = z.union([z.literal(30), z.literal(60), z.literal(90)]);
+export type ExpiryDays = z.infer<typeof ExpiryDays>;
+
+/** Capability-authorized update: change assignments and/or extend the expiry. */
+export const UpdateMatchParams = z.object({
+	id: z.string(),
+	assignments: z.array(MatchAssignment.schema).optional(),
+	expiryDays: ExpiryDays.optional()
+});
+export type UpdateMatchParams = z.infer<typeof UpdateMatchParams>;
+
+/** Capability-authorized hard delete. */
+export const DeleteMatchParams = z.object({ id: z.string() });
+export type DeleteMatchParams = z.infer<typeof DeleteMatchParams>;
 
 export const UpdateMatchExchangeParams = z.object({
 	id: z.string(),

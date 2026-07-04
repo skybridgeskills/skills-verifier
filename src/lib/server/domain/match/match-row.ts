@@ -24,7 +24,11 @@ export const MatchRow = z.object({
 	exchangeState: MatchExchangeState.schema,
 	verifiedCredentials: MatchResource.schema.shape.verifiedCredentials,
 	assignments: MatchResource.schema.shape.assignments,
-	createdAt: z.string()
+	createdAt: z.string(),
+	// Back-compat: legacy rows predate these. `capabilityToken` defaults to '' (read-only);
+	// `archiveAfter` is optional here and defaulted to createdAt + 30d on read.
+	capabilityToken: z.string().default(''),
+	archiveAfter: z.string().optional()
 });
 
 export type MatchRow = z.infer<typeof MatchRow>;
@@ -53,9 +57,13 @@ export function matchToRow(match: MatchResourceType): MatchRow {
 		exchangeState: match.exchangeState,
 		verifiedCredentials: match.verifiedCredentials,
 		assignments: match.assignments,
-		createdAt: iso
+		createdAt: iso,
+		capabilityToken: match.capabilityToken,
+		archiveAfter: match.archiveAfter.toISOString()
 	};
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function rowToMatchResource(row: MatchRow): MatchResourceType {
 	return MatchResource({
@@ -66,7 +74,12 @@ export function rowToMatchResource(row: MatchRow): MatchResourceType {
 		exchangeState: row.exchangeState,
 		verifiedCredentials: row.verifiedCredentials,
 		assignments: row.assignments,
-		createdAt: new Date(row.createdAt)
+		createdAt: new Date(row.createdAt),
+		capabilityToken: row.capabilityToken ?? '',
+		// Legacy rows without an archiveAfter default to createdAt + 30d.
+		archiveAfter: row.archiveAfter
+			? new Date(row.archiveAfter)
+			: new Date(new Date(row.createdAt).getTime() + 30 * DAY_MS)
 	});
 }
 
