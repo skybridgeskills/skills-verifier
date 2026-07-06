@@ -8,7 +8,7 @@ import { ZodFactory } from '$lib/server/util/zod-factory.js';
  * - `url` — transaction service base URI (`TRANSACTION_SERVICE_BASEURI`), the origin at which
  *   verify-workflow exchanges are created. When unset on dev, the fake exchange is used.
  * - `tenantName` — tenant to scope the exchange to (`TRANSACTION_SERVICE_TENANT`).
- * - `apiKey` — optional Basic-auth token (`TRANSACTION_SERVICE_TOKEN`). The DCC dev default
+ * - `apiKey` — optional Bearer token (`TRANSACTION_SERVICE_TOKEN`). The DCC dev default
  *   has no auth; the auth header is sent only when this is set.
  * - `exchangeHost` — public origin a wallet must reach for the interact URL
  *   (`EXCHANGE_HOST` / `PUBLIC_APP_ORIGIN`). NOT localhost for real phones.
