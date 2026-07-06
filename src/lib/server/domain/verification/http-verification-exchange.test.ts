@@ -73,7 +73,7 @@ describe('HttpVerificationExchange', () => {
 			expect(result.exchangeId).toBe('abc-123');
 		});
 
-		it('sends a Basic auth header only when an apiKey is configured', async () => {
+		it('sends a Bearer auth header only when an apiKey is configured', async () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({
@@ -89,10 +89,9 @@ describe('HttpVerificationExchange', () => {
 			await svc.createVerifyExchange();
 
 			const [, init] = mockFetch.mock.calls[0];
-			const expected = `Basic ${Buffer.from('default:secret-token').toString('base64')}`;
-			expect(init.headers.Authorization).toBe(expected);
-			// Never leak the raw token in the header.
-			expect(init.headers.Authorization).not.toContain('secret-token');
+			// The transaction service requires a Bearer token; the header value is
+			// the raw token by design. We never log the header (see JSDoc).
+			expect(init.headers.Authorization).toBe('Bearer secret-token');
 		});
 
 		it('includes trustedRegistries when configured', async () => {

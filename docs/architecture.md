@@ -169,7 +169,7 @@ Location: `src/lib/server/domain/verification/`
 **Adapters**:
 
 - **Http** (`http-verification-exchange.ts`): backs the DCC `dcc-transaction-service` verify workflow
-  (VC-API + QueryByExample scoped to Open Badges v3). Sends Basic auth only when
+  (VC-API + QueryByExample scoped to Open Badges v3). Sends `Bearer` auth only when
   `TRANSACTION_SERVICE_TOKEN` is set; the token is never logged and never returned to the client.
 - **Fake** (`fake-verification-exchange.ts`): in-memory exchange for dev/tests with no network.
 

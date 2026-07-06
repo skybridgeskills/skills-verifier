@@ -4,7 +4,7 @@
 - **Date:** 2026-06-06
 - **Deciders:** Skybridge Skills
 - **Supersedes:** None
-- **Superseded by:** None
+- **Superseded by:** `2026-07-06-verify-exchange-bearer-auth.md` (auth-scheme detail only)
 
 ## Context
 

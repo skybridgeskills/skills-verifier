@@ -13,8 +13,7 @@ import {
 
 function authHeader(config: VerificationConfig): Record<string, string> {
 	if (!config.apiKey) return {};
-	const basic = Buffer.from(`${config.tenantName}:${config.apiKey}`).toString('base64');
-	return { Authorization: `Basic ${basic}` };
+	return { Authorization: `Bearer ${config.apiKey}` };
 }
 
 async function readJson(response: Response): Promise<Record<string, unknown>> {
@@ -39,7 +38,7 @@ async function readJson(response: Response): Promise<Record<string, unknown>> {
 
 /**
  * Real verification exchange backed by the DCC `dcc-transaction-service` verify workflow.
- * Never logs the API token; sends the Basic auth header only when an `apiKey` is configured.
+ * Never logs the API token; sends the Bearer auth header only when an `apiKey` is configured.
  */
 export function HttpVerificationExchange(config: VerificationConfig): VerificationExchange {
 	const baseUrl = config.url.replace(/\/$/, '');
