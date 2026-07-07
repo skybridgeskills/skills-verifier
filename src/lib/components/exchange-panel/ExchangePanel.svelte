@@ -40,6 +40,8 @@
 		initialState?: ExchangeUiState;
 		/** Seed the QR / link for stories without running the action. */
 		initialExchange?: StartExchangeResult | null;
+		/** Capability token re-posted with `startExchange` so the server can authorize it. */
+		editToken?: string;
 		class?: string;
 	}
 
@@ -48,6 +50,7 @@
 		poll = true,
 		initialState = 'idle',
 		initialExchange = null,
+		editToken = '',
 		class: className
 	}: Props = $props();
 
@@ -135,6 +138,7 @@
 				};
 			}}
 		>
+			<input type="hidden" name="editToken" value={editToken} />
 			<Button
 				type="submit"
 				variant="flame"

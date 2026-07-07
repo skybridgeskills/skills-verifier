@@ -4,4 +4,4 @@
 	let { data } = $props();
 </script>
 
-<MatchPage job={data.job} match={data.match} />
+<MatchPage job={data.job} match={data.match} canEdit={data.canEdit} editToken={data.editToken} />

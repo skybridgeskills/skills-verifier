@@ -21,6 +21,7 @@ export const actions: Actions = {
 			error(404, 'Job not found');
 		}
 		const match = await createMatchQuery({ jobId: params.id });
-		redirect(303, `/jobs/${params.id}/match/${match.id}`);
+		// Run the whole create flow in edit mode: the capability token unlocks assign/save/delete.
+		redirect(303, `/jobs/${params.id}/match/${match.id}?edit=${match.capabilityToken}`);
 	}
 };
