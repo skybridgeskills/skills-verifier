@@ -2,6 +2,7 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
 	import CopyButton from '$lib/components/copy-button/CopyButton.svelte';
+	import type { EmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
 	import ExchangePanel from '$lib/components/exchange-panel/ExchangePanel.svelte';
 	import {
 		extractBadgeDetail,
@@ -25,11 +26,16 @@
 		canEdit: boolean;
 		/** Present only when `canEdit` (echoed back from the `?edit=` URL); never in the read-only path. */
 		editToken: string | null;
+		/** Presentation embed variant selected via `?embed=` (e.g. LearnCard partner-connect). */
+		embedMode?: EmbedMode;
+		/** LearnCard host origin for the partner-connect embed variant. */
+		learnCardHostOrigin?: string;
 	}
 
-	let { job, match, canEdit, editToken }: Props = $props();
+	let { job, match, canEdit, editToken, embedMode = null, learnCardHostOrigin }: Props = $props();
 
 	const statusUrl = $derived(`/jobs/${page.params.id}/match/${page.params.matchId}/status`);
+	const presentUrl = $derived(`/jobs/${page.params.id}/match/${page.params.matchId}/present`);
 
 	// Build the share/edit URLs from the request origin + path (no query), so the token stays
 	// out of the read-only share URL.
@@ -101,6 +107,9 @@
 		{:else}
 			<ExchangePanel
 				{statusUrl}
+				{presentUrl}
+				{embedMode}
+				{learnCardHostOrigin}
 				editToken={editToken ?? ''}
 				initialState={match.exchangeState === 'invalid' ? 'invalid' : 'idle'}
 			/>

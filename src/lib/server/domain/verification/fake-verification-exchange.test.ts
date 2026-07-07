@@ -15,7 +15,31 @@ describe('FakeVerificationExchange', () => {
 		expect(protocols.iu).toContain(exchangeId);
 		expect(protocols.iu.startsWith('https://')).toBe(true);
 		expect(protocols.vcapi).toContain(exchangeId);
-		expect(protocols.verifiablePresentationRequest).toEqual({});
+		// The VPR carries the challenge + domain a wallet must sign against.
+		expect(protocols.verifiablePresentationRequest).toMatchObject({
+			challenge: `fake-challenge-${exchangeId}`,
+			domain: protocols.vcapi
+		});
+	});
+
+	it('fetchExchangeVpr returns the challenge/domain for a created exchange', async () => {
+		const svc = FakeVerificationExchange();
+		const { exchangeId, protocols } = await svc.createVerifyExchange();
+
+		const vpr = await svc.fetchExchangeVpr({ vcapi: protocols.vcapi });
+		expect(vpr).toEqual({ challenge: `fake-challenge-${exchangeId}`, domain: protocols.vcapi });
+	});
+
+	it('submitPresentation "verifies" any VP and returns complete with fixtures', async () => {
+		const svc = FakeVerificationExchange();
+		const { protocols } = await svc.createVerifyExchange();
+
+		const status = await svc.submitPresentation({
+			vcapi: protocols.vcapi,
+			verifiablePresentation: { '@context': [], type: ['VerifiablePresentation'] }
+		});
+		expect(status.state).toBe('complete');
+		expect(status.verifiedCredentials).toHaveLength(FAKE_VERIFIED_CREDENTIALS.length);
 	});
 
 	it('is non-complete on the first poll and complete after the threshold', async () => {

@@ -12,13 +12,19 @@
 		lcw: 'lcw://verify?challenge=abc123',
 		vcapi: 'https://issuer.example.com/exchanges/abc123',
 		qrDataUrl,
-		exchangeId: 'ex-abc-123'
+		exchangeId: 'ex-abc-123',
+		challenge: 'abc123-challenge',
+		domain: 'https://issuer.example.com/exchanges/abc123'
 	};
 
 	const { Story } = defineMeta({
 		title: 'components/ExchangePanel',
 		component: ExchangePanel,
-		tags: ['autodocs']
+		tags: ['autodocs'],
+		// The embed variant persists its intent in sessionStorage; clear it so each story is isolated.
+		beforeEach: () => {
+			if (typeof sessionStorage !== 'undefined') sessionStorage.clear();
+		}
 	});
 </script>
 
@@ -49,5 +55,28 @@
 <Story name="Invalid">
 	<div class="max-w-xl">
 		<ExchangePanel poll={false} initialState="invalid" />
+	</div>
+</Story>
+
+<Story name="LearnCard embed — idle (request button)">
+	<div class="max-w-xl">
+		<ExchangePanel poll={false} embedMode="learncard-partner-connect" initialState="idle" />
+	</div>
+</Story>
+
+<Story name="LearnCard embed — started (open another wallet)">
+	<div class="max-w-xl">
+		<ExchangePanel
+			poll={false}
+			embedMode="learncard-partner-connect"
+			initialState="waiting"
+			initialExchange={exchange}
+		/>
+	</div>
+</Story>
+
+<Story name="LearnCard embed — complete">
+	<div class="max-w-xl">
+		<ExchangePanel poll={false} embedMode="learncard-partner-connect" initialState="complete" />
 	</div>
 </Story>
