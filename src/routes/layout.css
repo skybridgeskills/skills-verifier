@@ -44,6 +44,9 @@
 	/* Functional */
 	--destructive: hsl(0 73% 41%);
 	--destructive-foreground: hsl(0 0% 100%);
+	/* Subtle tinted surface + readable accent for destructive alerts (mirrors *-subtle tokens). */
+	--destructive-subtle: hsl(0 85% 96%);
+	--destructive-emphasis: hsl(0 72% 38%);
 	--border: hsl(256 15% 81%);
 	--input: hsl(256 15% 81%);
 	--ring: hsl(249 85% 44%);
@@ -94,6 +97,8 @@
 	/* Functional */
 	--destructive: hsl(0 62.8% 30.6%);
 	--destructive-foreground: hsl(0 0% 98%);
+	--destructive-subtle: hsl(0 45% 16%);
+	--destructive-emphasis: hsl(0 90% 80%);
 	--border: hsl(260 10% 20%);
 	--input: hsl(260 10% 20%);
 	--ring: hsl(249 80% 88%);
@@ -138,6 +143,8 @@
 	--color-primary-fixed: var(--primary-fixed);
 	--color-destructive: var(--destructive);
 	--color-destructive-foreground: var(--destructive-foreground);
+	--color-destructive-subtle: var(--destructive-subtle);
+	--color-destructive-emphasis: var(--destructive-emphasis);
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
