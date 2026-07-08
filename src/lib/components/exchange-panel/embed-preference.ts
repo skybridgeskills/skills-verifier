@@ -27,3 +27,13 @@ export function readEmbedMode(): EmbedMode {
 		return null;
 	}
 }
+
+/**
+ * Capture the embed variant from a page URL into the session (client-only). Reads `?embed=`,
+ * narrows it, and remembers it. No-op on the server, for unknown values, or for `null` — so a
+ * param-less navigation never clears an already-remembered mode. This lets an embed session start
+ * on any route (e.g. `/jobs?embed=learncard-partner-connect`), not just the match page.
+ */
+export function captureEmbedFromUrl(url: URL): void {
+	rememberEmbedMode(parseEmbedMode(url.searchParams.get('embed')));
+}

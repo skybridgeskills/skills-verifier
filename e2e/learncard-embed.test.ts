@@ -47,3 +47,20 @@ test('learncard embed preference persists across in-session navigation', async (
 	await expect(page.getByTestId('learncard-request-cta')).toBeVisible();
 	await expect(page.getByTestId('exchange-qr')).toHaveCount(0);
 });
+
+// The embed intent can be seeded from ANY route, not just a match URL: starting the session at
+// `/jobs?embed=learncard-partner-connect` remembers it, so a match created later in the same tab
+// (whose URL has no `?embed=` param) still shows the LearnCard request button.
+test('learncard embed session can start on /jobs and carries into a new match', async ({
+	page
+}) => {
+	await page.goto('/jobs?embed=learncard-partner-connect');
+	await page.getByRole('link', { name: 'Senior Engineer' }).click();
+	await page.getByRole('button', { name: 'Create a skills match' }).click();
+	await expect(page).toHaveURL(/\/jobs\/[^/]+\/match\/[^/]+/);
+
+	// The match URL has no `?embed=` param, but the session remembers it → request button, no QR.
+	await expect(page).not.toHaveURL(/embed=/);
+	await expect(page.getByTestId('learncard-request-cta')).toBeVisible();
+	await expect(page.getByTestId('exchange-qr')).toHaveCount(0);
+});
