@@ -300,6 +300,29 @@ See `src/lib/server/util/provider/README.test.ts` for full examples.
 - **`createFrameworkService()`** – Creates client env-aware; safe to call anywhere
 - **`getFrameworkClient()`** – Server-only helper that reads from request ALS
 
+### Credential verification & the LearnCard embed variant
+
+A match page starts a DCC verify exchange and, by default, shows a QR (plus an "open on this
+device" interaction-URL link). Wallets post a Verifiable Presentation to the exchange's VC-API
+endpoint (`vcapi`); the server polls for `complete` and persists the verified credentials.
+
+The match page also supports an **embed variant** for running inside the LearnCard app store:
+
+- Open the page with `?embed=learncard-partner-connect`. Instead of the QR it renders a **Request
+  from LearnCard** button (using [`@learncard/partner-connect`](https://docs.learncard.com/sdks/partner-connect))
+  plus an **Open another wallet** link. The interaction-URL link is always available as a fallback.
+- The SDK is dynamically imported (browser-only) in `src/lib/clients/learncard/partner-connect-client.ts`
+  and returns the VP in-browser. That VP is **not trusted client-side**: it is relayed to a
+  capability-authorized endpoint (`POST /jobs/[id]/match/[matchId]/present`) which forwards it to the
+  DCC transaction service for the same server-side verification the QR flow uses. The presentation is
+  signed against the exchange's own `challenge`/`domain`, surfaced from the `startExchange` action.
+- `PUBLIC_LEARNCARD_HOST_ORIGIN` configures the LearnCard host origin the SDK trusts (default
+  `https://learncard.app`). See `.env.example`.
+
+> **Out of scope / deployment note:** actually embedding the page inside LearnCard's iframe/webview
+> requires relaxing frame-ancestors (CSP `frame-ancestors` / `X-Frame-Options`) at the hosting layer.
+> This app does not set those headers; configure them in infra when enabling the embed in production.
+
 ## Technology Stack
 
 - **Framework**: SvelteKit

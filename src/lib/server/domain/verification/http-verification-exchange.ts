@@ -1,5 +1,6 @@
 import {
 	extractExchangeId,
+	extractPresentationChallenge,
 	extractProtocols,
 	extractVerifiedCredentials,
 	VerificationExchangeError
@@ -7,6 +8,7 @@ import {
 import type { VerificationConfig } from './verification-config.js';
 import {
 	OPEN_BADGE_VERIFY_VARIABLES,
+	type ExchangePresentationChallenge,
 	type ExchangeStatus,
 	type VerificationExchange
 } from './verification-exchange.js';
@@ -14,6 +16,20 @@ import {
 function authHeader(config: VerificationConfig): Record<string, string> {
 	if (!config.apiKey) return {};
 	return { Authorization: `Bearer ${config.apiKey}` };
+}
+
+/** Map a VC-API exchange payload into an `ExchangeStatus`, extracting credentials once complete. */
+function toExchangeStatus(data: Record<string, unknown>): ExchangeStatus {
+	const rawState = typeof data.state === 'string' ? data.state : 'pending';
+	const state: ExchangeStatus['state'] =
+		rawState === 'active' || rawState === 'complete' || rawState === 'invalid'
+			? rawState
+			: 'pending';
+
+	if (state !== 'complete') {
+		return { state, verifiedCredentials: [] };
+	}
+	return { state: 'complete', verifiedCredentials: extractVerifiedCredentials(data) };
 }
 
 async function readJson(response: Response): Promise<Record<string, unknown>> {
@@ -98,17 +114,52 @@ export function HttpVerificationExchange(config: VerificationConfig): Verificati
 			}
 
 			const data = await readJson(response);
-			const rawState = typeof data.state === 'string' ? data.state : 'pending';
-			const state: ExchangeStatus['state'] =
-				rawState === 'active' || rawState === 'complete' || rawState === 'invalid'
-					? rawState
-					: 'pending';
+			return toExchangeStatus(data);
+		},
 
-			if (state !== 'complete') {
-				return { state, verifiedCredentials: [] };
+		async fetchExchangeVpr({ vcapi }): Promise<ExchangePresentationChallenge> {
+			// An empty-body POST to the participate endpoint returns the VPR (and flips the
+			// exchange pending -> active). We only read the challenge/domain from it.
+			let response: Response;
+			try {
+				response = await fetch(vcapi, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json',
+						...authHeader(config)
+					},
+					body: JSON.stringify({})
+				});
+			} catch (err) {
+				if (err instanceof VerificationExchangeError) throw err;
+				throw new VerificationExchangeError('Failed to reach transaction service', { cause: err });
 			}
 
-			return { state: 'complete', verifiedCredentials: extractVerifiedCredentials(data) };
+			const data = await readJson(response);
+			return extractPresentationChallenge(data);
+		},
+
+		async submitPresentation({ vcapi, verifiablePresentation }): Promise<ExchangeStatus> {
+			// Relay the caller's VP to the participate endpoint; the transaction service verifies it.
+			let response: Response;
+			try {
+				response = await fetch(vcapi, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json',
+						...authHeader(config)
+					},
+					body: JSON.stringify({ verifiablePresentation })
+				});
+			} catch (err) {
+				if (err instanceof VerificationExchangeError) throw err;
+				throw new VerificationExchangeError('Failed to reach transaction service', { cause: err });
+			}
+
+			const data = await readJson(response);
+			return toExchangeStatus(data);
 		}
 	};
 }

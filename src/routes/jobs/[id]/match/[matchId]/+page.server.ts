@@ -2,6 +2,7 @@ import { error, fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import QRCode from 'qrcode';
 import { z } from 'zod';
 
+import { parseEmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
 import { appContext } from '$lib/server/app-context.js';
 import { jobByIdQuery } from '$lib/server/domain/job/job-by-id-query.js';
 import { deleteMatchQuery } from '$lib/server/domain/match/delete-match-query.js';
@@ -14,9 +15,15 @@ import { ExpiryDays, MatchAssignment } from '$lib/server/domain/match/match-reso
 import type { MatchResource } from '$lib/server/domain/match/match-resource.js';
 import { saveMatchCredentialsQuery } from '$lib/server/domain/match/save-match-credentials-query.js';
 import { updateMatchQuery } from '$lib/server/domain/match/update-match-query.js';
+import { extractPresentationChallenge } from '$lib/server/domain/verification/parse-exchange-response.js';
 import { appLogger } from '$lib/server/services/logging/index.js';
 
 import type { Actions, PageServerLoad } from './$types';
+
+import { env as publicEnv } from '$env/dynamic/public';
+
+/** LearnCard host origin for the partner-connect embed variant (configurable; safe default). */
+const DEFAULT_LEARNCARD_HOST_ORIGIN = 'https://learncard.app';
 
 /** Current wall-clock time from the injected time service (never `Date.now()` directly). */
 function now(): Date {
@@ -42,13 +49,21 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	// The capability check is server-side only; the client is never trusted with the token.
 	const canEdit = verifyMatchCapability(match, url.searchParams.get('edit'));
 
+	// Presentation-only variant flags (no effect on auth). `embedMode` selects the LearnCard
+	// partner-connect request flow; `learnCardHostOrigin` configures that SDK's host origin.
+	const embedMode = parseEmbedMode(url.searchParams.get('embed'));
+	const learnCardHostOrigin =
+		publicEnv.PUBLIC_LEARNCARD_HOST_ORIGIN || DEFAULT_LEARNCARD_HOST_ORIGIN;
+
 	return {
 		job,
 		// Never leak the token into the read-only payload; only when the caller already
 		// presented it (canEdit) is the full match — including its token — echoed back.
 		match: canEdit ? match : redactCapability(match),
 		canEdit,
-		editToken: canEdit ? match.capabilityToken : null
+		editToken: canEdit ? match.capabilityToken : null,
+		embedMode,
+		learnCardHostOrigin
 	};
 };
 
@@ -82,7 +97,12 @@ export const actions: Actions = {
 
 		const { verificationExchange } = appContext();
 		let exchangeId: string;
-		let protocols: { iu: string; vcapi: string; lcw: string };
+		let protocols: {
+			iu: string;
+			vcapi: string;
+			lcw: string;
+			verifiablePresentationRequest: object;
+		};
 		try {
 			const created = await verificationExchange.createVerifyExchange();
 			exchangeId = created.exchangeId;
@@ -102,6 +122,28 @@ export const actions: Actions = {
 			exchangeState: 'pending'
 		});
 
+		// The `challenge`/`domain` a wallet must sign against live in the exchange VPR. Surface them
+		// so an embedded client (LearnCard) can sign the VP against the values the verifier expects.
+		// Fall back to fetching the VPR from the participate endpoint if the create response lacked them.
+		let challenge = '';
+		let domain = '';
+		try {
+			({ challenge, domain } = extractPresentationChallenge(
+				protocols.verifiablePresentationRequest
+			));
+		} catch {
+			try {
+				({ challenge, domain } = await verificationExchange.fetchExchangeVpr({
+					vcapi: protocols.vcapi
+				}));
+			} catch (err) {
+				appLogger().warn(
+					{ err, matchId: params.matchId, requestId: locals.requestId },
+					'startExchange: could not resolve VPR challenge/domain'
+				);
+			}
+		}
+
 		const qrDataUrl = await QRCode.toDataURL(protocols.iu);
 
 		return {
@@ -109,7 +151,9 @@ export const actions: Actions = {
 			lcw: protocols.lcw,
 			vcapi: protocols.vcapi,
 			qrDataUrl,
-			exchangeId
+			exchangeId,
+			challenge,
+			domain
 		};
 	},
 

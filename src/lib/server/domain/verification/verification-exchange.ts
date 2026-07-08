@@ -34,11 +34,38 @@ export interface ExchangeStatus {
 }
 
 /**
+ * The `challenge` + `domain` a wallet must sign a presentation against for a given exchange,
+ * read from the exchange's Verifiable Presentation Request. A client that obtains the VP itself
+ * (e.g. an embedded app) must sign against these exact values or the transaction service rejects it.
+ */
+export interface ExchangePresentationChallenge {
+	challenge: string;
+	domain: string;
+}
+
+/**
  * Service for creating and polling DCC verify exchanges (Open Badges v3).
  */
 export interface VerificationExchange {
 	createVerifyExchange(): Promise<{ exchangeId: string; protocols: ExchangeProtocols }>;
 	getExchangeStatus(input: { exchangeId: string; vcapi: string }): Promise<ExchangeStatus>;
+
+	/**
+	 * Fetch the exchange's Verifiable Presentation Request from its participate endpoint and
+	 * return the `challenge`/`domain` a wallet must sign against. Used when a client obtains the
+	 * VP itself rather than via the interaction URL, so we can hand those values to the wallet.
+	 */
+	fetchExchangeVpr(input: { vcapi: string }): Promise<ExchangePresentationChallenge>;
+
+	/**
+	 * Relay a caller-supplied Verifiable Presentation to the exchange's participate endpoint so
+	 * the transaction service verifies it, then report the resulting status. The VP is verified
+	 * server-side by the transaction service — it is never trusted/parsed as pre-verified here.
+	 */
+	submitPresentation(input: {
+		vcapi: string;
+		verifiablePresentation: unknown;
+	}): Promise<ExchangeStatus>;
 }
 
 export type VerificationExchangeCtx = { verificationExchange: VerificationExchange };

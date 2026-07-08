@@ -1,4 +1,5 @@
 import type {
+	ExchangePresentationChallenge,
 	ExchangeStatus,
 	VerificationExchange,
 	VerifiedCredentialResult
@@ -8,6 +9,15 @@ import type {
 export const FAKE_COMPLETE_AFTER_POLLS = 2;
 
 const FAKE_HOST = 'https://fake-dcc.test';
+
+/** Derive the fake exchange id from a `vcapi` URL (its last path segment). */
+function exchangeIdFromVcapi(vcapi: string): string {
+	try {
+		return new URL(vcapi).pathname.split('/').filter(Boolean).pop() ?? '';
+	} catch {
+		return '';
+	}
+}
 
 /**
  * Fixture OpenBadgeCredentials returned by the fake exchange once complete. Realistic
@@ -68,26 +78,28 @@ export const FAKE_VERIFIED_CREDENTIALS: VerifiedCredentialResult[] = [
 export function FakeVerificationExchange(
 	completeAfterPolls: number = FAKE_COMPLETE_AFTER_POLLS
 ): VerificationExchange {
-	const state = new Map<string, { polls: number }>();
+	const state = new Map<string, { polls: number; challenge: string; domain: string }>();
 	let counter = 0;
 
 	return {
 		async createVerifyExchange() {
 			const id = `fake-exchange-${++counter}`;
-			state.set(id, { polls: 0 });
+			const vcapi = `${FAKE_HOST}/workflows/verify/exchanges/${id}`;
+			const challenge = `fake-challenge-${id}`;
+			state.set(id, { polls: 0, challenge, domain: vcapi });
 			return {
 				exchangeId: id,
 				protocols: {
 					iu: `${FAKE_HOST}/interactions/${id}`,
-					vcapi: `${FAKE_HOST}/workflows/verify/exchanges/${id}`,
+					vcapi,
 					lcw: `${FAKE_HOST}/lcw/${id}`,
-					verifiablePresentationRequest: {}
+					verifiablePresentationRequest: { challenge, domain: vcapi }
 				}
 			};
 		},
 
 		async getExchangeStatus({ exchangeId }): Promise<ExchangeStatus> {
-			const entry = state.get(exchangeId) ?? { polls: 0 };
+			const entry = state.get(exchangeId) ?? { polls: 0, challenge: '', domain: '' };
 			entry.polls += 1;
 			state.set(exchangeId, entry);
 
@@ -99,6 +111,23 @@ export function FakeVerificationExchange(
 			}
 
 			return { state: entry.polls === 1 ? 'pending' : 'active', verifiedCredentials: [] };
+		},
+
+		async fetchExchangeVpr({ vcapi }): Promise<ExchangePresentationChallenge> {
+			const entry = state.get(exchangeIdFromVcapi(vcapi));
+			// Fall back to a vcapi-derived challenge so the fake is usable even for unknown ids.
+			return {
+				challenge: entry?.challenge ?? `fake-challenge-${exchangeIdFromVcapi(vcapi)}`,
+				domain: entry?.domain ?? vcapi
+			};
+		},
+
+		async submitPresentation(): Promise<ExchangeStatus> {
+			// The fake stands in for transaction-service verification: any relayed VP "verifies".
+			return {
+				state: 'complete',
+				verifiedCredentials: FAKE_VERIFIED_CREDENTIALS.map((c) => ({ ...c }))
+			};
 		}
 	};
 }

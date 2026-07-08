@@ -222,4 +222,78 @@ describe('HttpVerificationExchange', () => {
 			expect(status.verifiedCredentials).toEqual([]);
 		});
 	});
+
+	describe('fetchExchangeVpr', () => {
+		it('POSTs an empty body to vcapi and reads challenge/domain from the VPR envelope', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({
+					verifiablePresentationRequest: {
+						challenge: 'chal-123',
+						domain: 'http://localhost:4004/v/e'
+					}
+				})
+			});
+
+			const svc = HttpVerificationExchange(makeConfig());
+			const vpr = await svc.fetchExchangeVpr({ vcapi: 'http://localhost:4004/v/e' });
+
+			expect(vpr).toEqual({ challenge: 'chal-123', domain: 'http://localhost:4004/v/e' });
+			const [url, init] = mockFetch.mock.calls[0];
+			expect(url).toBe('http://localhost:4004/v/e');
+			expect(init.method).toBe('POST');
+			expect(JSON.parse(init.body)).toEqual({});
+		});
+
+		it('throws when the VPR is missing challenge/domain', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({ verifiablePresentationRequest: { challenge: 'only-chal' } })
+			});
+			const svc = HttpVerificationExchange(makeConfig());
+			await expect(svc.fetchExchangeVpr({ vcapi: 'http://x/e' })).rejects.toBeInstanceOf(
+				VerificationExchangeError
+			);
+		});
+	});
+
+	describe('submitPresentation', () => {
+		it('POSTs { verifiablePresentation } to vcapi and maps a complete payload', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({
+					state: 'complete',
+					variables: {
+						results: { default: { matchedCredentials: [{ id: 'urn:uuid:cred-1', name: 'C' }] } }
+					}
+				})
+			});
+
+			const svc = HttpVerificationExchange(makeConfig());
+			const vp = { '@context': ['x'], type: ['VerifiablePresentation'] };
+			const status = await svc.submitPresentation({
+				vcapi: 'http://x/e',
+				verifiablePresentation: vp
+			});
+
+			expect(status.state).toBe('complete');
+			expect(status.verifiedCredentials).toHaveLength(1);
+			const [url, init] = mockFetch.mock.calls[0];
+			expect(url).toBe('http://x/e');
+			expect(init.method).toBe('POST');
+			expect(JSON.parse(init.body)).toEqual({ verifiablePresentation: vp });
+		});
+
+		it('propagates a VerificationExchangeError when the service rejects the VP', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+				status: 422,
+				text: async () => 'invalid presentation'
+			});
+			const svc = HttpVerificationExchange(makeConfig());
+			await expect(
+				svc.submitPresentation({ vcapi: 'http://x/e', verifiablePresentation: {} })
+			).rejects.toBeInstanceOf(VerificationExchangeError);
+		});
+	});
 });

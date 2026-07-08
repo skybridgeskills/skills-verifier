@@ -53,6 +53,25 @@ export function extractExchangeId(data: Record<string, unknown>): string {
 	});
 }
 
+/**
+ * Read `{ challenge, domain }` from a VC-API VerifiablePresentationRequest. Accepts either the
+ * VPR object directly or a participate-response envelope (`{ verifiablePresentationRequest }`).
+ * Throws when either field is absent — callers should not sign against a partial challenge.
+ */
+export function extractPresentationChallenge(data: unknown): {
+	challenge: string;
+	domain: string;
+} {
+	const record = asRecord(data);
+	const vpr = asRecord(record?.verifiablePresentationRequest) ?? record;
+	const challenge = typeof vpr?.challenge === 'string' ? vpr.challenge : '';
+	const domain = typeof vpr?.domain === 'string' ? vpr.domain : '';
+	if (!challenge || !domain) {
+		throw new VerificationExchangeError('VPR missing challenge/domain', { status: 200 });
+	}
+	return { challenge, domain };
+}
+
 /** Best-effort display name from an OpenBadgeCredential VC. */
 function deriveName(vc: Record<string, unknown>): string | undefined {
 	if (typeof vc.name === 'string' && vc.name.length > 0) return vc.name;
