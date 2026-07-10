@@ -4,8 +4,18 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { AppHeader } from '$lib/components/app-header/index.js';
+	import { captureEmbedFromUrl } from '$lib/components/exchange-panel/embed-preference.js';
+
+	import { page } from '$app/state';
 
 	let { children } = $props();
+
+	// Persist the `?embed=` variant for the session on any route, so an embed session can start
+	// anywhere (e.g. /jobs?embed=learncard-partner-connect), not just the match page. Runs on the
+	// client on initial load and every navigation; unknown/absent values leave the session untouched.
+	$effect(() => {
+		captureEmbedFromUrl(page.url);
+	});
 
 	// Initialize theme before page renders to prevent flash
 	onMount(() => {
