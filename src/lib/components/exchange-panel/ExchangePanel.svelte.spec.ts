@@ -93,6 +93,31 @@ describe('ExchangePanel — LearnCard embed variant', () => {
 		vi.unstubAllGlobals();
 	});
 
+	it('requests with a remembered https host override (wins over the default prop)', async () => {
+		sessionStorage.setItem('sv:embed-host-origin', 'https://scoutpass.example.com');
+		vi.mocked(requestOpenBadgeCredentials).mockResolvedValue(VP);
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ state: 'complete', verifiedCredentials: [] }), {
+				status: 200,
+				headers: { 'content-type': 'application/json' }
+			})
+		);
+		vi.stubGlobal('fetch', fetchMock);
+
+		// Prop default is https://learncard.app, but the remembered override must take precedence.
+		embedPanel();
+		await page.getByTestId('learncard-request-cta').click();
+
+		await vi.waitFor(() => expect(requestOpenBadgeCredentials).toHaveBeenCalledTimes(1));
+		expect(requestOpenBadgeCredentials).toHaveBeenCalledWith({
+			hostOrigin: 'https://scoutpass.example.com',
+			challenge: 'chal-abc',
+			domain: 'https://dcc.test/workflows/verify/exchanges/abc'
+		});
+
+		vi.unstubAllGlobals();
+	});
+
 	it('remembers the embed intent for the session and persists it on mount', async () => {
 		embedPanel();
 		await expect.element(page.getByTestId('learncard-request-cta')).toBeInTheDocument();
