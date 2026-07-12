@@ -316,8 +316,18 @@ The match page also supports an **embed variant** for running inside the LearnCa
   capability-authorized endpoint (`POST /jobs/[id]/match/[matchId]/present`) which forwards it to the
   DCC transaction service for the same server-side verification the QR flow uses. The presentation is
   signed against the exchange's own `challenge`/`domain`, surfaced from the `startExchange` action.
-- `PUBLIC_LEARNCARD_HOST_ORIGIN` configures the LearnCard host origin the SDK trusts (default
-  `https://learncard.app`). See `.env.example`.
+- `PUBLIC_LEARNCARD_HOST_ORIGIN` is the **default/fallback** LearnCard host origin the SDK trusts
+  (default `https://learncard.app`). See `.env.example`.
+- **Launch-URL repair + host-origin precedence.** LearnCard launches the iframe with a malformed
+  URL — it appends its host hint with a stray second `?` (not `&`), e.g.
+  `/jobs?embed=learncard-partner-connect?lc_host_override=https://learncard.app`. `readEmbedLaunchParams`
+  (in `embed-launch-params.ts`) normalizes the stray `?`→`&` at the parse boundary so both `embed`
+  and `lc_host_override` are recovered. A recovered **valid https** `lc_host_override` (any https
+  origin, incl. white-label hosts — no allowlist) is remembered for the session and used as the
+  partner-connect `hostOrigin`, overriding the env default; a non-https/absent override keeps the
+  default. Accepting any https origin is a deliberate posture: credential _verification_ stays
+  server-side (the VP is relayed and re-verified per the 2026-07-07 embed-relay ADR), so a hostile
+  embedder cannot inject verified credentials.
 
 > **Out of scope / deployment note:** actually embedding the page inside LearnCard's iframe/webview
 > requires relaxing frame-ancestors (CSP `frame-ancestors` / `X-Frame-Options`) at the hosting layer.

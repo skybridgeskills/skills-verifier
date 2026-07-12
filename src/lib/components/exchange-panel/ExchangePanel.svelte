@@ -35,7 +35,7 @@
 	import { cn } from '$lib/utils.js';
 
 	import { EMBED_LEARNCARD_PARTNER_CONNECT, type EmbedMode } from './embed-mode.js';
-	import { readEmbedMode, rememberEmbedMode } from './embed-preference.js';
+	import { readEmbedHostOrigin, readEmbedMode, rememberEmbedMode } from './embed-preference.js';
 
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
@@ -84,6 +84,10 @@
 	let rememberedEmbed = $state<EmbedMode>(null);
 	const effectiveEmbed = $derived(embedMode ?? rememberedEmbed);
 	const isLearnCardEmbed = $derived(effectiveEmbed === EMBED_LEARNCARD_PARTNER_CONNECT);
+	// LearnCard host origin: a valid https `lc_host_override` recovered from the (repaired) launch URL
+	// and remembered for the session wins over the server-provided default (see embed-preference).
+	let rememberedHostOrigin = $state<string | null>(null);
+	const effectiveHostOrigin = $derived(rememberedHostOrigin ?? learnCardHostOrigin);
 	let learnCardBusy = $state(false);
 	let learnCardError = $state<string | null>(null);
 	let startForm = $state<HTMLFormElement | null>(null);
@@ -132,6 +136,9 @@
 		} else {
 			rememberedEmbed = readEmbedMode();
 		}
+		// The host-origin override is persisted by the layout's captureEmbedFromUrl; here we only
+		// restore it so an in-session match landing (no query) still prefers it over the default.
+		rememberedHostOrigin = readEmbedHostOrigin();
 	});
 
 	/** Progressive-enhancement handler for the `startExchange` action, shared by both variants. */
@@ -185,7 +192,7 @@
 			}
 
 			const verifiablePresentation = await requestOpenBadgeCredentials({
-				hostOrigin: learnCardHostOrigin,
+				hostOrigin: effectiveHostOrigin,
 				challenge: active.challenge,
 				domain: active.domain
 			});

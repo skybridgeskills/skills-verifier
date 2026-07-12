@@ -2,7 +2,7 @@ import { error, fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import QRCode from 'qrcode';
 import { z } from 'zod';
 
-import { parseEmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
+import { readEmbedLaunchParams } from '$lib/components/exchange-panel/embed-launch-params.js';
 import { appContext } from '$lib/server/app-context.js';
 import { jobByIdQuery } from '$lib/server/domain/job/job-by-id-query.js';
 import { deleteMatchQuery } from '$lib/server/domain/match/delete-match-query.js';
@@ -51,9 +51,13 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	// Presentation-only variant flags (no effect on auth). `embedMode` selects the LearnCard
 	// partner-connect request flow; `learnCardHostOrigin` configures that SDK's host origin.
-	const embedMode = parseEmbedMode(url.searchParams.get('embed'));
+	// `readEmbedLaunchParams` repairs LearnCard's malformed double-`?` launch URL so a direct/mangled
+	// match landing behaves like the client path: a recovered valid https `lc_host_override` takes
+	// precedence over the env default.
+	const { embed: embedMode, hostOrigin: recoveredHostOrigin } = readEmbedLaunchParams(url);
 	const learnCardHostOrigin =
-		publicEnv.PUBLIC_LEARNCARD_HOST_ORIGIN || DEFAULT_LEARNCARD_HOST_ORIGIN;
+		recoveredHostOrigin ??
+		(publicEnv.PUBLIC_LEARNCARD_HOST_ORIGIN || DEFAULT_LEARNCARD_HOST_ORIGIN);
 
 	return {
 		job,

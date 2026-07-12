@@ -48,6 +48,25 @@ test('learncard embed preference persists across in-session navigation', async (
 	await expect(page.getByTestId('exchange-qr')).toHaveCount(0);
 });
 
+// LearnCard launches the iframe with a MALFORMED double-`?` URL: it appends its host-origin hint
+// with `?` instead of `&`, producing `/jobs?embed=learncard-partner-connect?lc_host_override=…`.
+// `URLSearchParams` would otherwise read that as a single `embed` value and the variant would never
+// activate. We repair it at the parse boundary, so the mangled launch URL must still flip to embed
+// mode and carry into a match created in the same tab.
+test('learncard mangled double-`?` launch URL still activates the embed variant', async ({
+	page
+}) => {
+	await page.goto('/jobs?embed=learncard-partner-connect?lc_host_override=https://learncard.app');
+	await page.getByRole('link', { name: 'Senior Engineer' }).click();
+	await page.getByRole('button', { name: 'Create a skills match' }).click();
+	await expect(page).toHaveURL(/\/jobs\/[^/]+\/match\/[^/]+/);
+
+	// The match URL has no `?embed=` param, but the repaired launch URL seeded the session.
+	await expect(page).not.toHaveURL(/embed=/);
+	await expect(page.getByTestId('learncard-request-cta')).toBeVisible();
+	await expect(page.getByTestId('exchange-qr')).toHaveCount(0);
+});
+
 // The embed intent can be seeded from ANY route, not just a match URL: starting the session at
 // `/jobs?embed=learncard-partner-connect` remembers it, so a match created later in the same tab
 // (whose URL has no `?embed=` param) still shows the LearnCard request button.
