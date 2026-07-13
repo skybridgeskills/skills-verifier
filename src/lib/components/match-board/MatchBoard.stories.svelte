@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { expect, waitFor, within } from 'storybook/test';
 
 	import type { Skill } from '$lib/types/job-profile';
 
@@ -158,5 +159,37 @@
 		credentials={mixedCredentials}
 		presentationProblems={[presentationProblem]}
 		editToken="story-token"
+	/>
+</Story>
+
+<!--
+	Inline "Import more badges" affordance: the board stays mounted while a second exchange runs, so
+	draft assignments survive. The play function opens the collapsible ExchangePanel below the
+	credentials column.
+-->
+<Story
+	name="Import more badges (inline exchange)"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggle = canvas.getByTestId('import-more-badges');
+		expect(toggle).toBeInTheDocument();
+		expect(canvasElement.querySelector('[data-testid="exchange-panel"]')).toBeNull();
+
+		toggle.click();
+
+		await waitFor(() => {
+			expect(canvas.getByTestId('exchange-panel')).toBeInTheDocument();
+			expect(canvas.getByTestId('verify-cta')).toBeInTheDocument();
+		});
+	}}
+>
+	<MatchBoard
+		{skills}
+		{credentials}
+		initialAssignments={preAssigned}
+		editToken="story-token"
+		statusUrl="/jobs/j1/match/m1/status"
+		presentUrl="/jobs/j1/match/m1/present"
 	/>
 </Story>

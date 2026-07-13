@@ -3,12 +3,14 @@
 	import CircleX from '@lucide/svelte/icons/circle-x';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
+	import type { EmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
 	import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { Skill } from '$lib/types/job-profile';
 	import { deriveVerificationOutcome } from '$lib/verification/verification-status.js';
 
 	import CredentialColumn from './CredentialColumn.svelte';
+	import ImportMoreBadges from './ImportMoreBadges.svelte';
 	import SkillColumn from './SkillColumn.svelte';
 	import type { ClientAssignment, ClientCredential, VerificationProblem } from './types.js';
 
@@ -25,6 +27,14 @@
 		editToken: string;
 		/** Called once a save succeeds (so the page can reveal the capability + share links). */
 		onSaved?: () => void;
+		/** Absolute path to the status poll endpoint — threaded to the inline "import more" panel. */
+		statusUrl?: string;
+		/** Absolute path to the present (VP relay) endpoint — threaded to the inline panel. */
+		presentUrl?: string;
+		/** Presentation embed variant (e.g. LearnCard partner-connect) for the inline panel. */
+		embedMode?: EmbedMode;
+		/** LearnCard host origin for the partner-connect embed variant. */
+		learnCardHostOrigin?: string;
 	}
 
 	let {
@@ -33,7 +43,11 @@
 		presentationProblems = [],
 		initialAssignments = [],
 		editToken,
-		onSaved
+		onSaved,
+		statusUrl,
+		presentUrl,
+		embedMode = null,
+		learnCardHostOrigin
 	}: Props = $props();
 
 	// Overall verification outcome across the presentation + every credential's problems. Independent
@@ -202,6 +216,9 @@
 			onRemoveAssignment={removeAssignment}
 			onNarrativeInput={setNarrative}
 		/>
-		<CredentialColumn {credentials} {skills} isAssigned={exists} onAssign={assign} />
+		<div class="space-y-6">
+			<CredentialColumn {credentials} {skills} isAssigned={exists} onAssign={assign} />
+			<ImportMoreBadges {statusUrl} {presentUrl} {editToken} {embedMode} {learnCardHostOrigin} />
+		</div>
 	</div>
 </div>

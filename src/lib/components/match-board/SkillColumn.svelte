@@ -6,6 +6,7 @@
 	import { cn } from '$lib/utils.js';
 
 	import AssignmentNarrative from './AssignmentNarrative.svelte';
+	import BadgeMetadata from './BadgeMetadata.svelte';
 	import type { ClientAssignment, ClientCredential } from './types.js';
 
 	interface Props {
@@ -33,6 +34,10 @@
 
 	function assignmentsFor(skill: Skill): ClientAssignment[] {
 		return assignments.filter((a) => a.skillCtid === skill.ctid && a.skillUrl === skill.url);
+	}
+
+	function credentialFor(credentialId: string): ClientCredential | undefined {
+		return credentialById.get(credentialId);
 	}
 
 	function credentialName(credentialId: string): string {
@@ -88,20 +93,25 @@
 				{:else}
 					<ul class="mt-3 space-y-3">
 						{#each skillAssignments as assignment (assignment.credentialId)}
-							<li class="rounded-lg border border-flame/20 bg-flame-subtle/40 p-3">
+							{@const credential = credentialFor(assignment.credentialId)}
+							<li class="rounded-lg border border-border/40 bg-card p-3 shadow-ambient">
 								<div class="flex items-start justify-between gap-2">
-									<div class="min-w-0 text-body-md font-semibold text-foreground">
-										{credentialName(assignment.credentialId)}
-									</div>
+									<BadgeMetadata
+										class="flex-1"
+										compact
+										name={credentialName(assignment.credentialId)}
+										detail={credential?.detail}
+										problems={credential?.problems ?? []}
+									/>
 									<button
 										type="button"
-										class="flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-destructive hover:bg-destructive/10 focus-visible:ring-[3px] focus-visible:ring-destructive/25 focus-visible:outline-none"
+										class="flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
 										onclick={() => onRemoveAssignment(assignment)}
 										aria-label="Remove {credentialName(assignment.credentialId)} from skill"
 										data-testid="remove-assignment"
 									>
 										<X class="size-3.5" aria-hidden="true" />
-										Remove
+										<span class="sr-only sm:not-sr-only">Remove</span>
 									</button>
 								</div>
 								<div class="mt-2">

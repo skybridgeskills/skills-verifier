@@ -4,10 +4,7 @@
 	import CopyButton from '$lib/components/copy-button/CopyButton.svelte';
 	import type { EmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
 	import ExchangePanel from '$lib/components/exchange-panel/ExchangePanel.svelte';
-	import {
-		extractBadgeDetail,
-		type BadgeDetail
-	} from '$lib/components/match-board/badge-detail.js';
+	import { extractBadgeDetail } from '$lib/components/match-board/badge-detail.js';
 	import CapabilityCard from '$lib/components/match-board/CapabilityCard.svelte';
 	import MatchBoard from '$lib/components/match-board/MatchBoard.svelte';
 	import MatchSummary from '$lib/components/match-board/MatchSummary.svelte';
@@ -48,7 +45,9 @@
 			name: c.name,
 			issuer: c.issuer,
 			verified: c.verified,
-			problems: c.problems
+			problems: c.problems,
+			// Rich badge metadata (dates, description, image, issuer) parsed from the stored raw VC.
+			detail: extractBadgeDetail(c.raw)
 		}))
 	);
 
@@ -57,14 +56,6 @@
 	// Presentation-level (VP) problems are not tied to a single credential; the board surfaces
 	// them in its overall banner and derives the overall outcome from these + per-credential problems.
 	const presentationProblems = $derived(match.presentationProblems);
-
-	// Richer per-credential badge details (issuer + achievement) for the read-only share view,
-	// parsed from each stored OpenBadgeCredential `raw`.
-	const credentialDetails = $derived<Record<string, BadgeDetail>>(
-		Object.fromEntries(
-			match.verifiedCredentials.map((c) => [c.credentialId, extractBadgeDetail(c.raw)])
-		)
-	);
 
 	// Reveal the capability + share links once the applicant has saved their match.
 	let saved = $state(false);
@@ -110,6 +101,10 @@
 				initialAssignments={match.assignments}
 				editToken={editToken ?? ''}
 				onSaved={() => (saved = true)}
+				{statusUrl}
+				{presentUrl}
+				{embedMode}
+				{learnCardHostOrigin}
 			/>
 		{:else}
 			<ExchangePanel
@@ -126,12 +121,7 @@
 			<CapabilityCard {editUrl} {shareUrl} />
 		{/if}
 	{:else}
-		<MatchSummary
-			skills={job.skills}
-			{credentials}
-			assignments={match.assignments}
-			details={credentialDetails}
-		/>
+		<MatchSummary skills={job.skills} {credentials} assignments={match.assignments} />
 
 		<div class="flex flex-wrap items-center gap-3">
 			<CopyButton value={shareUrl} label="Copy share link" data-testid="copy-share-link" />

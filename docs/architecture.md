@@ -201,6 +201,24 @@ explicitly surfaced. The current error state is preserved only when no usable re
 `results.default`, expired exchange, transport failure, or a hard VP rejection in the relay). See
 [adr/2026-07-12-forgiving-invalid-verification-results.md](adr/2026-07-12-forgiving-invalid-verification-results.md).
 
+### Additional exchanges (accumulate credentials)
+
+Applicants can run more than one exchange per match — two wallets, or a wallet that submits one
+badge at a time. After a prior exchange has concluded, the board exposes an inline **"Import more
+badges"** panel (`components/match-board/ImportMoreBadges.svelte`) that runs another exchange without
+unmounting the board, so unsaved draft assignments survive. On completion, `saveMatchCredentialsQuery`
+performs an **additive merge** (`merge-credentials.ts`): incoming credentials accumulate onto the
+match, deduped by `credentialId` with last-write-wins (a re-submitted credential refreshes its
+status). `presentationProblems` is replaced with the latest exchange's. Exchanges are sequential
+(one `exchangeId`/`vcapi` at a time). See
+[adr/2026-07-12-additive-match-credential-merge.md](adr/2026-07-12-additive-match-credential-merge.md).
+
+Per-credential display metadata (name, issuer, `validFrom`/`validUntil`, description, image, and a
+collapsed status+errors disclosure) is extracted best-effort from each credential's raw
+OpenBadgeCredential JSON by `badge-detail.ts` and rendered by a shared
+`components/match-board/BadgeMetadata.svelte` across the credentials list, the assigned-skill view,
+and the read-only employer summary.
+
 ## Storage
 
 - **`CONTEXT=aws`**: **DynamoDB** (`DynamoStorageDatabase` + `createStorageDatabase`)

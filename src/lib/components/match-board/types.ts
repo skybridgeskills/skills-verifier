@@ -4,6 +4,8 @@ import type {
 	VerifiedCredential
 } from '$lib/server/domain/match/match-resource.js';
 
+import type { BadgeDetail } from './badge-detail.js';
+
 /**
  * Client-facing mirror of the server {@link MatchAssignment} shape (pure-zod, type-only import is
  * safe). Kept as a distinct name so the board can hold draft assignments in `$state` before they are
@@ -18,6 +20,9 @@ export type ClientAssignment = Pick<
 export type ClientCredential = Pick<
 	VerifiedCredential,
 	'credentialId' | 'name' | 'issuer' | 'verified' | 'problems'
->;
+> & {
+	/** Rich badge metadata (dates, description, image, issuer) parsed from the raw credential. */
+	detail?: BadgeDetail;
+};
 
-export type { VerificationProblem };
+export type { BadgeDetail, VerificationProblem };

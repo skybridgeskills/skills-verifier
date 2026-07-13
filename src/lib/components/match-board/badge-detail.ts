@@ -10,6 +10,13 @@ export type BadgeDetail = {
 	issuerName?: string;
 	issuerUrl?: string;
 	issuerEmail?: string;
+	/** Raw ISO issue date (`validFrom`); formatted in the component. */
+	validFrom?: string;
+	/** Raw ISO expiration date (`validUntil`); only rendered when present. */
+	validUntil?: string;
+	description?: string;
+	/** Only `http(s):` or `data:` image URLs are accepted. */
+	imageUrl?: string;
 };
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
@@ -22,6 +29,16 @@ function str(value: unknown): string | undefined {
 
 function isHttpUrl(value: string | undefined): value is string {
 	return !!value && /^https?:\/\//i.test(value);
+}
+
+/**
+ * Resolve an OpenBadges image value — either a bare string URL or a record whose
+ * `.id` is the URL (per spec) — to a safe URL. Only `http(s):`/`data:` are accepted;
+ * anything else (e.g. `did:`, `file:`) is rejected so no untrusted source is rendered.
+ */
+function imageUrl(value: unknown): string | undefined {
+	const candidate = str(value) ?? str(asRecord(value)?.id);
+	return candidate && /^(https?:|data:)/i.test(candidate) ? candidate : undefined;
 }
 
 /** Strip a leading `mailto:` and validate a bare email. */
@@ -45,6 +62,10 @@ export function extractBadgeDetail(raw: unknown): BadgeDetail {
 		achievementName: str(achievement?.name) ?? str(vc.name),
 		issuerName: str(issuer?.name),
 		issuerUrl,
-		issuerEmail: email(issuer?.email)
+		issuerEmail: email(issuer?.email),
+		validFrom: str(vc.validFrom),
+		validUntil: str(vc.validUntil),
+		description: str(achievement?.description),
+		imageUrl: imageUrl(achievement?.image) ?? imageUrl(vc.image)
 	};
 }
