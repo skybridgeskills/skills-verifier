@@ -13,6 +13,21 @@ export interface ExchangeProtocols {
 }
 
 /**
+ * A single distilled verification problem (one entry in a check's `problems`).
+ * Mirrors the verifier-core failure shape rather than persisting the raw result.
+ */
+export interface VerificationProblem {
+	/** verifier-core check id, e.g. 'cryptographic.proof.signature'. */
+	check?: string;
+	/** Short human title, e.g. 'Invalid Signature'. */
+	title: string;
+	/** Longer detail from verifier-core, when present. */
+	detail?: string;
+	/** Critical failure: the enclosing check was `fatal` and failed. */
+	fatal: boolean;
+}
+
+/**
  * A single verified credential extracted from a completed verify exchange.
  * `raw` is the full OpenBadgeCredential JSON; `name`/`issuer` are best-effort
  * display fields derived from the credential.
@@ -22,15 +37,22 @@ export interface VerifiedCredentialResult {
 	raw: unknown;
 	name?: string;
 	issuer?: string;
+	/** verifier-core per-credential verified flag. Defaults to true when unknown. */
+	verified: boolean;
+	/** Distilled failures for this credential (empty when clean). */
+	problems: VerificationProblem[];
 }
 
 /**
- * Status of a verify exchange. `verifiedCredentials` is populated only when
- * `state === 'complete'`.
+ * Status of a verify exchange. `verifiedCredentials`/`presentationProblems` are
+ * populated whenever a verifier-core result is available (`complete` **or**
+ * `invalid`), not only on `complete`.
  */
 export interface ExchangeStatus {
 	state: 'pending' | 'active' | 'complete' | 'invalid';
 	verifiedCredentials: VerifiedCredentialResult[];
+	/** Presentation-level (VP) problems, e.g. holder-binding proof failures. */
+	presentationProblems: VerificationProblem[];
 }
 
 /**

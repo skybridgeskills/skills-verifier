@@ -112,6 +112,10 @@
 					await invalidateAll();
 					break;
 				case 'invalid':
+					// An invalid result may still carry usable (if imperfect) credentials. Reload page
+					// data first: MatchPage swaps to the forgiving board when creds were persisted; if
+					// none were (no result / expired), the panel stays and shows the invalid state.
+					await invalidateAll();
 					uiState = 'invalid';
 					break;
 				// 'none' / 'pending' → keep waiting
@@ -213,6 +217,9 @@
 				uiState = 'complete';
 				await invalidateAll();
 			} else if (data.state === 'invalid') {
+				// A usable result may still have persisted credentials; reload so MatchPage can swap to
+				// the board. If none were persisted, the panel stays and the retryable message shows.
+				await invalidateAll();
 				learnCardError = 'Those credentials could not be verified. You can try again.';
 			} else {
 				learnCardError = 'Verification did not complete. You can try again.';

@@ -75,25 +75,23 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 		);
 	}
 
-	if (status.state === 'complete') {
+	// Persist + return the result for both `complete` and `invalid` (a verifier-core result exists
+	// for either), so a usable-but-imperfect presentation still lands the applicant on the board.
+	// The `catch` above already handled hard VP rejections (no result) as 422/502.
+	if (status.state === 'complete' || status.state === 'invalid') {
 		await saveMatchCredentialsQuery({
 			id: match.id,
 			exchangeId: match.exchangeId,
 			vcapi: match.vcapi,
-			exchangeState: 'complete',
-			verifiedCredentials: status.verifiedCredentials
+			exchangeState: status.state,
+			verifiedCredentials: status.verifiedCredentials,
+			presentationProblems: status.presentationProblems
 		});
-		return json({ state: 'complete', verifiedCredentials: status.verifiedCredentials });
-	}
-
-	if (status.state === 'invalid') {
-		await saveMatchCredentialsQuery({
-			id: match.id,
-			exchangeId: match.exchangeId,
-			vcapi: match.vcapi,
-			exchangeState: 'invalid'
+		return json({
+			state: status.state,
+			verifiedCredentials: status.verifiedCredentials,
+			presentationProblems: status.presentationProblems
 		});
-		return json({ state: 'invalid' });
 	}
 
 	return json({ state: status.state });

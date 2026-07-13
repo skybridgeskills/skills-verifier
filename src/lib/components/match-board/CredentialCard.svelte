@@ -1,10 +1,14 @@
 <script lang="ts">
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import CircleX from '@lucide/svelte/icons/circle-x';
 	import GripVertical from '@lucide/svelte/icons/grip-vertical';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { Skill } from '$lib/types/job-profile';
 	import { cn } from '$lib/utils.js';
+	import { deriveVerificationOutcome } from '$lib/verification/verification-status.js';
 
 	import type { ClientCredential } from './types.js';
 
@@ -22,8 +26,33 @@
 	let { credential, skills, isAssigned, onAssign, class: className }: Props = $props();
 
 	let selectedSkillUrl = $state('');
+	// Per-card disclosure for this credential's verification problems (collapsed by default).
+	let problemsOpen = $state(false);
 
 	const title = $derived(credential.name?.trim() || credential.credentialId);
+
+	// The card's own status (independent of the board banner): valid / warning / invalid.
+	const problems = $derived(credential.problems ?? []);
+	const cardOutcome = $derived(deriveVerificationOutcome(problems));
+	// Capitalized so it can be rendered directly as a dynamic component (`<StatusIcon />`).
+	const StatusIcon = $derived(
+		cardOutcome === 'invalid' ? CircleX : cardOutcome === 'warning' ? TriangleAlert : BadgeCheck
+	);
+	// Icon container tint keyed to the outcome; matches the flame/warmth/destructive design tokens.
+	const statusTint = $derived(
+		cardOutcome === 'invalid'
+			? 'bg-destructive/10 text-destructive'
+			: cardOutcome === 'warning'
+				? 'bg-warmth-subtle text-warmth'
+				: 'bg-flame-subtle text-flame'
+	);
+	const statusLabel = $derived(
+		cardOutcome === 'invalid'
+			? 'Not fully verified'
+			: cardOutcome === 'warning'
+				? 'Has warnings'
+				: 'Verified'
+	);
 
 	function skillLabel(skill: Skill): string {
 		return skill.label?.trim() || skill.text?.trim() || skill.ctid;
@@ -44,6 +73,8 @@
 	}
 
 	const pickerId = $props.id();
+	// Derived from the single `$props.id()` (Svelte disallows calling it twice per component).
+	const problemsId = $derived(`${pickerId}-problems`);
 </script>
 
 <div
@@ -64,9 +95,11 @@
 			aria-hidden="true"
 		/>
 		<div
-			class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-flame-subtle text-flame"
+			class={cn('flex size-9 shrink-0 items-center justify-center rounded-lg', statusTint)}
+			title={statusLabel}
 		>
-			<BadgeCheck class="size-5" aria-hidden="true" />
+			<StatusIcon class="size-5" aria-hidden="true" />
+			<span class="sr-only">{statusLabel}</span>
 		</div>
 		<div class="min-w-0 flex-1">
 			<div class="truncate text-title-lg leading-tight font-semibold text-foreground">{title}</div>
@@ -75,6 +108,51 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if problems.length > 0}
+		<div class="mt-3">
+			<button
+				type="button"
+				class="text-body-sm flex items-center gap-1.5 font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+				aria-expanded={problemsOpen}
+				aria-controls={problemsId}
+				onclick={() => (problemsOpen = !problemsOpen)}
+				data-testid="credential-problems-toggle"
+			>
+				<ChevronDown
+					class={cn('size-4 transition-transform', problemsOpen && 'rotate-180')}
+					aria-hidden="true"
+				/>
+				{problemsOpen ? 'Hide' : 'View'}
+				{problems.length}
+				{problems.length === 1 ? 'problem' : 'problems'}
+			</button>
+
+			{#if problemsOpen}
+				<ul id={problemsId} class="mt-2 space-y-2" data-testid="credential-problems">
+					{#each problems as problem, i (problem.check ?? '' + problem.title + i)}
+						<li class="rounded-lg border border-border/15 bg-background/50 p-2.5">
+							<div class="flex items-start gap-2">
+								<div class="min-w-0 flex-1">
+									<p class="text-body-sm font-medium text-foreground">{problem.title}</p>
+									{#if problem.detail}
+										<p class="text-body-sm mt-0.5 text-muted-foreground">{problem.detail}</p>
+									{/if}
+								</div>
+								{#if problem.fatal}
+									<span
+										class="text-label-sm shrink-0 rounded-full bg-destructive/10 px-2 py-0.5 font-medium text-destructive"
+									>
+										Critical
+									</span>
+								{/if}
+							</div>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Accessible / non-drag fallback: pick a skill and assign. -->
 	<div class="mt-3 flex flex-wrap items-end gap-2">

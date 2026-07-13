@@ -46,11 +46,17 @@
 		match.verifiedCredentials.map((c) => ({
 			credentialId: c.credentialId,
 			name: c.name,
-			issuer: c.issuer
+			issuer: c.issuer,
+			verified: c.verified,
+			problems: c.problems
 		}))
 	);
 
 	const hasCredentials = $derived(credentials.length > 0);
+
+	// Presentation-level (VP) problems are not tied to a single credential; the board surfaces
+	// them in its overall banner and derives the overall outcome from these + per-credential problems.
+	const presentationProblems = $derived(match.presentationProblems);
 
 	// Richer per-credential badge details (issuer + achievement) for the read-only share view,
 	// parsed from each stored OpenBadgeCredential `raw`.
@@ -100,6 +106,7 @@
 			<MatchBoard
 				skills={job.skills}
 				{credentials}
+				{presentationProblems}
 				initialAssignments={match.assignments}
 				editToken={editToken ?? ''}
 				onSaved={() => (saved = true)}

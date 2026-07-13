@@ -20,7 +20,8 @@ export const saveMatchCredentialsQuery = defineQuery(
 				exchangeId: params.exchangeId,
 				vcapi: params.vcapi ?? existing.vcapi,
 				exchangeState: params.exchangeState,
-				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials
+				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials,
+				presentationProblems: params.presentationProblems ?? existing.presentationProblems
 			});
 			db.matchesById.set(updated.id, updated);
 			return updated;
@@ -41,7 +42,8 @@ export const saveMatchCredentialsQuery = defineQuery(
 				exchangeId: params.exchangeId,
 				vcapi: params.vcapi ?? existing.vcapi,
 				exchangeState: params.exchangeState,
-				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials
+				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials,
+				presentationProblems: params.presentationProblems ?? existing.presentationProblems
 			});
 			await ctx.docClient.send(
 				new PutCommand({

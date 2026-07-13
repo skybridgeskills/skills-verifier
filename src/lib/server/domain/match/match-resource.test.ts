@@ -12,11 +12,39 @@ describe('MatchResource', () => {
 		});
 		expect(match.exchangeState).toBe('none');
 		expect(match.verifiedCredentials).toEqual([]);
+		expect(match.presentationProblems).toEqual([]);
 		expect(match.assignments).toEqual([]);
 		expect(match.exchangeId).toBeUndefined();
 		expect(match.vcapi).toBeUndefined();
 		// Absent capability token defaults to '' → the match is read-only (never matches a token).
 		expect(match.capabilityToken).toBe('');
+	});
+
+	it('defaults a credential to verified with no problems, and preserves supplied problems', () => {
+		const match = MatchResource({
+			id: 'm3',
+			createdAt: new Date(),
+			jobId: 'job-3',
+			archiveAfter: new Date(),
+			verifiedCredentials: [
+				// Legacy/complete-path cred: verified/problems default.
+				{ credentialId: 'c1', raw: {} },
+				// Invalid-path cred carries a fatal problem.
+				{
+					credentialId: 'c2',
+					raw: {},
+					verified: false,
+					problems: [{ title: 'Invalid Signature', fatal: true }]
+				}
+			],
+			presentationProblems: [{ title: 'VP failed', fatal: true }]
+		});
+		expect(match.verifiedCredentials[0]).toMatchObject({ verified: true, problems: [] });
+		expect(match.verifiedCredentials[1]).toMatchObject({
+			verified: false,
+			problems: [{ title: 'Invalid Signature', fatal: true }]
+		});
+		expect(match.presentationProblems).toEqual([{ title: 'VP failed', fatal: true }]);
 	});
 
 	it('preserves provided exchange and credential fields', () => {

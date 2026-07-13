@@ -1,5 +1,6 @@
 import type {
 	MatchAssignment,
+	VerificationProblem,
 	VerifiedCredential
 } from '$lib/server/domain/match/match-resource.js';
 
@@ -14,4 +15,9 @@ export type ClientAssignment = Pick<
 >;
 
 /** Client-facing view of a verified credential rendered as a draggable card. */
-export type ClientCredential = Pick<VerifiedCredential, 'credentialId' | 'name' | 'issuer'>;
+export type ClientCredential = Pick<
+	VerifiedCredential,
+	'credentialId' | 'name' | 'issuer' | 'verified' | 'problems'
+>;
+
+export type { VerificationProblem };

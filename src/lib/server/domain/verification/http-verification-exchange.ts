@@ -1,6 +1,7 @@
 import {
 	extractExchangeId,
 	extractPresentationChallenge,
+	extractPresentationProblems,
 	extractProtocols,
 	extractVerifiedCredentials,
 	VerificationExchangeError
@@ -18,7 +19,12 @@ function authHeader(config: VerificationConfig): Record<string, string> {
 	return { Authorization: `Bearer ${config.apiKey}` };
 }
 
-/** Map a VC-API exchange payload into an `ExchangeStatus`, extracting credentials once complete. */
+/**
+ * Map a VC-API exchange payload into an `ExchangeStatus`. A verifier-core result
+ * (`results.default`) exists exactly when the exchange is `complete` **or**
+ * `invalid`, so credentials + presentation problems are extracted for both;
+ * `pending`/`active` carry no result yet.
+ */
 function toExchangeStatus(data: Record<string, unknown>): ExchangeStatus {
 	const rawState = typeof data.state === 'string' ? data.state : 'pending';
 	const state: ExchangeStatus['state'] =
@@ -26,10 +32,14 @@ function toExchangeStatus(data: Record<string, unknown>): ExchangeStatus {
 			? rawState
 			: 'pending';
 
-	if (state !== 'complete') {
-		return { state, verifiedCredentials: [] };
+	if (state !== 'complete' && state !== 'invalid') {
+		return { state, verifiedCredentials: [], presentationProblems: [] };
 	}
-	return { state: 'complete', verifiedCredentials: extractVerifiedCredentials(data) };
+	return {
+		state,
+		verifiedCredentials: extractVerifiedCredentials(data),
+		presentationProblems: extractPresentationProblems(data)
+	};
 }
 
 async function readJson(response: Response): Promise<Record<string, unknown>> {

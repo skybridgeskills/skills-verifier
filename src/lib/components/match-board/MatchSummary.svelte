@@ -1,8 +1,14 @@
 <script lang="ts">
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
+	import CircleX from '@lucide/svelte/icons/circle-x';
 	import Mail from '@lucide/svelte/icons/mail';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
 	import type { Skill } from '$lib/types/job-profile';
+	import {
+		deriveVerificationOutcome,
+		type VerificationOutcome
+	} from '$lib/verification/verification-status.js';
 
 	import type { BadgeDetail } from './badge-detail.js';
 	import type { ClientAssignment, ClientCredential } from './types.js';
@@ -27,6 +33,23 @@
 		);
 	}
 
+	/** Lightweight per-credential status for the read-only share view (no expandable details). */
+	function credentialStatus(credentialId: string): {
+		outcome: VerificationOutcome;
+		icon: typeof CircleCheck;
+		tint: string;
+		label: string;
+	} {
+		const outcome = deriveVerificationOutcome(credentialById.get(credentialId)?.problems ?? []);
+		if (outcome === 'invalid') {
+			return { outcome, icon: CircleX, tint: 'text-destructive', label: 'Not fully verified' };
+		}
+		if (outcome === 'warning') {
+			return { outcome, icon: TriangleAlert, tint: 'text-warmth', label: 'Warning' };
+		}
+		return { outcome, icon: CircleCheck, tint: 'text-flame', label: 'Verified' };
+	}
+
 	function assignmentsFor(skill: Skill): ClientAssignment[] {
 		return assignments.filter((a) => a.skillCtid === skill.ctid && a.skillUrl === skill.url);
 	}
@@ -47,12 +70,17 @@
 					<ul class="mt-3 space-y-3">
 						{#each assignmentsFor(skill) as a (a.credentialId)}
 							{@const detail = details[a.credentialId]}
+							{@const status = credentialStatus(a.credentialId)}
+							{@const StatusIcon = status.icon}
 							<li class="flex gap-3">
-								<CircleCheck class="mt-0.5 size-4 shrink-0 text-flame" aria-hidden="true" />
+								<StatusIcon class={`mt-0.5 size-4 shrink-0 ${status.tint}`} aria-hidden="true" />
 								<div class="min-w-0">
-									<p class="text-body-md font-medium text-foreground">
-										{credentialName(a.credentialId)}
-									</p>
+									<div class="flex flex-wrap items-center gap-x-2">
+										<p class="text-body-md font-medium text-foreground">
+											{credentialName(a.credentialId)}
+										</p>
+										<span class={`text-body-sm font-medium ${status.tint}`}>{status.label}</span>
+									</div>
 									{#if detail?.issuerName}
 										<p class="text-body-sm mt-0.5 text-muted-foreground">
 											Issued by
