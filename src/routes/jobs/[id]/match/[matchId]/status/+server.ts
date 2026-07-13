@@ -37,25 +37,23 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		return json({ error: 'Could not poll exchange status' }, { status: 502 });
 	}
 
-	if (status.state === 'complete') {
+	// A verifier-core result is available for both `complete` and `invalid`; persist and return
+	// the credentials + presentation problems for either so the applicant can still build a match.
+	// On `invalid` with no usable result (empty creds/problems) the UI keeps the invalid state.
+	if (status.state === 'complete' || status.state === 'invalid') {
 		await saveMatchCredentialsQuery({
 			id: match.id,
 			exchangeId: match.exchangeId,
 			vcapi: match.vcapi,
-			exchangeState: 'complete',
-			verifiedCredentials: status.verifiedCredentials
+			exchangeState: status.state,
+			verifiedCredentials: status.verifiedCredentials,
+			presentationProblems: status.presentationProblems
 		});
-		return json({ state: 'complete', verifiedCredentials: status.verifiedCredentials });
-	}
-
-	if (status.state === 'invalid') {
-		await saveMatchCredentialsQuery({
-			id: match.id,
-			exchangeId: match.exchangeId,
-			vcapi: match.vcapi,
-			exchangeState: 'invalid'
+		return json({
+			state: status.state,
+			verifiedCredentials: status.verifiedCredentials,
+			presentationProblems: status.presentationProblems
 		});
-		return json({ state: 'invalid' });
 	}
 
 	return json({ state: status.state });

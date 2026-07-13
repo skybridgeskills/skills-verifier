@@ -23,6 +23,8 @@ export const MatchRow = z.object({
 	vcapi: MatchResource.schema.shape.vcapi,
 	exchangeState: MatchExchangeState.schema,
 	verifiedCredentials: MatchResource.schema.shape.verifiedCredentials,
+	// Inherits the `.default([])` so legacy rows without the key still parse.
+	presentationProblems: MatchResource.schema.shape.presentationProblems,
 	assignments: MatchResource.schema.shape.assignments,
 	createdAt: z.string(),
 	// Back-compat: legacy rows predate these. `capabilityToken` defaults to '' (read-only);
@@ -56,6 +58,7 @@ export function matchToRow(match: MatchResourceType): MatchRow {
 		vcapi: match.vcapi,
 		exchangeState: match.exchangeState,
 		verifiedCredentials: match.verifiedCredentials,
+		presentationProblems: match.presentationProblems,
 		assignments: match.assignments,
 		createdAt: iso,
 		capabilityToken: match.capabilityToken,
@@ -73,6 +76,7 @@ export function rowToMatchResource(row: MatchRow): MatchResourceType {
 		vcapi: row.vcapi,
 		exchangeState: row.exchangeState,
 		verifiedCredentials: row.verifiedCredentials,
+		presentationProblems: row.presentationProblems,
 		assignments: row.assignments,
 		createdAt: new Date(row.createdAt),
 		capabilityToken: row.capabilityToken ?? '',

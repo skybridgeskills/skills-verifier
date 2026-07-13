@@ -304,7 +304,10 @@ See `src/lib/server/util/provider/README.test.ts` for full examples.
 
 A match page starts a DCC verify exchange and, by default, shows a QR (plus an "open on this
 device" interaction-URL link). Wallets post a Verifiable Presentation to the exchange's VC-API
-endpoint (`vcapi`); the server polls for `complete` and persists the verified credentials.
+endpoint (`vcapi`); the server polls for a terminal result and persists the returned credentials.
+Both `complete` **and** `invalid` results are passed through — an applicant can build a match from
+credentials that carry verification warnings or failures, with each problem surfaced honestly rather
+than dead-ending (see `docs/adr/2026-07-12-forgiving-invalid-verification-results.md`).
 
 The match page also supports an **embed variant** for running inside the LearnCard app store:
 

@@ -44,4 +44,60 @@ describe('extractBadgeDetail', () => {
 		expect(extractBadgeDetail('nope')).toEqual({});
 		expect(extractBadgeDetail({})).toEqual({});
 	});
+
+	it('pulls validFrom, validUntil and achievement description', () => {
+		const raw = {
+			validFrom: '2024-01-15T00:00:00Z',
+			validUntil: '2027-01-15T00:00:00Z',
+			credentialSubject: { achievement: { name: 'Welding', description: 'Can weld well.' } }
+		};
+		const d = extractBadgeDetail(raw);
+		expect(d.validFrom).toBe('2024-01-15T00:00:00Z');
+		expect(d.validUntil).toBe('2027-01-15T00:00:00Z');
+		expect(d.description).toBe('Can weld well.');
+	});
+
+	it('omits validUntil and description when absent', () => {
+		const d = extractBadgeDetail({ validFrom: '2024-01-15T00:00:00Z' });
+		expect(d.validFrom).toBe('2024-01-15T00:00:00Z');
+		expect(d.validUntil).toBeUndefined();
+		expect(d.description).toBeUndefined();
+	});
+
+	it('resolves an achievement image given as a string url', () => {
+		const raw = {
+			credentialSubject: { achievement: { image: 'https://img.example/badge.png' } }
+		};
+		expect(extractBadgeDetail(raw).imageUrl).toBe('https://img.example/badge.png');
+	});
+
+	it('resolves an achievement image given as an object with an id', () => {
+		const raw = {
+			credentialSubject: { achievement: { image: { id: 'https://img.example/badge.png' } } }
+		};
+		expect(extractBadgeDetail(raw).imageUrl).toBe('https://img.example/badge.png');
+	});
+
+	it('accepts a data: image url', () => {
+		const raw = {
+			credentialSubject: { achievement: { image: 'data:image/png;base64,AAAA' } }
+		};
+		expect(extractBadgeDetail(raw).imageUrl).toBe('data:image/png;base64,AAAA');
+	});
+
+	it('falls back to the root image when the achievement has none', () => {
+		const raw = {
+			credentialSubject: { achievement: { name: 'X' } },
+			image: 'https://img.example/root.png'
+		};
+		expect(extractBadgeDetail(raw).imageUrl).toBe('https://img.example/root.png');
+	});
+
+	it('rejects a non-http(s)/data image url', () => {
+		const raw = {
+			credentialSubject: { achievement: { image: 'did:web:img.example' } },
+			image: { id: 'file:///etc/passwd' }
+		};
+		expect(extractBadgeDetail(raw).imageUrl).toBeUndefined();
+	});
 });

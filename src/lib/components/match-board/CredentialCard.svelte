@@ -1,11 +1,11 @@
 <script lang="ts">
-	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import GripVertical from '@lucide/svelte/icons/grip-vertical';
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { Skill } from '$lib/types/job-profile';
 	import { cn } from '$lib/utils.js';
 
+	import BadgeMetadata from './BadgeMetadata.svelte';
 	import type { ClientCredential } from './types.js';
 
 	interface Props {
@@ -63,17 +63,12 @@
 			class="mt-0.5 size-4 shrink-0 cursor-grab text-muted-foreground"
 			aria-hidden="true"
 		/>
-		<div
-			class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-flame-subtle text-flame"
-		>
-			<BadgeCheck class="size-5" aria-hidden="true" />
-		</div>
-		<div class="min-w-0 flex-1">
-			<div class="truncate text-title-lg leading-tight font-semibold text-foreground">{title}</div>
-			{#if credential.issuer}
-				<div class="mt-0.5 truncate text-body-md text-muted-foreground">{credential.issuer}</div>
-			{/if}
-		</div>
+		<BadgeMetadata
+			class="flex-1"
+			name={title}
+			detail={credential.detail}
+			problems={credential.problems ?? []}
+		/>
 	</div>
 
 	<!-- Accessible / non-drag fallback: pick a skill and assign. -->

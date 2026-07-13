@@ -195,7 +195,10 @@ describe('HttpVerificationExchange', () => {
 					credentialId: 'urn:uuid:cr-1',
 					raw: { id: 'urn:uuid:cr-1', name: 'From CR' },
 					name: 'From CR',
-					issuer: undefined
+					issuer: undefined,
+					// Absent `verified`/`results` default to verified with no problems.
+					verified: true,
+					problems: []
 				}
 			]);
 		});
@@ -220,6 +223,76 @@ describe('HttpVerificationExchange', () => {
 			const status = await svc.getExchangeStatus({ exchangeId: 'e', vcapi: 'http://x/e' });
 			expect(status.state).toBe('complete');
 			expect(status.verifiedCredentials).toEqual([]);
+		});
+
+		it('surfaces credentials + presentation problems on an invalid payload', async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({
+					state: 'invalid',
+					variables: {
+						results: {
+							default: {
+								presentationResults: [
+									{
+										id: 'cryptographic.proof.signature',
+										fatal: true,
+										outcome: { status: 'failure', problems: [{ title: 'Bad VP signature' }] }
+									}
+								],
+								credentialResults: [
+									{
+										verified: false,
+										verifiableCredential: { id: 'urn:uuid:cr-1', name: 'Badge Summit' },
+										results: [
+											{
+												id: 'cryptographic.proof.signature',
+												fatal: true,
+												outcome: { status: 'failure', problems: [{ title: 'Invalid Signature' }] }
+											}
+										]
+									},
+									{
+										verified: true,
+										verifiableCredential: { id: 'urn:uuid:cr-2', name: 'Wonderful' },
+										results: [
+											{
+												id: 'registry.issuer',
+												fatal: false,
+												outcome: { status: 'failure', problems: [{ title: 'Unknown issuer' }] }
+											}
+										]
+									}
+								]
+							}
+						}
+					}
+				})
+			});
+
+			const svc = HttpVerificationExchange(makeConfig());
+			const status = await svc.getExchangeStatus({ exchangeId: 'e', vcapi: 'http://x/e' });
+
+			expect(status.state).toBe('invalid');
+			expect(status.verifiedCredentials).toHaveLength(2);
+			expect(status.verifiedCredentials[0]).toMatchObject({
+				credentialId: 'urn:uuid:cr-1',
+				verified: false,
+				problems: [{ title: 'Invalid Signature', fatal: true }]
+			});
+			expect(status.verifiedCredentials[1]).toMatchObject({
+				credentialId: 'urn:uuid:cr-2',
+				verified: true,
+				problems: [{ title: 'Unknown issuer', fatal: false }]
+			});
+			expect(status.presentationProblems).toEqual([
+				{
+					check: 'cryptographic.proof.signature',
+					title: 'Bad VP signature',
+					detail: undefined,
+					fatal: true
+				}
+			]);
 		});
 	});
 

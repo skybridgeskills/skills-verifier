@@ -1,4 +1,8 @@
-import type { ExchangeProtocols, VerifiedCredentialResult } from './verification-exchange.js';
+import type {
+	ExchangeProtocols,
+	VerificationProblem,
+	VerifiedCredentialResult
+} from './verification-exchange.js';
 
 /** Typed upstream error for the verification exchange (class-light error). */
 export class VerificationExchangeError extends Error {
@@ -92,7 +96,11 @@ function deriveIssuer(vc: Record<string, unknown>): string | undefined {
 	return undefined;
 }
 
-/** Map a single VC into a VerifiedCredentialResult. */
+/**
+ * Map a single VC into a `VerifiedCredentialResult`. Defaults to `verified: true`
+ * with no problems; callers that read from `credentialResults[]` override those
+ * with the verifier-core status + distilled problems.
+ */
 function toVerifiedCredential(vc: unknown, index: number): VerifiedCredentialResult {
 	const record = asRecord(vc) ?? {};
 	const credentialId =
@@ -101,35 +109,89 @@ function toVerifiedCredential(vc: unknown, index: number): VerifiedCredentialRes
 		credentialId,
 		raw: vc,
 		name: deriveName(record),
-		issuer: deriveIssuer(record)
+		issuer: deriveIssuer(record),
+		verified: true,
+		problems: []
 	};
 }
 
+/** A single verifier-core check result (per-credential `results[]` / VP `presentationResults[]`). */
+interface RawCheckResult {
+	id?: string;
+	check?: string;
+	fatal?: boolean;
+	outcome?: { status?: string; problems?: Array<{ title?: string; detail?: string }> };
+}
+
 /**
- * Map a completed verify-exchange response's `variables.results.default` into
- * `VerifiedCredentialResult[]`. Prefers `matchedCredentials`, falling back to
- * `credentialResults[].verifiableCredential`. Returns `[]` when neither is present.
+ * Distill a verifier-core `results[]` / `presentationResults[]` array into
+ * `VerificationProblem[]`. Only `outcome.status === 'failure'` entries become
+ * problems; a `fatal` failed check is marked critical (`fatal: true`).
+ */
+function extractProblems(results: unknown): VerificationProblem[] {
+	if (!Array.isArray(results)) return [];
+	const out: VerificationProblem[] = [];
+	for (const entry of results) {
+		const r = asRecord(entry) as RawCheckResult | undefined;
+		if (!r?.outcome || r.outcome.status !== 'failure') continue;
+		const fatal = r.fatal === true;
+		const check = typeof r.id === 'string' ? r.id : r.check;
+		const problems = Array.isArray(r.outcome.problems) ? r.outcome.problems : [];
+		if (problems.length === 0) {
+			out.push({ check, title: check ?? 'Verification failed', fatal });
+			continue;
+		}
+		for (const p of problems) {
+			const pr = asRecord(p);
+			const title =
+				typeof pr?.title === 'string' && pr.title ? pr.title : (check ?? 'Verification failed');
+			const detail = typeof pr?.detail === 'string' && pr.detail ? pr.detail : undefined;
+			out.push({ check, title, detail, fatal });
+		}
+	}
+	return out;
+}
+
+/** The `results.default` (verifier-core output), present only for complete/invalid exchanges. */
+function resultsDefault(data: Record<string, unknown>): Record<string, unknown> | undefined {
+	return asRecord(asRecord(asRecord(data.variables)?.results)?.default);
+}
+
+/**
+ * Map a verify-exchange response's `variables.results.default` into
+ * `VerifiedCredentialResult[]`. Prefers `credentialResults[]` (so per-credential
+ * `verified` + distilled `problems` come through), falling back to the
+ * `matchedCredentials` VC list (verified, no problems). Returns `[]` when neither
+ * is present.
  */
 export function extractVerifiedCredentials(
 	data: Record<string, unknown>
 ): VerifiedCredentialResult[] {
-	const variables = asRecord(data.variables);
-	const results = asRecord(variables?.results);
-	const def = asRecord(results?.default);
+	const def = resultsDefault(data);
 	if (!def) return [];
+
+	const credentialResults = def.credentialResults;
+	if (Array.isArray(credentialResults) && credentialResults.length > 0) {
+		return credentialResults.map((entry, index) => {
+			const cr = asRecord(entry) ?? {};
+			const base = toVerifiedCredential(cr.verifiableCredential, index);
+			return {
+				...base,
+				verified: cr.verified !== false, // default true when absent
+				problems: extractProblems(cr.results)
+			};
+		});
+	}
 
 	const matched = def.matchedCredentials;
 	if (Array.isArray(matched) && matched.length > 0) {
-		return matched.map(toVerifiedCredential);
-	}
-
-	const credentialResults = def.credentialResults;
-	if (Array.isArray(credentialResults)) {
-		return credentialResults
-			.map((entry) => asRecord(entry)?.verifiableCredential)
-			.filter((vc) => vc !== undefined)
-			.map(toVerifiedCredential);
+		return matched.map((vc, index) => toVerifiedCredential(vc, index));
 	}
 
 	return [];
+}
+
+/** Distill VP-level problems from `results.default.presentationResults[]`. */
+export function extractPresentationProblems(data: Record<string, unknown>): VerificationProblem[] {
+	return extractProblems(resultsDefault(data)?.presentationResults);
 }

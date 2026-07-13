@@ -5,6 +5,7 @@ import { defineQuery } from '../../core/storage/define-query.js';
 import { MatchResource, UpdateMatchExchangeParams } from './match-resource.js';
 import type { MatchResource as MatchResourceType } from './match-resource.js';
 import { matchToRow, parseMatchRow, rowToMatchResource } from './match-row.js';
+import { mergeCredentialsById } from './merge-credentials.js';
 
 export const saveMatchCredentialsQuery = defineQuery(
 	'SaveMatchCredentials',
@@ -20,7 +21,13 @@ export const saveMatchCredentialsQuery = defineQuery(
 				exchangeId: params.exchangeId,
 				vcapi: params.vcapi ?? existing.vcapi,
 				exchangeState: params.exchangeState,
-				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials
+				// Additive merge: a completed exchange accumulates its credentials onto the match
+				// rather than replacing them (dedupe by credentialId, last write wins). When no
+				// credentials are supplied (e.g. startExchange), the existing list is preserved.
+				verifiedCredentials: params.verifiedCredentials
+					? mergeCredentialsById(existing.verifiedCredentials, params.verifiedCredentials)
+					: existing.verifiedCredentials,
+				presentationProblems: params.presentationProblems ?? existing.presentationProblems
 			});
 			db.matchesById.set(updated.id, updated);
 			return updated;
@@ -41,7 +48,12 @@ export const saveMatchCredentialsQuery = defineQuery(
 				exchangeId: params.exchangeId,
 				vcapi: params.vcapi ?? existing.vcapi,
 				exchangeState: params.exchangeState,
-				verifiedCredentials: params.verifiedCredentials ?? existing.verifiedCredentials
+				// Additive merge (see memory impl): accumulate credentials across exchanges,
+				// dedupe by credentialId (last write wins); preserve existing when none supplied.
+				verifiedCredentials: params.verifiedCredentials
+					? mergeCredentialsById(existing.verifiedCredentials, params.verifiedCredentials)
+					: existing.verifiedCredentials,
+				presentationProblems: params.presentationProblems ?? existing.presentationProblems
 			});
 			await ctx.docClient.send(
 				new PutCommand({

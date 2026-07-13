@@ -1,30 +1,26 @@
 <script lang="ts">
-	import CircleCheck from '@lucide/svelte/icons/circle-check';
-	import Mail from '@lucide/svelte/icons/mail';
-
 	import type { Skill } from '$lib/types/job-profile';
 
-	import type { BadgeDetail } from './badge-detail.js';
+	import BadgeMetadata from './BadgeMetadata.svelte';
 	import type { ClientAssignment, ClientCredential } from './types.js';
 
 	interface Props {
 		skills: Skill[];
 		credentials: ClientCredential[];
 		assignments: ClientAssignment[];
-		/** Optional per-credential badge details (issuer/achievement) for the read-only view. */
-		details?: Record<string, BadgeDetail>;
 	}
 
-	let { skills, credentials, assignments, details = {} }: Props = $props();
+	let { skills, credentials, assignments }: Props = $props();
 
 	const credentialById = $derived(new Map(credentials.map((c) => [c.credentialId, c])));
 
+	function credentialFor(credentialId: string): ClientCredential | undefined {
+		return credentialById.get(credentialId);
+	}
+
 	function credentialName(credentialId: string): string {
-		return (
-			details[credentialId]?.achievementName?.trim() ||
-			credentialById.get(credentialId)?.name?.trim() ||
-			credentialId
-		);
+		const c = credentialById.get(credentialId);
+		return c?.detail?.achievementName?.trim() || c?.name?.trim() || credentialId;
 	}
 
 	function assignmentsFor(skill: Skill): ClientAssignment[] {
@@ -46,46 +42,17 @@
 					<h3 class="text-title-md font-semibold text-foreground">{skill.text}</h3>
 					<ul class="mt-3 space-y-3">
 						{#each assignmentsFor(skill) as a (a.credentialId)}
-							{@const detail = details[a.credentialId]}
-							<li class="flex gap-3">
-								<CircleCheck class="mt-0.5 size-4 shrink-0 text-flame" aria-hidden="true" />
-								<div class="min-w-0">
-									<p class="text-body-md font-medium text-foreground">
-										{credentialName(a.credentialId)}
-									</p>
-									{#if detail?.issuerName}
-										<p class="text-body-sm mt-0.5 text-muted-foreground">
-											Issued by
-											{#if detail.issuerUrl}
-												<!-- External, user-supplied issuer website (not internal SvelteKit
-												     navigation), so resolve() does not apply. -->
-												<!-- eslint-disable svelte/no-navigation-without-resolve -->
-												<a
-													href={detail.issuerUrl}
-													target="_blank"
-													rel="noopener noreferrer"
-													class="font-medium text-primary hover:underline"
-												>
-													{detail.issuerName}
-												</a>
-												<!-- eslint-enable svelte/no-navigation-without-resolve -->
-											{:else}
-												<span class="font-medium text-foreground">{detail.issuerName}</span>
-											{/if}
-										</p>
-									{/if}
-									{#if detail?.issuerEmail}
-										<p class="text-body-sm mt-0.5 flex items-center gap-1.5 text-muted-foreground">
-											<Mail class="size-3.5 shrink-0" aria-hidden="true" />
-											<a href={`mailto:${detail.issuerEmail}`} class="text-primary hover:underline">
-												{detail.issuerEmail}
-											</a>
-										</p>
-									{/if}
-									{#if a.narrative.trim()}
-										<p class="mt-0.5 text-body-md text-muted-foreground">{a.narrative}</p>
-									{/if}
-								</div>
+							{@const credential = credentialFor(a.credentialId)}
+							<li class="rounded-lg border border-border/40 p-3">
+								<BadgeMetadata
+									compact
+									name={credentialName(a.credentialId)}
+									detail={credential?.detail}
+									problems={credential?.problems ?? []}
+								/>
+								{#if a.narrative.trim()}
+									<p class="mt-2 text-body-md text-muted-foreground">{a.narrative}</p>
+								{/if}
 							</li>
 						{/each}
 					</ul>

@@ -1,10 +1,11 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { expect, waitFor, within } from 'storybook/test';
 
 	import type { Skill } from '$lib/types/job-profile';
 
 	import MatchBoard from './MatchBoard.svelte';
-	import type { ClientAssignment, ClientCredential } from './types.js';
+	import type { ClientAssignment, ClientCredential, VerificationProblem } from './types.js';
 
 	const skills: Skill[] = [
 		{
@@ -27,11 +28,93 @@
 		}
 	];
 
+	/** All-verified credentials (happy path) — every card is clean. */
 	const credentials: ClientCredential[] = [
-		{ credentialId: 'cred-cka', name: 'Certified Kubernetes Administrator', issuer: 'CNCF' },
-		{ credentialId: 'cred-sre', name: 'SRE Professional', issuer: 'DevOps Institute' },
-		{ credentialId: 'cred-tf', name: 'Terraform Associate', issuer: 'HashiCorp' }
+		{
+			credentialId: 'cred-cka',
+			name: 'Certified Kubernetes Administrator',
+			issuer: 'CNCF',
+			verified: true,
+			problems: []
+		},
+		{
+			credentialId: 'cred-sre',
+			name: 'SRE Professional',
+			issuer: 'DevOps Institute',
+			verified: true,
+			problems: []
+		},
+		{
+			credentialId: 'cred-tf',
+			name: 'Terraform Associate',
+			issuer: 'HashiCorp',
+			verified: true,
+			problems: []
+		}
 	];
+
+	const warning: VerificationProblem = {
+		check: 'registry.issuer',
+		title: 'Issuer not in a trusted registry',
+		detail: 'The issuer could not be found in a known trust registry.',
+		fatal: false
+	};
+	const critical: VerificationProblem = {
+		check: 'cryptographic.proof.signature',
+		title: 'Invalid Signature',
+		detail: 'The credential proof could not be cryptographically verified.',
+		fatal: true
+	};
+
+	/** Mixed credentials: one clean, one with a non-fatal warning, one with a fatal problem. */
+	const mixedCredentials: ClientCredential[] = [
+		{
+			credentialId: 'cred-cka',
+			name: 'Certified Kubernetes Administrator',
+			issuer: 'CNCF',
+			verified: true,
+			problems: []
+		},
+		{
+			credentialId: 'cred-sre',
+			name: 'SRE Professional',
+			issuer: 'DevOps Institute',
+			verified: true,
+			problems: [warning]
+		},
+		{
+			credentialId: 'cred-tf',
+			name: 'Terraform Associate',
+			issuer: 'HashiCorp',
+			verified: false,
+			problems: [critical]
+		}
+	];
+
+	/** Only non-fatal warnings (drives the amber `warning` banner). */
+	const warningCredentials: ClientCredential[] = [
+		{
+			credentialId: 'cred-cka',
+			name: 'Certified Kubernetes Administrator',
+			issuer: 'CNCF',
+			verified: true,
+			problems: []
+		},
+		{
+			credentialId: 'cred-sre',
+			name: 'SRE Professional',
+			issuer: 'DevOps Institute',
+			verified: true,
+			problems: [warning]
+		}
+	];
+
+	const presentationProblem: VerificationProblem = {
+		check: 'cryptographic.proof.signature',
+		title: 'Presentation signature could not be verified',
+		detail: 'The holder-binding proof on the presentation failed to verify.',
+		fatal: true
+	};
 
 	const preAssigned: ClientAssignment[] = [
 		{
@@ -64,4 +147,49 @@
 
 <Story name="No credentials">
 	<MatchBoard {skills} credentials={[]} editToken="story-token" />
+</Story>
+
+<Story name="Warning (non-fatal problems)">
+	<MatchBoard {skills} credentials={warningCredentials} editToken="story-token" />
+</Story>
+
+<Story name="Invalid (fatal problem + presentation problem)">
+	<MatchBoard
+		{skills}
+		credentials={mixedCredentials}
+		presentationProblems={[presentationProblem]}
+		editToken="story-token"
+	/>
+</Story>
+
+<!--
+	Inline "Import more badges" affordance: the board stays mounted while a second exchange runs, so
+	draft assignments survive. The play function opens the collapsible ExchangePanel below the
+	credentials column.
+-->
+<Story
+	name="Import more badges (inline exchange)"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		const toggle = canvas.getByTestId('import-more-badges');
+		expect(toggle).toBeInTheDocument();
+		expect(canvasElement.querySelector('[data-testid="exchange-panel"]')).toBeNull();
+
+		toggle.click();
+
+		await waitFor(() => {
+			expect(canvas.getByTestId('exchange-panel')).toBeInTheDocument();
+			expect(canvas.getByTestId('verify-cta')).toBeInTheDocument();
+		});
+	}}
+>
+	<MatchBoard
+		{skills}
+		{credentials}
+		initialAssignments={preAssigned}
+		editToken="story-token"
+		statusUrl="/jobs/j1/match/m1/status"
+		presentUrl="/jobs/j1/match/m1/present"
+	/>
 </Story>

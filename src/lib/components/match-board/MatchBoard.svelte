@@ -1,28 +1,63 @@
 <script lang="ts">
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
+	import CircleX from '@lucide/svelte/icons/circle-x';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
+	import type { EmbedMode } from '$lib/components/exchange-panel/embed-mode.js';
 	import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { Skill } from '$lib/types/job-profile';
+	import { deriveVerificationOutcome } from '$lib/verification/verification-status.js';
 
 	import CredentialColumn from './CredentialColumn.svelte';
+	import ImportMoreBadges from './ImportMoreBadges.svelte';
 	import SkillColumn from './SkillColumn.svelte';
-	import type { ClientAssignment, ClientCredential } from './types.js';
+	import type { ClientAssignment, ClientCredential, VerificationProblem } from './types.js';
 
 	import { enhance } from '$app/forms';
 
 	interface Props {
 		skills: Skill[];
 		credentials: ClientCredential[];
+		/** Presentation-level (VP) problems, surfaced in the banner and the overall outcome. */
+		presentationProblems?: VerificationProblem[];
 		/** Persisted assignments from the match load. */
 		initialAssignments?: ClientAssignment[];
 		/** Capability token re-posted with the save so the server can re-authorize the edit. */
 		editToken: string;
 		/** Called once a save succeeds (so the page can reveal the capability + share links). */
 		onSaved?: () => void;
+		/** Absolute path to the status poll endpoint — threaded to the inline "import more" panel. */
+		statusUrl?: string;
+		/** Absolute path to the present (VP relay) endpoint — threaded to the inline panel. */
+		presentUrl?: string;
+		/** Presentation embed variant (e.g. LearnCard partner-connect) for the inline panel. */
+		embedMode?: EmbedMode;
+		/** LearnCard host origin for the partner-connect embed variant. */
+		learnCardHostOrigin?: string;
 	}
 
-	let { skills, credentials, initialAssignments = [], editToken, onSaved }: Props = $props();
+	let {
+		skills,
+		credentials,
+		presentationProblems = [],
+		initialAssignments = [],
+		editToken,
+		onSaved,
+		statusUrl,
+		presentUrl,
+		embedMode = null,
+		learnCardHostOrigin
+	}: Props = $props();
+
+	// Overall verification outcome across the presentation + every credential's problems. Independent
+	// of the exchange's complete/invalid state so non-fatal warnings still surface as `warning`.
+	const allProblems = $derived<VerificationProblem[]>([
+		...presentationProblems,
+		...credentials.flatMap((c) => c.problems)
+	]);
+	const outcome = $derived(deriveVerificationOutcome(allProblems));
+	const hasPresentationProblems = $derived(presentationProblems.length > 0);
 
 	// "Keep this match for" expiry preset, posted as `expiryDays` (default 30) and refreshed on save.
 	let expiryDays = $state<30 | 60 | 90>(30);
@@ -144,6 +179,34 @@
 		</Alert>
 	{/if}
 
+	{#if outcome === 'warning'}
+		<Alert
+			class="border-warmth/40 bg-warmth-subtle text-foreground"
+			data-testid="verification-banner"
+			data-outcome="warning"
+		>
+			<TriangleAlert class="size-4 text-warmth" />
+			<AlertTitle>Some credentials have warnings</AlertTitle>
+			<AlertDescription class="text-muted-foreground">
+				You can still assign them to skills. Review each credential's warnings before you share.
+				{#if hasPresentationProblems}
+					The presentation itself could not be fully verified.
+				{/if}
+			</AlertDescription>
+		</Alert>
+	{:else if outcome === 'invalid'}
+		<Alert variant="destructive" data-testid="verification-banner" data-outcome="invalid">
+			<CircleX class="size-4" />
+			<AlertTitle>Some credentials could not be fully verified</AlertTitle>
+			<AlertDescription>
+				You can still assign them to skills, but review the problems first — some checks failed.
+				{#if hasPresentationProblems}
+					The presentation signature could not be verified.
+				{/if}
+			</AlertDescription>
+		</Alert>
+	{/if}
+
 	<div class="grid gap-6 @4xl:grid-cols-2" data-testid="match-board">
 		<SkillColumn
 			{skills}
@@ -153,6 +216,9 @@
 			onRemoveAssignment={removeAssignment}
 			onNarrativeInput={setNarrative}
 		/>
-		<CredentialColumn {credentials} {skills} isAssigned={exists} onAssign={assign} />
+		<div class="space-y-6">
+			<CredentialColumn {credentials} {skills} isAssigned={exists} onAssign={assign} />
+			<ImportMoreBadges {statusUrl} {presentUrl} {editToken} {embedMode} {learnCardHostOrigin} />
+		</div>
 	</div>
 </div>

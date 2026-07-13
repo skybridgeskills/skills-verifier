@@ -147,4 +147,53 @@ describe('storage queries (memory)', () => {
 			expect(reread).toEqual(withAssignments);
 		});
 	});
+
+	it('accumulates credentials across exchanges (dedupe by id, latest problems)', async () => {
+		const ctx = await TestAppContext({});
+		await runInContext(ctx, async () => {
+			const job = await createJobQuery({
+				externalId: 'ext-match-4',
+				name: 'Role',
+				description: 'Desc',
+				company: 'Co',
+				frameworks: [],
+				skills: [{ url: 'https://example.com/s6', text: 'Skill six', ctid: 'ce-s6' }]
+			});
+			const match = await createMatchQuery({ jobId: job.id });
+
+			// First exchange imports [A].
+			const first = await saveMatchCredentialsQuery({
+				id: match.id,
+				exchangeId: 'ex-1',
+				exchangeState: 'complete',
+				verifiedCredentials: [{ credentialId: 'A', raw: { v: 1 }, name: 'Alpha' }],
+				presentationProblems: [{ title: 'first-vp-problem' }]
+			});
+			expect(first.verifiedCredentials.map((c) => c.credentialId)).toEqual(['A']);
+			expect(first.presentationProblems.map((p) => p.title)).toEqual(['first-vp-problem']);
+
+			// Second exchange imports [B] → accumulates to [A, B].
+			const second = await saveMatchCredentialsQuery({
+				id: match.id,
+				exchangeId: 'ex-2',
+				exchangeState: 'complete',
+				verifiedCredentials: [{ credentialId: 'B', raw: { v: 2 }, name: 'Beta' }],
+				presentationProblems: [{ title: 'second-vp-problem' }]
+			});
+			expect(second.verifiedCredentials.map((c) => c.credentialId)).toEqual(['A', 'B']);
+			// presentationProblems reflect the latest exchange (replace, not accumulate).
+			expect(second.presentationProblems.map((p) => p.title)).toEqual(['second-vp-problem']);
+
+			// Third exchange re-submits A' (same id) → replaces A in place, keeps position.
+			const third = await saveMatchCredentialsQuery({
+				id: match.id,
+				exchangeId: 'ex-3',
+				exchangeState: 'complete',
+				verifiedCredentials: [{ credentialId: 'A', raw: { v: 3 }, name: 'Alpha refreshed' }]
+			});
+			expect(third.verifiedCredentials.map((c) => c.credentialId)).toEqual(['A', 'B']);
+			expect(third.verifiedCredentials[0].name).toBe('Alpha refreshed');
+			expect(third.verifiedCredentials[0].raw).toEqual({ v: 3 });
+		});
+	});
 });

@@ -183,8 +183,41 @@ Http when `TRANSACTION_SERVICE_BASEURI` is set, otherwise Fake; `test` always us
 2. The browser polls `GET /jobs/{jobId}/match/{matchId}/status` every few seconds. That endpoint reads
    `exchangeId`/`vcapi` from the **persisted match** (never trusted from the client) and proxies the
    VC-API status. **Poll-only** — OID4VP / push completion is not supported upstream.
-3. On `complete`, verified credentials are persisted to the match; the board then lets the user assign
+3. On `complete` **or `invalid`**, the verifier-core result is passed through: verified credentials
+   and their distilled problems are persisted to the match, and the board lets the user assign
    credentials to skills and write a narrative per assignment (`components/match-board/`).
+
+### Forgiving invalid results
+
+An `invalid` exchange still carries a usable verifier-core result. Rather than dead-ending, the
+`status`/`present` routes persist per-credential `verified` + `problems[]` and match-level
+`presentationProblems[]` (distilled `{ check?, title, detail?, fatal }`, not the raw result) for
+both `complete` and `invalid`. Applicants can then build matches from unverified or warned
+credentials: the board derives one overall banner (`deriveVerificationOutcome` in
+`src/lib/verification/verification-status.ts` — `invalid` if any `fatal` problem, else `warning` if
+any problem, else `valid`) and each card exposes its problems; the read-only employer view shows a
+per-credential status indicator. Cryptographically invalid credentials are assignable but always
+explicitly surfaced. The current error state is preserved only when no usable result exists (no
+`results.default`, expired exchange, transport failure, or a hard VP rejection in the relay). See
+[adr/2026-07-12-forgiving-invalid-verification-results.md](adr/2026-07-12-forgiving-invalid-verification-results.md).
+
+### Additional exchanges (accumulate credentials)
+
+Applicants can run more than one exchange per match — two wallets, or a wallet that submits one
+badge at a time. After a prior exchange has concluded, the board exposes an inline **"Import more
+badges"** panel (`components/match-board/ImportMoreBadges.svelte`) that runs another exchange without
+unmounting the board, so unsaved draft assignments survive. On completion, `saveMatchCredentialsQuery`
+performs an **additive merge** (`merge-credentials.ts`): incoming credentials accumulate onto the
+match, deduped by `credentialId` with last-write-wins (a re-submitted credential refreshes its
+status). `presentationProblems` is replaced with the latest exchange's. Exchanges are sequential
+(one `exchangeId`/`vcapi` at a time). See
+[adr/2026-07-12-additive-match-credential-merge.md](adr/2026-07-12-additive-match-credential-merge.md).
+
+Per-credential display metadata (name, issuer, `validFrom`/`validUntil`, description, image, and a
+collapsed status+errors disclosure) is extracted best-effort from each credential's raw
+OpenBadgeCredential JSON by `badge-detail.ts` and rendered by a shared
+`components/match-board/BadgeMetadata.svelte` across the credentials list, the assigned-skill view,
+and the read-only employer summary.
 
 ## Storage
 

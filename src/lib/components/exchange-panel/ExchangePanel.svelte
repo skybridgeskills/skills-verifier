@@ -57,6 +57,12 @@
 		embedMode?: EmbedMode;
 		/** LearnCard host origin for the partner-connect embed variant. */
 		learnCardHostOrigin?: string;
+		/**
+		 * Fired after a successful exchange completes (and `invalidateAll()` resolves), for both the
+		 * QR-poll and LearnCard embed paths. Lets an inline host (e.g. the board's "import more badges"
+		 * panel) collapse itself once the new credentials have merged in. Optional; unused standalone.
+		 */
+		onCompleted?: () => void;
 		class?: string;
 	}
 
@@ -69,6 +75,7 @@
 		editToken = '',
 		embedMode = null,
 		learnCardHostOrigin = 'https://learncard.app',
+		onCompleted,
 		class: className
 	}: Props = $props();
 
@@ -110,8 +117,13 @@
 					uiState = 'complete';
 					// Reload the page data so `match.verifiedCredentials` is populated from storage.
 					await invalidateAll();
+					onCompleted?.();
 					break;
 				case 'invalid':
+					// An invalid result may still carry usable (if imperfect) credentials. Reload page
+					// data first: MatchPage swaps to the forgiving board when creds were persisted; if
+					// none were (no result / expired), the panel stays and shows the invalid state.
+					await invalidateAll();
 					uiState = 'invalid';
 					break;
 				// 'none' / 'pending' → keep waiting
@@ -212,7 +224,11 @@
 			if (data.state === 'complete') {
 				uiState = 'complete';
 				await invalidateAll();
+				onCompleted?.();
 			} else if (data.state === 'invalid') {
+				// A usable result may still have persisted credentials; reload so MatchPage can swap to
+				// the board. If none were persisted, the panel stays and the retryable message shows.
+				await invalidateAll();
 				learnCardError = 'Those credentials could not be verified. You can try again.';
 			} else {
 				learnCardError = 'Verification did not complete. You can try again.';

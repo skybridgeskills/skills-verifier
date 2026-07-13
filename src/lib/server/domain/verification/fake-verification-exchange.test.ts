@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	FAKE_COMPLETE_AFTER_POLLS,
+	FAKE_INVALID_VERIFIED_CREDENTIALS,
 	FAKE_VERIFIED_CREDENTIALS,
 	FakeVerificationExchange
 } from './fake-verification-exchange.js';
@@ -72,6 +73,34 @@ describe('FakeVerificationExchange', () => {
 		expect(cred.name).toBe('Patient Care Fundamentals');
 		expect(cred.issuer).toBe('Riverside Community College');
 		expect(cred.raw).toBeTypeOf('object');
+	});
+
+	it('happy-path fixtures carry verified + empty problems', async () => {
+		const svc = FakeVerificationExchange(1);
+		const { exchangeId, protocols } = await svc.createVerifyExchange();
+		const status = await svc.getExchangeStatus({ exchangeId, vcapi: protocols.vcapi });
+
+		expect(status.presentationProblems).toEqual([]);
+		expect(status.verifiedCredentials.every((c) => c.verified && c.problems.length === 0)).toBe(
+			true
+		);
+	});
+
+	it('reports the invalid outcome with problem fixtures + presentation problems', async () => {
+		const svc = FakeVerificationExchange(1, { outcome: 'invalid' });
+		const { exchangeId, protocols } = await svc.createVerifyExchange();
+		const status = await svc.getExchangeStatus({ exchangeId, vcapi: protocols.vcapi });
+
+		expect(status.state).toBe('invalid');
+		expect(status.verifiedCredentials).toHaveLength(FAKE_INVALID_VERIFIED_CREDENTIALS.length);
+		// A mix: one fatal (verified:false) and one non-fatal warning (verified:true).
+		expect(
+			status.verifiedCredentials.some((c) => !c.verified && c.problems.some((p) => p.fatal))
+		).toBe(true);
+		expect(
+			status.verifiedCredentials.some((c) => c.verified && c.problems.some((p) => !p.fatal))
+		).toBe(true);
+		expect(status.presentationProblems.some((p) => p.fatal)).toBe(true);
 	});
 
 	it('honors a custom completeAfterPolls threshold', async () => {

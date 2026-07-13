@@ -6,6 +6,8 @@ import { requestOpenBadgeCredentials } from '$lib/clients/learncard/partner-conn
 
 import ExchangePanel, { type StartExchangeResult } from './ExchangePanel.svelte';
 
+import { invalidateAll } from '$app/navigation';
+
 vi.mock('$lib/clients/learncard/partner-connect-client.js', () => ({
 	requestOpenBadgeCredentials: vi.fn()
 }));
@@ -139,6 +141,58 @@ describe('ExchangePanel — LearnCard embed variant', () => {
 		expect(document.querySelector('[data-testid="exchange-qr"]')).toBeNull();
 	});
 
+	it('reloads page data on an invalid present result (so the board can surface it)', async () => {
+		vi.mocked(invalidateAll).mockClear();
+		vi.mocked(requestOpenBadgeCredentials).mockResolvedValue(VP);
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ state: 'invalid', verifiedCredentials: [] }), {
+				status: 200,
+				headers: { 'content-type': 'application/json' }
+			})
+		);
+		vi.stubGlobal('fetch', fetchMock);
+
+		embedPanel();
+		await page.getByTestId('learncard-request-cta').click();
+
+		// invalidateAll runs first so a usable result loads the board; then the retryable msg shows.
+		await vi.waitFor(() => expect(invalidateAll).toHaveBeenCalled());
+		await expect
+			.element(page.getByTestId('learncard-error'))
+			.toHaveTextContent(/could not be verified/i);
+
+		vi.unstubAllGlobals();
+	});
+
+	it('fires onCompleted after a completed present relay (so an inline host can collapse)', async () => {
+		const onCompleted = vi.fn();
+		vi.mocked(requestOpenBadgeCredentials).mockResolvedValue(VP);
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ state: 'complete', verifiedCredentials: [] }), {
+				status: 200,
+				headers: { 'content-type': 'application/json' }
+			})
+		);
+		vi.stubGlobal('fetch', fetchMock);
+
+		render(ExchangePanel, {
+			poll: false,
+			embedMode: 'learncard-partner-connect',
+			learnCardHostOrigin: 'https://learncard.app',
+			presentUrl: '/jobs/j1/match/m1/present',
+			statusUrl: '/jobs/j1/match/m1/status',
+			editToken: 'tok-123',
+			initialState: 'waiting',
+			initialExchange: EXCHANGE,
+			onCompleted
+		});
+		await page.getByTestId('learncard-request-cta').click();
+
+		await vi.waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
+
+		vi.unstubAllGlobals();
+	});
+
 	it('shows a retryable message and does not relay when nothing is shared', async () => {
 		vi.mocked(requestOpenBadgeCredentials).mockResolvedValue(null);
 		const fetchMock = vi.fn();
@@ -173,5 +227,58 @@ describe('ExchangePanel — default (non-embed) variant', () => {
 			.element(page.getByTestId('exchange-same-device-link'))
 			.toHaveTextContent(/open on this device/i);
 		expect(document.querySelector('[data-testid="learncard-request-cta"]')).toBeNull();
+	});
+
+	it('fires onCompleted after a poll completes (so an inline host can collapse)', async () => {
+		vi.mocked(invalidateAll).mockClear();
+		const onCompleted = vi.fn();
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ state: 'complete', verifiedCredentials: [] }), {
+				status: 200,
+				headers: { 'content-type': 'application/json' }
+			})
+		);
+		vi.stubGlobal('fetch', fetchMock);
+
+		render(ExchangePanel, {
+			poll: true,
+			statusUrl: '/jobs/j1/match/m1/status',
+			initialState: 'waiting',
+			initialExchange: EXCHANGE,
+			onCompleted
+		});
+
+		await vi.waitFor(() => expect(onCompleted).toHaveBeenCalledTimes(1));
+		await expect
+			.element(page.getByTestId('exchange-status'))
+			.toHaveTextContent(/credentials verified/i);
+
+		vi.unstubAllGlobals();
+	});
+
+	it('reloads page data when a poll returns invalid (usable result may exist)', async () => {
+		vi.mocked(invalidateAll).mockClear();
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ state: 'invalid', verifiedCredentials: [] }), {
+				status: 200,
+				headers: { 'content-type': 'application/json' }
+			})
+		);
+		vi.stubGlobal('fetch', fetchMock);
+
+		render(ExchangePanel, {
+			poll: true,
+			statusUrl: '/jobs/j1/match/m1/status',
+			initialState: 'waiting',
+			initialExchange: EXCHANGE
+		});
+
+		await vi.waitFor(() => expect(invalidateAll).toHaveBeenCalled());
+		// When no board takes over (no creds), the panel falls back to the invalid state.
+		await expect
+			.element(page.getByTestId('exchange-status'))
+			.toHaveTextContent(/verification did not complete/i);
+
+		vi.unstubAllGlobals();
 	});
 });

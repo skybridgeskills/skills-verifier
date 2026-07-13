@@ -129,6 +129,48 @@ describe('match [matchId] +page.server', () => {
 		});
 	});
 
+	it('saveAssignments accepts an assignment to a persisted-but-invalid credential', async () => {
+		const ctx = await TestAppContext({});
+		await runInContext(ctx, async () => {
+			const { job, match } = await seedJobAndMatch();
+			// An invalid exchange persisted a credential that failed verification (fatal problem).
+			await saveMatchCredentialsQuery({
+				id: match.id,
+				exchangeId: 'ex-1',
+				vcapi: 'https://dcc.test/ex-1',
+				exchangeState: 'invalid',
+				verifiedCredentials: [
+					{
+						credentialId: 'c-bad',
+						raw: {},
+						name: 'Unverified Cred',
+						verified: false,
+						problems: [{ title: 'Invalid Signature', fatal: true }]
+					}
+				],
+				presentationProblems: [{ title: 'VP failed', fatal: true }]
+			});
+			const assignments = [
+				{
+					skillCtid: SKILL.ctid,
+					skillUrl: SKILL.url,
+					credentialId: 'c-bad',
+					narrative: 'still useful'
+				}
+			];
+			const res = await actions.saveAssignments(
+				postEvent(job.id, match.id, {
+					editToken: match.capabilityToken,
+					assignmentsJson: JSON.stringify(assignments)
+				})
+			);
+			expect(res).toEqual({ success: true });
+			const reread = await matchByIdQuery({ id: match.id });
+			expect(reread!.assignments).toHaveLength(1);
+			expect(reread!.assignments[0].credentialId).toBe('c-bad');
+		});
+	});
+
 	it('deleteMatch requires a valid token and removes the match', async () => {
 		const ctx = await TestAppContext({});
 		await runInContext(ctx, async () => {

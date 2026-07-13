@@ -1,7 +1,10 @@
 import type {
 	MatchAssignment,
+	VerificationProblem,
 	VerifiedCredential
 } from '$lib/server/domain/match/match-resource.js';
+
+import type { BadgeDetail } from './badge-detail.js';
 
 /**
  * Client-facing mirror of the server {@link MatchAssignment} shape (pure-zod, type-only import is
@@ -14,4 +17,12 @@ export type ClientAssignment = Pick<
 >;
 
 /** Client-facing view of a verified credential rendered as a draggable card. */
-export type ClientCredential = Pick<VerifiedCredential, 'credentialId' | 'name' | 'issuer'>;
+export type ClientCredential = Pick<
+	VerifiedCredential,
+	'credentialId' | 'name' | 'issuer' | 'verified' | 'problems'
+> & {
+	/** Rich badge metadata (dates, description, image, issuer) parsed from the raw credential. */
+	detail?: BadgeDetail;
+};
+
+export type { BadgeDetail, VerificationProblem };

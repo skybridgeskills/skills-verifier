@@ -9,13 +9,30 @@ export const MatchExchangeState = ZodFactory(
 );
 export type MatchExchangeState = ReturnType<typeof MatchExchangeState>;
 
+/**
+ * A single distilled verification problem persisted alongside a credential or the
+ * presentation. `fatal` marks a critical (failed, fatal) verifier-core check.
+ */
+export const VerificationProblem = ZodFactory(
+	z.object({
+		check: z.string().optional(),
+		title: z.string(),
+		detail: z.string().optional(),
+		fatal: z.boolean().default(false)
+	})
+);
+export type VerificationProblem = ReturnType<typeof VerificationProblem>;
+
 /** A verified credential snapshot persisted on the match. `raw` is the full OpenBadgeCredential JSON. */
 export const VerifiedCredential = ZodFactory(
 	z.object({
 		credentialId: z.string(),
 		raw: z.unknown(),
 		name: z.string().optional(),
-		issuer: z.string().optional()
+		issuer: z.string().optional(),
+		// New — default true/[] so legacy rows and complete-path creds still parse.
+		verified: z.boolean().default(true),
+		problems: z.array(VerificationProblem.schema).default([])
 	})
 );
 export type VerifiedCredential = ReturnType<typeof VerifiedCredential>;
@@ -45,6 +62,8 @@ export const MatchResource = ZodFactory(
 		vcapi: z.string().optional(),
 		exchangeState: MatchExchangeState.schema.default('none'),
 		verifiedCredentials: z.array(VerifiedCredential.schema).default([]),
+		// Presentation-level (VP) verification problems; defaulted so legacy rows parse.
+		presentationProblems: z.array(VerificationProblem.schema).default([]),
 		assignments: z.array(MatchAssignment.schema).default([]),
 
 		// Secret capability token (128-bit base-62 `secureUid`) that unlocks edit + delete via a
@@ -82,7 +101,8 @@ export const UpdateMatchExchangeParams = z.object({
 	exchangeId: z.string(),
 	vcapi: z.string().optional(),
 	exchangeState: MatchExchangeState.schema,
-	verifiedCredentials: z.array(VerifiedCredential.schema).optional()
+	verifiedCredentials: z.array(VerifiedCredential.schema).optional(),
+	presentationProblems: z.array(VerificationProblem.schema).optional()
 });
 export type UpdateMatchExchangeParams = z.infer<typeof UpdateMatchExchangeParams>;
 
