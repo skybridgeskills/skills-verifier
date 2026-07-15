@@ -7,6 +7,7 @@ import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
 import { FakeVerificationExchange } from './domain/verification/fake-verification-exchange.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
+import { provideTestAuthService } from './services/auth/provide-auth-service.js';
 import { FakeIdService, FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeLoggerService } from './services/logging/fake-logger-service.js';
 import { FakeSkillSearchService } from './services/skill-search/fake-skill-search-service.js';
@@ -22,7 +23,8 @@ describe('app-context', () => {
 			frameworkClient: new FakeFrameworkClient(),
 			database: new MemoryDatabase(),
 			skillSearchService: FakeSkillSearchService(),
-			verificationExchange: FakeVerificationExchange()
+			verificationExchange: FakeVerificationExchange(),
+			...provideTestAuthService()
 		};
 		return { ...base, ...provideHealthRegistry(base) };
 	}

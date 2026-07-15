@@ -84,3 +84,7 @@ export const CreateJobParams = z.object({
 	status: JobStatus.schema.default('active')
 });
 export type CreateJobParams = z.infer<typeof CreateJobParams>;
+
+/** Hard delete of a job; cascades to its matches + job-apps. */
+export const DeleteJobParams = z.object({ id: z.string() });
+export type DeleteJobParams = z.infer<typeof DeleteJobParams>;
