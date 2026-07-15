@@ -3,6 +3,7 @@ import type { Handle, HandleServerError, ServerInit } from '@sveltejs/kit';
 import type { AppContext } from '$lib/server/app-context.js';
 import { buildAppContext } from '$lib/server/build-app-context.js';
 import { seedDevDataIfNeeded } from '$lib/server/core/storage/seed-dev-data.js';
+import { SESSION_COOKIE } from '$lib/server/services/auth/store-session-cookie.js';
 import { appLogger, appLoggerSafe } from '$lib/server/services/logging/index.js';
 import { panic } from '$lib/server/util/panic.js';
 import { runInContext, runWithExtraContext } from '$lib/server/util/provider/provider-ctx.js';
@@ -29,6 +30,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.requestId = requestId;
 	return runInContext(serverAppContext, () =>
 		runWithExtraContext({ logger: serverAppContext!.logger.child({ requestId }) }, async () => {
+			// Cookie auth → locals.admin. Any parse/verify failure leaves admin false.
+			const token = event.cookies.get(SESSION_COOKIE);
+			event.locals.admin = token
+				? serverAppContext!.authService.verifyToken(token) !== null
+				: false;
 			appLogger().info(
 				{ method: event.request.method, path: event.url.pathname },
 				'request started'

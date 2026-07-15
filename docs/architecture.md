@@ -137,6 +137,34 @@ Additional endpoints:
 - `GET /health` — ALB health (`200`, no external I/O).
 - `GET /version` — Deploy/version JSON (OSMT-style; includes optional `extra.sbsMonorepoVersion` when built from the monorepo wrapper).
 
+## Admin auth
+
+A lightweight, **single-password** admin experience — no user accounts, roles, or
+identity provider. The public site stays fully usable without logging in; only
+admin-only UI and the destructive delete-job action are gated.
+
+- **Service** — `AuthService` (`src/lib/server/services/auth/`) is provider-injected
+  into `AppContext`. It reads `ADMIN_PASSWORD` + `AUTH_SECRET` from env. On
+  `CONTEXT=aws` both are **required** (fail-fast); `dev`/`test` fall back to insecure
+  defaults so the app boots offline.
+- **Session token** — a small HMAC-SHA256 token (`session-token.ts`), not a JWT
+  dependency: `<base64url(payload)>.<base64url(sig)>` with payload `{ sub:'admin',
+iat, exp }`, signed with `AUTH_SECRET`. Verified constant-time (`timingSafeEqual`),
+  then the `exp` is checked. Password compare is also timing-safe.
+- **Cookie** — `sessionToken`: `httpOnly`, `sameSite=lax`, `secure` on https,
+  `path=/`, 30-day expiry (`store-session-cookie.ts`).
+- **Login/logout** — unlisted `/auth` login page posts the password; on success the
+  cookie is set and the request redirects to `/` or a validated local `?next=`
+  (`safe-next.ts` blocks open redirects). `/logout` is **POST-only** (clears the
+  cookie). The header shows **Log out** only when authenticated.
+- **Request wiring** — `hooks.server.ts` verifies the cookie and sets
+  `event.locals.admin`; `+layout.server.ts` exposes it as `page.data.admin`. Any
+  verify/parse failure yields `admin: false`.
+- **Delete job** — `/jobs/[id]` gains a `?/deleteJob` form action gated by
+  `locals.admin` (server check is authoritative; the button is hidden for
+  non-admins). `deleteJobQuery` hard-deletes the job and cascades to its matches +
+  job-apps, then redirects to `/jobs`.
+
 ## Skills match + credential verification
 
 A **match** pairs a job's required skills with a candidate's verified credentials. The flow lives at
@@ -244,3 +272,5 @@ Key variables:
 
 - `CREDENTIAL_ENGINE_SEARCH_URL` -- CE Registry Search API endpoint
 - `CREDENTIAL_ENGINE_API_KEY` -- Bearer token for CE API
+- `ADMIN_PASSWORD` -- Admin login password (required on `aws`; defaults to `dev` on dev/test)
+- `AUTH_SECRET` -- HMAC seed for admin session tokens (required on `aws`; insecure default on dev/test)

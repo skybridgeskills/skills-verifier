@@ -2,6 +2,7 @@
 	import { ThemeToggle } from '$lib/components/theme-toggle/index.js';
 
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 </script>
 
 <header class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl dark:bg-background/80">
@@ -25,6 +26,16 @@
 			>
 				Create job
 			</a>
+			{#if page.data.admin}
+				<form method="POST" action={resolve('/logout')}>
+					<button
+						type="submit"
+						class="text-body-md font-medium text-muted-foreground transition-colors hover:text-primary"
+					>
+						Log out
+					</button>
+				</form>
+			{/if}
 			<ThemeToggle />
 		</nav>
 	</div>

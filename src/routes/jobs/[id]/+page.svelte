@@ -4,4 +4,4 @@
 	let { data } = $props();
 </script>
 
-<JobDetailPage job={data.job} />
+<JobDetailPage job={data.job} admin={data.admin} />

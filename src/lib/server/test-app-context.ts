@@ -4,6 +4,7 @@ import type { AppContext } from './app-context.js';
 import { MemoryDatabase } from './core/storage/memory-database.js';
 import { provideFakeVerificationExchange } from './domain/verification/provide-fake-verification-exchange.js';
 import { provideHealthRegistry } from './health/provide-health-registry.js';
+import { provideTestAuthService } from './services/auth/provide-auth-service.js';
 import { FakeIdServiceCtx } from './services/id-service/fake-id-service.js';
 import { FakeLoggerServiceCtx } from './services/logging/fake-logger-service.js';
 import { provideFakeSkillSearchService } from './services/skill-search/provide-fake-skill-search-service.js';
@@ -26,6 +27,7 @@ export async function TestAppContext(_env: Record<string, unknown> = {}): Promis
 		FakeLoggerServiceCtx(),
 		FakeTimeServiceCtx,
 		FakeIdServiceCtx,
+		provideTestAuthService,
 		provideFakeFrameworkClient,
 		TestStorageDatabaseCtx,
 		provideFakeSkillSearchService,

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { DeleteJobDialog } from '$lib/components/delete-job-dialog/index.js';
 	import { JobShareDialog } from '$lib/components/job-share-dialog/index.js';
 	import { SkillItem } from '$lib/components/skill-item/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -11,15 +12,17 @@
 
 	interface Props {
 		job: JobResource;
+		admin?: boolean;
 	}
 
-	let { job }: Props = $props();
+	let { job, admin = false }: Props = $props();
 
 	const statusVariant = $derived(
 		job.status === 'active' ? 'default' : job.status === 'closed' ? 'secondary' : 'outline'
 	);
 
 	let shareOpen = $state(false);
+	let deleteOpen = $state(false);
 
 	// Auto-open the share dialog once, right after a job is created
 	// (`/jobs/create` redirects here with `?created=1`). Clear the flag via
@@ -59,9 +62,17 @@
 		<Button type="button" variant="secondary" onclick={() => (shareOpen = true)}>
 			Hire for this Job
 		</Button>
+		{#if admin}
+			<Button type="button" variant="destructive" onclick={() => (deleteOpen = true)}>
+				Delete job
+			</Button>
+		{/if}
 	</div>
 
 	<JobShareDialog {job} bind:open={shareOpen} />
+	{#if admin}
+		<DeleteJobDialog {job} bind:open={deleteOpen} />
+	{/if}
 
 	<p class="text-body-md text-muted-foreground">{job.description}</p>
 
